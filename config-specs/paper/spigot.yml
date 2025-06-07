@@ -625,125 +625,122 @@ world-settings:
         description: "This option does not operate, as it is disabled by a Paper patch."
     max-tnt-per-tick:
       default: "100"
-      description: How many TNT to process per server tick. Set to 0 to disable.
+      description: 服务器每刻允许处理的最大 TNT 数量。设置为 0 禁用。
     merge-radius:
       exp:
         default: "-1"
         description: >-
-          The range, in blocks, that exp orbs will combine at on initial spawn.
-          This behavior is not present in Vanilla and doesn't impact the usual
-          merge range once spawned. Set to 0 or less to disable.
+          经验球之间相距多少距离才会合并为更大的经验球
+          在原版中这项特性不存在。设置为 0 或更小的值来禁用这条配置项。
       item:
         default: "0.5"
-        description: "The range, in blocks, that items will combine within."
+        description: "物品与物品之间能够堆叠的最小半径。"
     mob-spawn-range:
       default: "8"
-      description: "The range, in chunks, from the player, that mobs can spawn."
+      description: "玩家周围多少区块之内可以生成生物。"
     nerf-spawner-mobs:
       default: "false"
-      description: Disable most AI for spawner spawned mobs.
+      description: 对刷怪笼生成的生物禁用大部分 AI。
     seed-ancientcity:
       default: "20083232"
-      description: The per-structure seed for ancient cities.
+      description: 古城的结构种子。
     seed-buriedtreasure:
       default: "10387320"
-      description: The per-structure seed for buried treasure.
+      description: 埋藏的宝藏的结构种子。
     seed-desert:
       default: "14357617"
-      description: The per-structure seed for desert structures.
+      description: 沙漠结构的生成种子。
     seed-endcity:
       default: "10387313"
-      description: The per-structure seed for end cities.
+      description: 末地城的结构种子。
     seed-fossil:
       default: "14357921"
-      description: The per-structure seed for fossils.
+      description: 化石的结构种子。
     seed-igloo:
       default: "14357618"
-      description: The per-structure seed for igloos.
+      description: 雪屋的结构种子。
     seed-jungle:
       default: "14357619"
-      description: The per-structure seed for jungle structures.
+      description: 丛林结构的生成种子。
     seed-mansion:
       default: "10387319"
-      description: The per-structure seed for mansions.
+      description: 林地府邸的结构种子。
     seed-mineshaft:
       default: default
-      description: The per-structure seed for mineshafts.
+      description: 废弃矿井的结构种子。
     seed-monument:
       default: "10387313"
-      description: The per-structure seed for monuments.
+      description: 海洋神殿的结构种子。
     seed-nether:
       default: "30084232"
-      description: The per-structure seed for the nether structures.
+      description: 下界结构的生成种子。
     seed-ocean:
       default: "14357621"
-      description: The per-structure seed for the ocean structures.
+      description: 海洋结构的生成种子。
     seed-outpost:
       default: "165745296"
-      description: The per-structure seed for outposts.
+      description: 前哨站的结构种子。
     seed-portal:
       default: "34222645"
-      description: The per-structure seed for portals.
+      description: 传送门的结构种子。
     seed-shipwreck:
       default: "165745295"
-      description: The per-structure seed for shipwrecks.
+      description: 沉船的结构种子。
     seed-slime:
       default: "987234911"
-      description: The per-structure seed for slime chunks.
+      description: 史莱姆区块的生成种子。
     seed-stronghold:
       default: default
-      description: The per-structure seed for strongholds.
+      description: 要塞的结构种子。
     seed-swamp:
       default: "14357620"
-      description: The per-structure seed for swamp structures.
+      description: 沼泽小屋的结构种子。
     seed-trialchambers:
       default: "94251327"
-      description: The per-structure seed for trial chambers.
+      description: 试炼密室的结构种子。
     seed-trailruins:
       default: "83469867"
-      description: The per-structure seed for trail ruins.
+      description: 试炼遗迹的结构种子。
     seed-village:
       default: "10387312"
-      description: The per-structure seed for villages.
+      description: 村庄的结构种子。
     simulation-distance:
       default: default
       description: >-
-        Overrides the simulation distance. Set to -1 or "default" to use the
-        value in
-        [server.properties](/paper/reference/server-properties#simulation_distance).
+        覆写模拟距离。设置为 -1 或 "default" 使用 [server.properties](/paper/reference/server-properties#simulation_distance)
+        里的对应值。
     thunder-chance:
       default: "100000"
       description: >-
-        The chance of lightning occurring during a thunderstorm, as a
-        probability of 1/<thunder-chance> per chunk, every tick.
+        在雷雨期间生成闪电的可能性。
+        概率为 1/<配置的数值> ，每个区块每个游戏刻单独检测。
     ticks-per:
       hopper-check:
         default: "1"
-        description: The ticks between checks to pull items.
+        description: 从另外一个容器内获取物品检测的间隔时间。
       hopper-transfer:
         default: "8"
-        description: The ticks between hopper item movements.
+        description: 漏斗内物品的运送速度。
     trident-despawn-rate:
       default: "1200"
-      description: The number of ticks before a trident despawns.
+      description: 三叉戟实体的存活时间。
     verbose:
       default: "false"
       description: >-
-        Whether to log world settings when the configuration file is loaded.
-        This normally occurs on startup, \`/spigot reload\`, and \`/reload\`.
+        是否在加载配置文件时输出所有的世界选项。
+        这会在你使用 \`/spigot reload\` 或者 \`/reload\` 的时候发生。
     view-distance:
       default: default
       description: >-
-        Overrides the view distance. Set to -1 or "default" to use the value in
-        [server.properties](/paper/reference/server-properties#view_distance)
+        覆写视距。设置为 -1 或 "default" 使用 [server.properties](/paper/reference/server-properties#view_distance)
+        的对应值。
     wither-spawn-sound-radius:
       default: "0"
       description: >-
-        The number of blocks that the wither spawn sound is audible. Set to 0
-        for global (including cross-dimension).
+        决定凋零生成时候音效的播放半径。如果为0，则音效会对所有玩家播放。
     zombie-aggressive-towards-villager:
       default: "true"
-      description: Whether zombies try to seek out and attack villagers.
+      description: "僵尸是否应该对村民表现出攻击性。"
 config-version:
   default: ""
-  description: "Internal constant for upgrading configuration: **Do Not Touch**."
+  description: "在升级配置文件的时候自动生成的一个常量。**不要修改它。**"
