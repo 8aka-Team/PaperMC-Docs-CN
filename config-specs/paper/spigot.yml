@@ -401,228 +401,207 @@ world-settings:
       bamboo-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for bamboo, where Vanilla speed is
-          100%. This option is unable to disable growth at 0%, instead
-          defaulting to 100%
+          竹子的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 300%.
+          最大生长倍率为 300%。
       beetroot-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for beetroot, where Vanilla speed is
-          100%. This option is unable to disable growth at 0%, instead
-          defaulting to 100%
+          甜菜根的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%.
+          最大生长倍率为 5100%。
       cactus-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for cactus, where Vanilla speed is
-          100%. This option is unable to disable growth at 0, instead defaulting
-          to 100%
+          仙人掌的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 1600%.
+          最大生长倍率为 1600%。
       cane-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for sugarcane, where Vanilla speed is
-          100%. This option is unable to disable growth at 0%, instead
-          defaulting to 100%
+          甘蔗的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 1600%.
+          最大生长倍率为 1600%。
       carrot-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for carrots, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          胡萝卜的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%.
+          最大生长倍率为 5100%。
       cavevines-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for cave-vines, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          洞穴藤蔓的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 1000%
+          最大生长倍率为 1000%。
       cocoa-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for cocoa beans, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          可可豆的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 500%
+          最大生长倍率为 500%。
       glowberry-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for glow-berries, where Vanilla speed
-          is 100%. This option is unable to disable growth, instead defaulting
-          to 100%
+          发光浆果的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is roughly 910%
+          最大生长倍率大概是 910%。
       kelp-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for kelp, where Vanilla speed is 100%.
-          This option is unable to disable growth, instead defaulting to 100%
+          海带的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is roughly 715%
+          最大生长倍率大概是 715%。
       melon-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for melons, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          西瓜的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%
+          最大生长倍率为 5100%。
       mushroom-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for mushrooms, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          蘑菇的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 2500%
+          最大生长倍率为 2500%。
       netherwart-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for netherwart, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          地狱疣的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 1000%
+          最大生长倍率为 1000%。
       pitcherplant-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for pitcherplants, where Vanilla speed
-          is 100%. This option is unable to disable growth, instead defaulting
-          to 100%
+          瓶子草荚果的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%
+          最大生长倍率为 5100%。
       potato-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for potatoes, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          土豆的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%
+          最大生长倍率为 5100%。
       pumpkin-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for pumpkins, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          南瓜的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%
+          最大生长倍率为 5100%。
       sapling-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for saplings, where Vanilla speed is
-          100%. This option is unable to disable growth, instead defaulting to
-          100%
+          树苗的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 700%
+          最大生长倍率为 700%。
       sweetberry-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for sweet-berries, where Vanilla speed
-          is 100%. This option is unable to disable growth, instead defaulting
-          to 100%
+          甜浆果的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 500%
+          最大生长倍率为 500%。
       torchflower-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for torchflowers, where Vanilla speed
-          is 100%. This option is unable to disable growth, instead defaulting
-          to 100%
+          火把花的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%
+          最大生长倍率为 5100%。
       twistingvines-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for twisting-vines, where Vanilla speed
-          is 100%. This option is unable to disable growth, instead defaulting
-          to 100%
+          缠怨藤的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 1000%
+          最大生长倍率为 1000%。
       vine-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for vines, where Vanilla speed is 100%.
-          This option is unable to disable growth, instead defaulting to 100%
+          藤蔓的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 400%
+          最大生长倍率为 400%。
       weepingvines-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for weeping-vines, where Vanilla speed
-          is 100%. This option is unable to disable growth, instead defaulting
-          to 100%
+          垂泪藤的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 1000%
+          最大生长倍率为 1000%。
       wheat-modifier:
         default: "100"
         description: >-
-          The growth modifier percentage for wheat, where Vanilla speed is 100%.
-          This option is unable to disable growth, instead defaulting to 100%
+          小麦的生长速率百分比。作为对照，原版的速率为 100%。
+          本配置项无法禁止其生长，默认最小为 100%。
 
-          The maximum effectiveness is 5100%
+          最大生长倍率为 5100%。
     hanging-tick-frequency:
       default: "100"
-      description: "How often to tick hanging entities, in ticks."
+      description: "悬挂实体(比如画和物品展示框)应该在多少游戏刻内运算一次。"
     hopper-amount:
       default: "1"
-      description: "How many items a hopper should move at a time, limited to stack size."
+      description: "漏斗一次性能搬运多少物品。"
     hopper-can-load-chunks:
       default: "false"
       description: Whether to prevent hoppers from loading chunks.
     hunger:
       combat-exhaustion:
         default: "0.1"
-        description: How much exhaustion to give from attacking.
+        description: 攻击时饱食度的消耗倍率。
       jump-sprint-exhaustion:
         default: "0.2"
-        description: How much exhaustion to give from sprint jumping.
+        description: 跑跳时饱食度的消耗倍率。
       jump-walk-exhaustion:
         default: "0.05"
-        description: How much exhaustion to give from jump walking.
+        description: 走跳时饱食度的消耗倍率。
       other-multiplier:
         default: "0.0"
-        description: The exhaustion multiplier for normal walking and crouching.
+        description: 爬行(陆游)，潜行，正常走路时饱食度的消耗倍率。
       regen-exhaustion:
         default: "6.0"
-        description: How much exhaustion to give from regenerating health.
+        description: 恢复生命的时恢复多少饱食度。
       sprint-multiplier:
         default: "0.1"
-        description: The exhaustion multiplier for sprinting on the ground.
+        description: 冲刺时饱食度的消耗倍率。
       swim-multiplier:
         default: "0.01"
         description: >-
-          The exhaustion multiplier for when "swimming". This occurs when the
-          player is:
+          当玩家正在"游泳"的时候饱食度的消耗倍率。这里的游泳，包括:
 
-          - actually swimming
+          - 真的在游泳
 
-          - walking underwater (eyes below surface)
+          - 水下行走(眼睛在水下)
 
-          - walking on water (eyes above surface)
+          - 水上行走(眼睛在水上)
     item-despawn-rate:
       default: "6000"
       description: >-
-        The default time in ticks it takes an item to despawn. Per-item rates
-        are found in Paper's [per-world
-        config](/paper/reference/world-configuration#entities_spawning_alt_item_despawn_rate).
+        物品消失之前的最大存活时间。单独的配置项需要参看 Paper 配置文件内的 [per-world
+        config](/paper/reference/world-configuration#entities_spawning_alt_item_despawn_rate) 。
     max-tick-time:
       entity:
         default: "50"
-        description: "This option does not operate, and is non-functional upstream."
+        description: "此配置项不起作用，并且这是一条没有任何作用的上游配置项。"
       tile:
         default: "50"
-        description: "This option does not operate, as it is disabled by a Paper patch."
+        description: "由于 Paper 修复了这个特性，这条配置项没有任何作用。"
     max-tnt-per-tick:
       default: "100"
       description: 服务器每刻允许处理的最大 TNT 数量。设置为 0 禁用。
