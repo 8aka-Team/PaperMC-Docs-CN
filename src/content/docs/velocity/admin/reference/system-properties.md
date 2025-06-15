@@ -70,6 +70,11 @@ Velocity 的一些系统属性名称中包含 `.` 字符。在使用 PowerShell 
 - **默认**: `false`
 - **描述**: 是否应该详细记录数据包解码错误。
 
+#### velocity.skip-uncompressed-packet-size-validation
+
+- **default**: `false`
+- **description**: Whether to skip the validation of uncompressed packet sizes, this is useful to allow modded setups to send uncompressed packets over the threshold.
+
 #### velocity.increased-compression-cap
 
 - **默认**: `false`
