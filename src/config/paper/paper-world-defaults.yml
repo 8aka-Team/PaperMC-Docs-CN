@@ -873,10 +873,9 @@ misc:
     default: "false"
     vanilla: "true"
     description: >-
-      Disables an optimization which verifies that end crystals placed in the end
-      are placed on the portal frame before any attempt is made at respawning
-      the ender dragon. Enabling this setting allows remote ender dragon
-      respawning to work again.
+      是否允许远程末影龙重生。
+
+      - 禁用一种优化，该优化会验证末影水晶是否放置在末地传送门框架上，然后才会尝试重新生成末影龙。启用此设置可以再次实现远程重新生成末影龙。
   disable-end-credits:
     default: "false"
     description: >-
