@@ -38,19 +38,18 @@ public void onPlayerChat(PlayerChatEvent event) {
 在 `@Subscribe` 注解中声明所需的顺序：
 
 ```java
-@Subscribe(priority = 0, order = PostOrder.CUSTOM)
+@Subscribe(priority = 10)
+public void onPlayerChatFirst(PlayerChatEvent event) {
+    // this method fires first
+}
+
+@Subscribe(priority = 5)
 public void onPlayerChat(PlayerChatEvent event) {
-	// 执行操作
+	// 这种方法是在上述方法之后触发的。
 }
 ```
 
-如果不指定顺序，`-32768` 是默认值。
-
-:::note[注意]
-
-由于兼容性限制，你必须指定 [`PostOrder.CUSTOM`](jd:velocity:com.velocitypowered.api.event.PostOrder#CUSTOM) 才能使用这个字段。
-
-:::
+如果不指定顺序，`0` 是默认值。
 
 ## 注册监听器
 
@@ -92,7 +91,7 @@ public class VelocityTest {
 
 public class MyListener {
 
-  @Subscribe(order = PostOrder.EARLY)
+  @Subscribe
   public void onPlayerChat(PlayerChatEvent event) {
     // 你可以在这里做点什么
   }
@@ -123,12 +122,12 @@ public class MyListener {
 或添加一个返回的 [`Continuation`](jd:velocity:com.velocitypowered.api.event.Continuation) 参数即可：
 
 ```java
-  @Subscribe(priority = 100, order = PostOrder.CUSTOM)
+  @Subscribe(priority = 100)
   public void onLogin(LoginEvent event, Continuation continuation) {
     doSomeAsyncProcessing().addListener(continuation::resume, continuation::resumeWithException);
   }
 
-  @Subscribe(priority = 100, order = PostOrder.CUSTOM)
+  @Subscribe(priority = 100)
   public EventTask onPlayerChat(PlayerChatEvent event) {
     if (mustFurtherProcess(event)) {
       return EventTask.async(() => ...);
