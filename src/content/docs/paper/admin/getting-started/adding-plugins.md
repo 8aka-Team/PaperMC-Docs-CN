@@ -1,138 +1,141 @@
 ---
-title: Adding plugins
-description: Plugins are the most powerful way to extend the functionality of Paper beyond the configuration files.
+title: 添加插件
+description: 插件是扩展 Paper 功能的最强大方式，超越了配置文件的限制
 slug: paper/adding-plugins
 ---
 
-Plugins are the most powerful way to extend the functionality of Paper beyond the configuration
-files. Functionality added by plugins can range from making milk restore hunger or dead bushes grow,
-to adding entirely new and original game modes or items.
+插件是扩展 Paper 功能的最强大方式，超越了配置文件的限制。
+通过插件添加的功能可以包括让牛奶恢复饥饿值或让枯死的灌木生长，
+甚至可以添加全新的游戏模式或物品。
 
-:::danger[Malicious Plugins]
+:::danger[恶意插件]
 
-Ensure you fully trust the source of any plugin before installing it. Plugins are given **full and
-unrestricted** access to not only your server but also the machine that it runs on. Because of this,
-it is imperative that plugins only be installed from trusted sources. Be careful!
-
-:::
-
-## Finding plugins
-
-Before installing a plugin, you'll need to find what you want to install. The best place to find plugins is [Hangar](https://hangar.papermc.io), Paper's plugin repository, but you can also find many plugins
-on [SpigotMC](https://www.spigotmc.org/resources/),
-[BukkitDev](https://dev.bukkit.org/bukkit-plugins), or the
-[PaperMC Forums](https://forums.papermc.io/forums/paper-plugin-releases/), while other plugins may
-release on [GitHub](https://github.com). One of the best ways to find plugins isn't to browse any of
-these sites directly but to search for plugins using a search engine. Searching for the function you
-desire followed by `Minecraft plugin` will often yield good results.
-
-:::tip[Spigot and Bukkit Plugins]
-
-Paper is compatible with both Spigot and Bukkit plugins. It's okay if a plugin does not explicitly
-mention Paper compatibility. It'll still work.
+在安装任何插件之前，请确保您完全信任其插件来源。
+插件被授予对服务器以及运行服务器的机器的**完全且不受限制**的访问权限。
+因此，必须确保仅从可信来源安装插件。请务必小心！
 
 :::
 
-## Installing plugins
+## 寻找插件
 
-1. Once you've found the plugin you'd like to install, download it. Ensure the file you have
-   downloaded ends in `.jar`. Some plugins also distribute as `.zip` files, in which case you will
-   need to extract the file and locate the `.jar` for your platform, often labeled `bukkit` or
-   `paper`.
-2. Once you have the plugin downloaded locally, locate the `plugins` folder from the root directory
-   of your Paper server.
-3. Drag and drop the plugin file (`.jar`) into the `plugins` folder. If you are using a shared
-   hosting service, you may need to use their web panel or SFTP to upload the plugin; however, the
-   procedure will be the same.
-4. Restart your server. The plugin should load.
-5. Check your work. Once the server has finished loading, run the `/plugins` command in-game or type
-   `plugins` into the console. You should see your freshly installed plugin listed in green. If it
-   is not listed or is colored red, continue to [troubleshooting](#troubleshooting). A plugin listed
-   in red means that it is not currently enabled. For a freshly installed plugin, this often means
-   that the plugin failed to load.
+在安装插件之前，您需要找到您想要安装的插件。
+寻找插件的最佳去处是 [Hangar](https://hangar.papermc.io) ，这是 Paper 的插件仓库。
+不过，您也可以在 [SpigotMC](https://www.spigotmc.org/resources/) 、[BukkitDev](https://dev.bukkit.org/bukkit-plugins) 、
+[PaperMC 论坛](https://forums.papermc.io/forums/paper-plugin-releases/) 、 [Modrinth](https://modrinth.com/plugins) 以及 [GitHub](https://github.com) 上找到许多插件。
+实际上，寻找插件的最佳方式并非直接浏览这些网站，
+而是使用搜索引擎进行搜索。
+在搜索时，将您期望实现的功能与 `Minecraft plugin` 一起输入，通常能够得到不错的搜索结果。
 
-## Troubleshooting
+:::tip[Spigot 和 Bukkit 插件]
 
-### Check your logs
+Paper 与 Spigot 和 Bukkit 插件兼容。
+即使插件没有明确提到与 Paper 的兼容性，它仍然可以正常工作。
 
-The first step to troubleshooting installing plugins is to check the log of your server. Your
-server's most recent logs will be stored to the `logs/latest.log` file. You may need to scroll near
-the beginning of this file to see when plugins were loaded.
+:::
 
-#### Missing dependencies
+## 安装插件
 
-If you see something like this:
+1. 一旦您找到了想要安装的插件，请下载它。确保您下载的文件以 `.jar` 结尾。
+   有些插件也会以 `.zip` 文件的形式分发，在这种情况下，
+   您需要解压文件并找到适用于您平台的 `.jar` 文件，
+   通常会标记为 `bukkit` 或 `paper`。
+2. 下载插件后，
+   找到 Paper 服务器根目录下的 `plugins` 文件夹。
+3. 将插件文件（.jar）拖放到`plugins`文件夹中。
+   如果您使用的是共享托管服务，
+   可能需要使用其网页面板或 SFTP 来上传插件，但操作步骤是一样的。
+4. 重启服务器。插件应该会加载。
+5. 检查工作。服务器加载完成后，在游戏中运行 `/plugins` 命令，或在控制台中输入 `plugins`。
+   您应该会看到新安装的插件以绿色显示。
+   如果插件未列出或显示为红色，请继续进行[故障排除](#故障排除)。
+   插件显示为红色意味着它当前未启用。
+   对于新安装的插件，这通常意味着插件未能加载。
+
+## 故障排除
+
+### 检查日志
+
+故障排除安装插件的第一步是检查服务器的日志。
+服务器的最新日志将存储在 `logs/latest.log` 文件中。
+您可能需要滚动到该文件的开头部分，以查看插件加载的时间。
+
+#### 缺少依赖项
+
+如果您看到类似以下内容：
 
 ```log
 [00:00:00] [Server thread/WARN] Could not load 'plugins/MyAwesomePlugin-1.0.0.jar' in folder 'plugins'
+                                // 无法在“plugins”文件夹中加载“plugins/MyAwesomePlugin-1.0.0.jar”。
 [00:00:00] [Server thread/WARN] org.bukkit.plugin.UnknownDependencyException: Unknown/missing dependency plugins: [Vault]. Please download and install these plugins to run 'MyAwesomePlugin'.
 ```
 
-This means that the plugin you tried to install is missing a dependency. A dependency, in this case,
-is another plugin that you must install for the first to function. While you will get a big scary
-error, the important line to look at is:
+这意味着您尝试安装的插件缺少一个依赖项。
+在这种情况下，依赖项是指您必须安装的另一个插件，才能使第一个插件正常工作。
+虽然您会看到一个很大的错误信息，但重要的是查看以下这一行：
 
 ```log
 [00:00:00] [Server thread/WARN] Unknown/missing dependency plugins: [Vault]. Please download and install these plugins to run 'MyAwesomePlugin'.
+                                // 未知/缺失的依赖插件：[Vault]。请下载并安装这些插件以运行“MyAwesomePlugin”。
 ```
 
-This is telling you that in order to load `MyAwesomePlugin`, you must first install `Vault`.
+这表明，为了加载 `MyAwesomePlugin`，您必须先安装 `Vault`。
 
-#### Invalid `plugin.yml`
+#### 无效的 `plugin.yml`
 
-If you see something closer to this:
+如果你看到的内容更接近于这个：
 
 ```log
 [00:00:00] [Server thread/WARN] Could not load 'plugins/MyAwesomePlugin-1.0.0.jar' in folder 'plugins'
 [00:00:00] [Server thread/WARN] org.bukkit.plugin.InvalidDescriptionException: Invalid plugin.yml
 ```
 
-This means that what you have downloaded isn't a valid Paper plugin. This is generally caused by one
-of the following:
+这意味着您下载的内容不是一个有效的 Paper 插件。
+这通常是由以下原因之一造成的：
 
-1. The plugin you downloaded isn't a plugin at all, but instead a mod for Forge, Fabric, or similar.
-   These will not run on Paper.
-2. The plugin failed to download completely. Especially when using tools such as `curl` or `wget`,
-   you can easily download error pages rather than the plugin you intended. This may also be caused
-   by a network issue. Attempt to download the plugin again. If you are using FTP (not SFTP or a web
-   panel) to upload your plugin to a shared hosting service, ensure your FTP client is in `binary`
-   and not `ASCII` mode. Consult the documentation for your FTP client for details.
+1. 您下载的插件根本不是一个插件，而是为 Forge、Fabric 或类似平台设计的模组。
+   这些无法在 Paper 上运行。
+2. 插件未能完整下载。
+   特别是当使用`curl`或`wget`等工具时，您可能会下载到错误页面，而不是您想要的插件。
+   这可能也是由于网络问题造成的。 尝试重新下载插件。
+   如果您使用 FTP（而不是 SFTP 或网页面板）将插件上传到共享托管服务，请确保您的 FTP 客户端处于 `binary` 模式，而不是 `ASCII` 模式。
+   具体操作请参考您的 FTP 客户端的文档。
 
-#### Ambiguous plugin name
+#### 插件名称不明确
 
-If you see something like this:
+如果您看到类似以下内容：
 
 ```log
 [00:00:00] [Server thread/WARN] Ambiguous plugin name `Essentials' for files `plugins/EssentialsX-2.19.4.jar' and `plugins/Essentialsx-2.20.0-dev.jar' in `plugins'
+                                // 插件名称`Essentials`存在歧义，因为`plugins`文件夹中存在两个文件：`plugins/EssentialsX-2.19.4.jar`和`plugins/Essentialsx-2.20.0-dev.jar`。
 ```
 
-This means you have two plugins with the same name, which is not supported. In this case, two
-versions of EssentialsX are installed. Both the release `2.19.4`, and a development build of
-`2.20.0`. Ensure you only have one version of each plugin installed at one time. Delete the older
-version of the duplicate plugin, and restart your server.
+这意味着您安装了两个同名的插件，这是不被支持的。
+在这个例子中，EssentialsX 的两个版本都被安装了。
+一个是发布版本`2.19.4`，另一个是开发版本`2.20.0`。
+请确保您一次只安装每个插件的一个版本。删除重复插件的旧版本，然后重新启动服务器。
 
-To prevent accidentally installing two versions of one plugin while updating, you can use
-the `update` folder as described in the [Update Guide](/paper/updating#step-2-update-plugins).
+为了防止在更新时不小心安装了同一插件的两个版本，
+您可以使用[更新指南](/paper/updating#step-2-update-plugins)中描述的 `update` 文件夹。
 
-#### Something else
+#### 其他问题
 
-If you see an error, but it isn't similar to one of the above, attempt to read it yourself. While
-the full error may be large and scary, you likely only have to read the first one or two lines to
-understand what is going on. If you're not sure, do not hesitate to reach out for support on our
-[Discord](https://discord.gg/papermc) in the `#paper-help` channel.
+如果出现错误，但与上述内容不相似，请尝试自行阅读。
+尽管完整的错误信息可能很长且令人困惑，但您可能只需阅读前一两行即可了解问题所在。
+如果您不确定，请不要犹豫，在我们的 [Discord](https://discord.gg/papermc)
+的 `#paper-help` 频道寻求支持。
 
-### If nothing is logged
+### 如果没有记录任何内容
 
-If nothing is logged, your server is likely not attempting to load any plugins. The conditions
-needed for the server to load a plugin are as follows:
+如果没有记录任何内容，您的服务器可能根本就没有尝试加载任何插件。
+服务器加载插件所需的条件如下：
 
-1. The file is at the root of the `plugins` folder, relative to its working directory. This is
-   usually the same folder as the server JAR file. **Subdirectories of the `plugins` folder will not
-   be checked.** All plugins must be in the root folder.
-2. The file ends in `.jar`. If your plugin does not end in `.jar`, what you have downloaded may not
-   be a plugin. Note that some plugins distribute multiple JARs as `.zip` files. If this is the
-   case, you have to extract them before installing the plugin.
+1. 文件位于其工作目录下的 `plugins` 文件夹的根目录中。
+   这通常是服务器 JAR 文件所在的文件夹。 **`plugins` 文件夹的子文件夹不会被检查。**
+   所有插件都必须放在根文件夹中。
+2. 文件以 `.jar` 结尾。如果您的插件不以 `.jar` 结尾，您下载的内容可能不是插件。
+   请注意，有些插件会将多个 JAR 文件作为 `.zip` 文件分发。
+   如果这是这种情况，您必须在安装插件之前先解压它们。
 
-If both of these are true, and you still see no logs, please reach out for support on our
-[Discord](https://discord.gg/papermc) server in the `#paper-help` channel. We will be happy to
-assist you.
+如果上述条件都满足，但您仍然没有看到任何日志，
+请在我们的 [Discord](https://discord.gg/papermc) 服务器的 `#paper-help` 频道寻求支持，
+我们会很高兴为您提供帮助。

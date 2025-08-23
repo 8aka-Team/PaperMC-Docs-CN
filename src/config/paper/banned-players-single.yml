@@ -1,25 +1,25 @@
 header:
-  message: This is a single entry in the root array found in banned-players.json.
+  message: 这是 `banned-players.json` 中根数组中的一个条目。
 uuid:
-  description: The UUID representing the banned user.
-  default: the UUID of the banned user
+  description: 代表被封禁用户的 UUID。
+  default: 被封禁用户的 UUID
 name:
-  description: The name of the banned user.
-  default: the name of the banned user
+  description: 被封禁用户的名称。
+  default: 被封禁用户的名称。
 created:
   description: |
-    A timestamp of when the user was banned.
-    The expected format is "yyyy-MM-dd HH:mm:ss Z".
-  default: the ban creation time
+    被封禁用户的名称。
+    预期的格式是“yyyy-MM-dd HH:mm:ss Z”。
+  default: 封禁创建时间
 source:
-  description: A string representing the source of the ban.
-  default: '"(Unknown)"'
+  description: 一个表示封禁来源的字符串。
+  default: '"(未知)"'
 expires:
   description: |
-    A timestamp of when the ban expires, or "forever" if it does not expire.
+    封禁到期的时间戳，如果封禁永不到期则为“永久”。
 
-    The expected format is "yyyy-MM-dd HH:mm:ss Z".
-  default: '"forever"'
+    预期的格式是“yyyy-MM-dd HH:mm:ss Z”。
+  default: '"永久"'
 reason:
-  description: The reason for the ban.
-  default: '"Banned by an operator."'
+  description: 封禁的原因。
+  default: '"被管理员封禁。"'

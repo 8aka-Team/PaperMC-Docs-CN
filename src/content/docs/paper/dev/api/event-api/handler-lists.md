@@ -1,16 +1,16 @@
 ---
-title: Handler lists
-description: An explanation to what an event's HandlerList is.
+title: Handler 列表
+description: 对事件的处理器列表（HandlerList）的解释。
 slug: paper/dev/handler-lists
 ---
 
-Every [`Event`](jd:paper:org.bukkit.event.Event) that can be listened to has a
-[`HandlerList`](jd:paper:org.bukkit.event.HandlerList) containing all the listeners that are listening to that event.
-This list is used to call the listeners when the event is called.
+每一个可以被监听的 [`Event`](jd:paper:org.bukkit.event.Event) 都有一个 [`HandlerList`](jd:paper:org.bukkit.event.HandlerList)，
+其中包含了所有正在监听该事件的监听器。
+当事件被触发时，这个列表用于调用监听器。
 
-## Getting the handler list for an event
+## 获取事件的处理器列表
 
-To get the handler list for an event, you can call `getHandlerList()` on the specific event class.
+要获取事件的处理器列表，可以在特定的事件类上调用 `getHandlerList()` 方法。
 
 ```java title="ExampleListener.java"
 public class ExampleListener implements Listener {
@@ -21,19 +21,19 @@ public class ExampleListener implements Listener {
         // ...
     }
 
-    // Or:
+    // 或者:
 
     public ExampleListener() {
-        // Access the handler list through the static getter
+        // 通过静态获取器访问处理器列表
         HandlerList handlerList = PlayerJoinEvent.getHandlerList();
         // ...
     }
 }
 ```
 
-## Unregistering a listener
+## 注销一个监听器
 
-To unregister a listener, you can call `unregister()` on the `HandlerList` that the listener is registered to.
+要注销一个监听器，可以在该监听器注册的 `HandlerList` 上调用 `unregister()` 方法。
 
 ```java title="ExampleListener.java"
 public class ExampleListener implements Listener {
@@ -45,18 +45,18 @@ public class ExampleListener implements Listener {
         // ...
     }
 
-    // Or:
+    // 或者:
 
     public ExampleListener() {
-        // Access the handler list through the static getter
+        // 通过静态获取器访问处理器列表
         HandlerList handlerList = PlayerJoinEvent.getHandlerList();
         handlerList.unregister(this);
-        // Granted this is a pretty stupid example...
+        // 承认这是一个相当愚蠢的例子……
     }
 }
 ```
 
-You can unregister based on [`Listener`](jd:paper:org.bukkit.event.Listener)
-or [`Plugin`](jd:paper:org.bukkit.plugin.Plugin) for more convenience.
-Likewise, you can also unregister all listeners for a specific event by calling
-[`unregisterAll()`](jd:paper:org.bukkit.event.HandlerList#unregisterAll()) on the `HandlerList`.
+你可以基于 [`Listener`](jd:paper:org.bukkit.event.Listener) 或者
+[`Plugin`](jd:paper:org.bukkit.plugin.Plugin) 来注销，这样会更加方便。
+同样，你也可以通过在 `HandlerList` 上调用
+[`unregisterAll()`](jd:paper:org.bukkit.event.HandlerList#unregisterAll()) 方法来注销某个特定事件的所有监听器。

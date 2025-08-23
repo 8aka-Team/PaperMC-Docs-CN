@@ -1,62 +1,62 @@
 ---
-title: Debugging your plugin
-description: Debugging is common when writing code. This guide outlines the common ways to debug your plugin.
+title: 调试插件
+description: 在编写代码时，调试是很常见的。本指南概述了调试插件的常见方法
 slug: paper/dev/debugging
 ---
 
-Debugging your plugin is vital to being able to fix bugs and issues in your plugin. This page will cover some of the most common debugging techniques.
+调试你的插件对于修复插件中的错误和问题至关重要。本页面将涵盖一些最常见的调试技术。
 
-## Printing to the console
+## 打印到控制台
 
-One of the most common debugging techniques is to print to the console. This is likely something you've done before, as it's very simple.
-This has a few downsides, though. It can be hard to find the print statements in the console, and it can be hard to remove them all when you're done debugging. Most notably, you have to recompile your plugin and restart the server to add or remove debugging.
+打印到控制台是最常见的调试技术之一。这可能是一个你以前做过的事情，因为它非常简单。
+不过，它也有一些缺点。在控制台中找到打印语句可能很困难，调试完成后删除它们也可能很困难。最重要的是，你需要重新编译插件并重启服务器来添加或移除调试信息。
 
-When debugging, you can use `System.out.println("");` to print to the console. It is recommended to use your plugin's logger instead though,
-as it will be easier to know which plugin the log has come from. This can be done simply with:
+在调试时，你可以使用 `System.out.println("");` 打印到控制台。不过，建议使用插件的日志记录器，因为这样更容易知道日志来自哪个插件。
+这可以通过以下方式简单实现：
 
 ```java
 plugin.getComponentLogger().debug(Component.text("SuperDuperBad Thing has happened"));
 ```
 
-:::note[Logger Levels]
+:::note[日志级别]
 
-In some consoles, using the `warning` level will print the message in different colors.
-This can be useful for finding your print statements in the console.
+在某些控制台中，使用 `warning` 级别会以不同的颜色打印消息。
+这有助于你在控制台中找到你的打印语句。
 
 :::
 
-## Using a remote debugger
+## 使用远程调试器
 
-A debugger is a tool that allows you to pause your code at a certain point and inspect the values of variables.
-This can be very useful for finding out why your code isn't working as expected and also for finding out where your code is going wrong.
+调试器是一种工具，它允许你在某个点暂停代码并检查变量的值。
+这可以非常有助于找出代码为何没有按预期工作，以及找出代码出错的地方。
 
-### Setting up the debugger
+### 设置调试器
 
-To use a debugger, you need to set up your IDE to use it. This is different for each IDE, but for the sake of this guide, we will be using IntelliJ IDEA.
+要使用调试器，你需要设置你的 IDE 来使用它。这在每个 IDE 中都不同，但为了本指南，我们将使用 IntelliJ IDEA。
 
-To set up a debugger in IntelliJ, you need to create a new run configuration.
-You can do this by clicking the dropdown next to the run button and clicking `Edit Configurations...`:
+在 IntelliJ 中设置调试器，你需要创建一个新的运行配置。
+你可以通过点击运行按钮旁边的下拉菜单并选择 `Edit Configurations...` 来实现：
 
 ![](./assets/config_dropdown.png)
 
-Then, click the `+` button in the top left and select `Remote JVM Debug`. You can then name the configuration whatever you want, and click `Apply`:
+然后，点击左上角的 `+` 按钮并选择 `Remote JVM Debug`。你可以将配置命名为任何你想要的名字，然后点击 `Apply`：
 
 ![](./assets/config_add.png)
 
-Finally, copy the command line arguments from the window, and paste these into your server's startup script.
-These will go after the `java` command and before `-jar`. Once you have done this, you can click `OK`. For example:
+最后，从窗口中复制命令行参数，并将它们粘贴到服务器的启动脚本中。
+这些参数将放在 `java` 命令之后和 `-jar` 之前。完成后，你可以点击 `OK`。例如：
 
 ```shell replace
 java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -jar paper-\{LATEST_PAPER_RELEASE}.jar nogui
 ```
 
-Once your server is running, you can use the bug icon in the top right to connect your debugger to the server:
+一旦服务器运行，你可以使用右上角的虫子图标将调试器连接到服务器：
 
 ![](./assets/debugger_connect.png)
 
-#### Using the debugger
+#### 使用调试器
 
-Let's say we have this code:
+假设我们有以下代码：
 
 ```java
 @EventHandler
@@ -73,20 +73,20 @@ public void onPlayerMove(PlayerMoveEvent event) {
 }
 ```
 
-You can add a breakpoint to the line by clicking on the line number:
+你可以通过点击行号来为该行添加断点：
 
 ![](./assets/add_breakpoints.png)
 
-This will pause the code when it reaches that line. You can then use the debugger to inspect the values of variables:
+当代码执行到这一行时，它会暂停。然后你可以使用调试器来检查变量的值：
 
 ![](./assets/debugger_use.png)
 
-You can inspect the values of each of the variables in the current scope.
-You can also use the buttons in the top to step from one breakpoint to the next.
-If needed, you can also use the text box at the top to evaluate expressions for debugging purposes.
+你可以检查当前作用域中每个变量的值。
+你还可以使用顶部的按钮从一个断点跳到下一个断点。
+如果需要，你也可以使用顶部的文本框来评估用于调试的表达式。
 
-### Using direct debugging
+### 使用直接调试
 
-Direct debugging will allow you to run the server directly from your IDE, and will allow you to use breakpoints and step through your code.
-We can achieve this by using [JPenilla's Gradle plugin](https://github.com/jpenilla/run-task) to run the server directly from the IDE.
-See [here](https://github.com/jpenilla/run-task#basic-usage) for instructions on how to set up the plugin.
+直接调试允许你直接从 IDE 运行服务器，并允许你使用断点并逐步执行代码。
+我们可以通过使用 [JPenilla 的 Gradle 插件](https://github.com/jpenilla/run-task) 来直接从 IDE 运行服务器。
+有关如何设置插件的说明，请查看 [这里](https://github.com/jpenilla/run-task#basic-usage)。

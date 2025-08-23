@@ -1,250 +1,309 @@
 accept-transfers:
   default: "false"
-  description: "Whether this server accepts transfers from other servers using the transfer command/packet. If this is set to false, the server will disconnect the client."
+  description: >
+    是否接受来自其他服务器使用传输命令/数据包的传输。
+
+    - 如果设置为 false，服务器将断开客户端的连接
 allow-flight:
   default: "false"
   description: >
-    Means that users will not be kicked if they fly whilst in Survival mode. This is likely to occur through
-    hacking however there can be false positives.
+    是否允许玩家在生存模式中开启飞行的时候不踢出玩家。
+
+    - 实测贴地飞行可以绕过检测，这种情况很可能是通过作弊实现的，但也可能会出现误判，建议使用第三方反作弊插件时关闭这个功能，由反作弊提供判定。
 allow-nether:
   default: "true"
-  description: "Allows users to travel to the Nether."
+  description: >
+    是否开启加载和生成下界(也叫地狱)维度
+
+    - 大厅，游戏等不需要下界的子服可以直接关闭以节省内存和 CPU 资源，也可以在 [bukkit.yml](/paper/reference/bukkit-configuration/#settings_allow_end) 中关闭末地。
 broadcast-console-to-ops:
   default: "true"
-  description: "Send console command output to all online operators."
+  description: "是否将控制台命令输出发送给所有在线的管理员"
 broadcast-rcon-to-ops:
   default: "true"
-  description: "Send rcon command output to all online operators."
+  description: "是否将 RCON 命令输出发送给所有在线的管理员"
 bug-report-link:
   default: ""
-  description: "A URL value used for the Report Server Bugs button in the Server Links client menu."
+  description: "设置一个用于客户端菜单中“报告服务器错误”按钮的 URL 值"
 debug:
   default: "false"
-  description: "Enables the server's debug mode."
+  description: "是否启用服务器的调试（debug）模式"
 difficulty:
   default: "easy"
-  description: 'Defines the difficulty of the server. (Allowed values: "peaceful", "easy", "normal", "hard")'
+  description: >
+    设置定义服务器的难度。
+
+    - 允许的值：“peaceful（和平）”、“easy（简单）”、“normal（普通）”、“hard（困难）”
+
+    - 注意：设置的难度不同生物 AI 的活跃程度也不同，难度越高越占用 CPU 资源。
 enable-command-block:
   default: "true"
-  description: "Enables command blocks."
+  description: "是否开启命令方块，玩家获取方块仍然需要 OP 权限"
 enable-jmx-monitoring:
   default: "false"
   description: >
-    Exposes an MBean with the Object name "net.minecraft.server:type=Server" and two attributes
-    "averageTickTime" and "tickTimes" exposing the tick times in milliseconds. In order for enabling JMX on
-    the Java runtime you also need to add a couple of JVM flags to the startup as documented
-    [here](https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html)
+    是否启用 JMX 监控。
+
+    - 公开一个对象名称为 “net.minecraft.server:type=Server” 的 MBean（管理构件），
+      以及 “averageTickTime”（平均滴答时间）和 “tickTimes”（滴答次数）这两个属性，以毫秒为单位展示 TickTime。
+
+    - 为了在 Java 运行时启用 JMX，你需要在启动时添加一些 JVM 参数，具体参数和配置方法可以参考 [Oracle 官方文档](https://docs.oracle.com/javase/8/docs/technotes/guides/management/agent.html)
 enable-query:
   default: "false"
-  description: "Enables GameSpy4 protocol server listener. Used to get information about server."
+  description: "是否启用 GameSpy4 协议服务器监听器。用于第三方软件获取服务器的信息"
 enable-rcon:
   default: "false"
-  description: "Enables remote access to the server console."
+  description: "是否启用 RCON 协议，允许其他控制软件对服务器控制台的远程访问"
 enable-status:
   default: "true"
   description: >
-    Makes the server appear on the server list and also enables listener for getting server
-    information. If turned off, server will appear offline but players will still be able to connect.
+    是否启用用于获取服务器信息的监听器，使服务器出现在客户端服务器列表中。
+
+    - 如果关闭此功能，服务器将显示为离线状态，但玩家仍然可以连接。
+
+    - 原理是通过将服务器状态上传到官方服务器，客户端在网络受限的情况下能够更快的获取信息，子服状态下可以关闭以节省带宽，客户端获取状态直接由反代理端（velocity/waterfall/BungeeCord）响应
 enforce-secure-profile:
   default: "true"
-  description: "If set to true, players without a Mojang-signed public key will not be able to connect to the server."
+  description: "是否启用 Mojang 公钥验证，没有 Mojang 签名的公钥的玩家将无法连接到服务器"
 enforce-whitelist:
   default: "false"
-  description: "If set to true, the server will kick players who are not on the whitelist."
+  description: "是否启用白名单功能，启用后只有 whitelist.json 内的玩家才能连接到服务器"
 entity-broadcast-range-percentage:
   default: "100"
   description: >
-    Controls how close entities need to be before being sent to clients. Higher values means they''ll
-    be rendered from farther away, potentially causing more lag. This is expressed the percentage of the default
-    value. For example, setting to 50 will make it half as usual. This mimics the function on the client video
-    settings (not unlike Render Distance, which the client can customize so long as it''s under the server''s
-    setting). This must be between 10 and 1000 percent.
+    设置向客户端发送的实体渲染距离，较高的值意味着它们可以从更远的地方被渲染，可能会导致更多的数据包发送以增加延迟。
+
+    - 这模仿了客户端视频设置中的功能（与渲染距离类似，只要在服务器设置之下，客户端可以自定义），必须为 10% 到 1000% 之间的值
 force-gamemode:
   default: "false"
   description: >
-    Force players to join in the default game mode. This will reset their previous game mode when they
-    reconnect.
+    是否强制玩家以默认游戏模式加入。
+
+    - 这将在他们重新连接时重置他们之前的游戏模式
 function-permission-level:
   default: "2"
-  description: "Sets the default permission level for functions. (Allowed values: 1, 2, 3, 4)"
+  description: >
+    设置函数的默认权限级别。
+
+    - 允许的值：1、2、3、4
+      详情请见 [Wiki](https://zh.minecraft.wiki/w/%E6%9D%83%E9%99%90%E7%AD%89%E7%BA%A7) 说明。
 gamemode:
   default: "survival"
-  description: 'Defines the mode of gameplay. (Allowed values: "survival", "creative", "adventure", "spectator")'
+  description: >-
+    设置玩家加入服务器的默认游戏模式。
+
+    - （允许的值：“survival（生存）”、“creative（创造）”、“adventure（冒险）”、“spectator（旁观者）”）
 generate-structures:
   default: "true"
-  description: "Defines whether structures (such as villages) will be generated."
+  description: >-
+    是否允许生成结构（如村庄）
+
+    - 由于地牢和沙漠水井在技术上属于地物，因而即使此项设为 false，其仍然会生成，除非禁用结构所在的群戏。
 generator-settings:
   default: "{}"
-  description: >
-    The settings used to customize world generation. Follow
-    [its format](https://minecraft.wiki/w/Java_Edition_level_format#generatorOptions_tag_format) and
-    write the corresponding JSON string.
+  description: >-
+    设置用于自定义世界生成的设置。
+
+    - 需要遵循[其格式](https://minecraft.wiki/w/Java_Edition_level_format#generatorOptions_tag_format)并编写相应的 JSON 字符串。
+
+    - 例如：{"layers"\\:[{"height"\\:1,"block"\\:"minecraft\\:air"}],"lakes"\\:false,"features"\\:false,"biome"\\:"minecraft\\:the_void","structure_overrides"\\:[]}
+      这会生成一个群戏为 the_void 使用空气（air）方块填充的世界。
 hardcore:
   default: "false"
-  description: "If set to true, players will be set to spectator mode if they die."
+  description: "是否开启硬核模式，如果设置为 true，玩家死亡后将被设置为旁观者模式"
 hide-online-players:
   default: "false"
-  description: "Hides the player list sent with the status request packets."
+  description: "是否在客户端请求数据包时隐藏数据包中的发送的玩家列表"
 initial-disabled-packs:
   default: ""
-  description: "Comma-separated list of datapacks to not be auto-enabled on world creation."
+  description: "设置在创建世界时不会自动启用的数据包列表，用英文逗号（,）分隔列表"
 initial-enabled-packs:
   default: "vanilla"
-  description: >
-    Comma-separated list of datapacks to be enabled during world creation. Feature packs need
-    to be explicitly enabled.
+  description: "设置在创建世界时需要启用的数据包列表，用英文逗号（,）分隔列表。一些功能包需要明确启用"
 level-name:
   default: "world"
-  description: "The name of the world. This will be the name of the folder in which the world is saved."
+  description: "设置默认的世界名称，这也是保存世界数据的文件夹的名称"
 level-seed:
   default: ""
-  description: "The seed used to generate the world. Leave blank to default to random."
+  description: >
+    设置用于生成世界的种子，留空则默认为随机。
+
+    - 部分其他开发的服务端会有更大的种子计算方式，列如 [Luminol](https://github.com/LuminolMC/Luminol) 的 1024 位的种子生成规则
 level-type:
   default: "minecraft:normal"
   description: >
-    Defines the type of the world generator. (Allowed values: "normal", "flat", "large_biomes",
-    "amplified", "single_biome_surface", "buffet", "default_1_1", "customized")
+    设置默认的世界生成器的类型。
+
+    - 允许的值：`"normal（默认）"`、`"flat（超平坦）"`、`"large_biomes（巨型生物群系）"`、`"amplified（放大化）"`、`"single_biome_surface（单一生物群系）"`、`"buffet"`、`"default_1_1"`、`"customized（自定义）"`
 log-ips:
   default: "true"
   description: >-
-    Whether player IP addresses should be logged by the server. This does not
-    impact the ability of plugins to log the IP addresses of players
+    是否应该记录客户端的 IP 地址。
+
+    - 这不会和记录客户端 IP 地址的插件冲突。
 max-chained-neighbor-updates:
   default: "1000000"
   description: >
-    Limits the number of consecutive neighbor updates before skipping subsequent updates. Negative
-    values will disable the limit.
+    设置在一个方块发生变化时，比如被放置、破坏或状态改变之后触发其相邻方块更新的最大数量。
+
+    - 设置为负（-1）以禁用更新（视情况而定，完全不需要方块更新的可以关闭）。
 max-players:
   default: "20"
-  description: "The maximum number of players that can play on the server at the same time."
+  description: "设置允许同时在线的最大玩家数量。"
 max-tick-time:
   default: "60000"
   description: >
-    The maximum number of milliseconds a single tick may take before the server watchdog stops the
-    server with the message. If a single server tick took 60.00 seconds (should be max 0.05) it will be considered to be
-    crashed and the server will forcibly shutdown via calling System.exit(1). Setting this to -1 will disable watchdog
-    entirely.
+    设置在监视进程强制杀死服务器进程之间，每个游戏刻(Tick)最大可运算的时间，单位为毫秒。
+
+    - 如果服务器在此时间内未完成处理一个游戏刻，监视进程将认为服务器已崩溃，并通过调用 System.exit(1) 强制关闭服务器。
+      如果设置为 -1，则禁用此功能。
 max-world-size:
   default: "29999984"
   description: >
-    The maximum allowed size of the world radius, in blocks. This only affects the chunks that are
-    generated when the world is initially created, and not the world border (Limited to 29999984).
+    设置最大允许的世界半径，单位为一个方块。
+
+    - 这只会影响创建世界时的[边界大小](https://zh.minecraft.wiki/w/%E4%B8%96%E7%95%8C%E8%BE%B9%E7%95%8C)，而不是世界的生成大小，可以用来禁止玩家去边界之外的地方。
 motd:
   default: "A Minecraft Server"
-  description: "The message of the day, displayed in the server list."
+  description: "设置服务器的 motd 信息。这将显示在客户端中的服务器列表中。"
 network-compression-threshold:
   default: "256"
-  description: "The number of bytes of a packet before it is compressed. Setting to a negative disables compression."
+  description: >
+    设置网络数据包压缩阈值，超过该数值的数据包将被压缩，单位为字节。
+
+    - 设置为负数（-1）以禁用压缩。后端服务器（子服）建议在和代理端同一个局域网时关闭以节省不必要的 CPU 资源计算。
 online-mode:
   default: "true"
   description: >
-    If set to true, the server checks all connecting players against Minecraft''s account database.
-    This requires all connected players to have a valid Minecraft account and makes it impossible for cracked
-    players to connect.
+    是否强制将客户端所使用的账号与 Minecraft 认证服务器上的数据进行比对（也就是正版验证）。
+
+    - 设置为 false 时将使用离线模式，建议安装一些登录插件来保护服务器免受离线账号的攻击。
 op-permission-level:
   default: "4"
-  description: "Sets the default permission level for ops when using /op. (Allowed values: 0, 1, 2, 3, 4)"
+  description: >
+    设置被赋予管理员权限时，该玩家可以执行的命令的最大权限等级。
+
+    - 可设定值为：0, 1, 2, 3, 4
+      详情请见 [Wiki](https://zh.minecraft.wiki/w/%E6%9D%83%E9%99%90%E7%AD%89%E7%BA%A7) 说明。
 pause-when-empty-seconds:
   vanilla: "60"
   default: "-1"
   description: >
-    How many seconds have to pass after no player has been online before the server is paused.
-    This is disabled by default because it is incompatible with what plugins expect and might do with no players online.
+    设置服务器内没有玩家时候，经过多少秒后暂停服务器以节省资源（原版默认为 60）。
+
+    - 默认禁用，因为其与某些在玩家下线时有额外行为，比如空闲时进行数据处理的插件不兼容。
 player-idle-timeout:
   default: "0"
   description: >
-    If non-zero, players are kicked from the server if they are idle for more than that many minutes.
-    (Default: 0). The following packets stop this timer: "Click Window", "Enchant Item", "Update Sign",
-    "Player Digging", "Player Block Placement", "Held Item Change", "Animation (swing arm)", "Entity Action",
-    "Client Status", "Chat Message", "Use Entity".
+    设置此项为非零的整数时服务器将会在玩家挂机超过指定的分钟数后将其踢出服务器。(默认为 0)
+
+    - 客户端如若发送以下的数据包，将会停止该计时器:
+      "点击活版门"，"物品附魔"，"更新告示牌文字"，"挖掘方块"，"放置方块"，"改变手持物品"，"甩手动作"，"实体动作"，
+      "客户端状态"，"发送信息"，"右键实体"等。
 prevent-proxy-connections:
   default: "false"
   description: >
-    If the ISP/AS sent from the server is different from the one from Mojang Studios'' authentication
-    server, the player not allowed to join the server.
+    是否将玩家的 ISP/AS 与 Mojang Studios 身份验证服务器的 ISP/AS 进行对比
+
+    - 如果不同将禁止该玩家加入服务器，通常这会禁止一些使用 VPN 的玩家进入。
 pvp:
   default: "true"
-  description: "If set to false, players are not allowed to attack other players."
+  description: "是否禁止玩家之间攻击，这无法防止一些利用 TNT 和火焰的玩家"
 query.port:
   default: "25565"
-  description: "The port for the query server. This is used to get information about the server."
+  description: >
+    设置查询协议的服务器端口。
+
+    - 当 enable-query 为 true 时，它将用于获取有关服务器的信息。"
 rate-limit:
   default: "0"
   description: >
-    Sets the maximum allowed number of packets that can be sent before getting kicked. Setting this to 0
-    disables the limit.
+    设置客户端最大发包数量。超过该阈值将被踢出。
+    设置为 0 以禁用。
 rcon.password:
   default: ""
-  description: "The password for the rcon server."
+  description: "设置 rcon 协议所使用的密码。"
 rcon.port:
   default: "25575"
-  description: "The port to start the rcon server on."
+  description: "设置在服务器上启用 rcon 时，rcon 服务器所绑定的端口。"
 region-file-compression:
   default: "deflate"
   description: >
-    Specifies the compression type used to compress region files. Possible values are: "deflate", "lz4" and "none".
-    If set to "none", region files will take up significantly more disk space, but it might make sense together with filesystem-level compression.
+    设置指定压缩块(region)文件所用的压缩方式。
+
+    - 可指定值为 "deflate", "lz4" 或 "none" 建议在类似 NAS 的硬盘环境中设置为 "none"。
+
+    - 如果设置为 "none"，块文件将占用更多的磁盘空间，但与文件系统级的压缩一起使用可能会使其更有意义。
 require-resource-pack:
   default: "false"
-  description: "If true, a player must have the given resource pack to connect. They will be kicked if they do not have it."
+  description: "是否强制客户端必须下载服务器资源包才能连接到服务器。否则客户端将被踢出服务器。"
 resource-pack:
   default: ""
-  description: "The URL to the server's resource pack. "
+  description: "设置客户端下载服务器资源包的 URL。"
 resource-pack-id:
   default: ""
-  description: "The UUID of the server resource pack to use."
+  description: "设置服务器资源包所使用的 UUID。"
 resource-pack-prompt:
   default: ""
-  description: "The message that is displayed when the client is prompted to download the resource pack."
+  description: "设置当服务端提醒客户端需要下载资源包时显示的提示信息。"
 resource-pack-sha1:
   default: ""
   description: >
-    The hash of the resource pack, used for verification. This is recommended to be set to ensure
-    players are downloading the correct pack.
+    设置资源包的哈希值。
+
+    - 设置该项后客户端将验证对比本地下载的资源包的哈希值，以使玩家下载正确的资源包。
 server-ip:
   default: ""
-  description: "The IP address to bind to. Leave blank to bind to all interfaces."
+  description: >
+    设置服务器绑定到的 IP 地址。
+
+    - 后端服务器（子服）建议指向代理端 IP ，如果后端和代理端在同一个系统内则可以使用 127.0.0.1，留空则向全局广播。
 server-port:
   default: "25565"
-  description: "The port to listen on for connections."
+  description: "设置客户端连接到服务器的端口，默认为 25565 时客户端可以直接添加 IP 不需要填写端口。"
 simulation-distance:
   default: "10"
   description: >
-    Sets the maximum distance from players that living entities may be located in order to be
-    updated by the server, measured in chunks in each direction of the player (radius, not diameter).
-    If entities are outside this radius, then they will not be ticked by the server nor will they be
-    visible to players. Must be between 3 and 32 inclusive.
+    设置服务端运算的实体与玩家之间的最大距离，其将在玩家的各个方向上检测(以半径而非直径计算)。
+
+    - 如果实体超出此半径，则服务器不会对其进行运算，玩家也不会看见这些实体。
+      这个数值建议应介于 3 到 32 之间。
 spawn-monsters:
   default: "true"
-  description: "Determines if monsters will be spawned."
+  description: "是否生成怪物（骷髅，僵尸等敌对玩家的生物）。"
 spawn-protection:
   default: "16"
   description: >
-    Used to determine the side length of the spawn protection. The formula of 2x+1 is used. A value of 1
-    will result in a side length of 3 **blocks**. Setting this to 0 will disable spawn protection. There must be
-    at least 1 operator to be enabled.
+    设置出生点保护范围的边长，长度为 2x+1。
+
+    - 设定值为 1 时将会使其**边长为 3**。
+      将其设定为 0 以禁用出生点保护。如若启用，数值必须是大于 1 的整数。
 sync-chunk-writes:
   default: "true"
   description: |
-    Enables synchronous writing of chunk data. Has no effect on Paper by default, unless the corresponding system property is also set to true.
-    See [the system properties reference](/paper/reference/system-properties#paperenable-sync-chunk-writes).
+    是否启用异步写入区块数据。
+
+    - 在 Paper 上这默认是无效的，除非[对应的设置](/paper/reference/system-properties#paperenable-sync-chunk-writes)被设置为 true。
 text-filtering-config:
   default: ""
-  description: "The path to the text filtering configuration file. Leave blank to disable text filtering."
+  description: "设置指定的文本过滤配置文件的路径。留空禁用本配置项。"
 text-filtering-version:
   default: "0"
   description: |
-    The version of the configuration format used for [`text-filtering-config`](#text_filtering_config).
-    Valid values are 0 and 1.
+    设置为 [`text-filtering-config`](#text_filtering_config) 指定的配置格式。
+    有效值为 0 或 1。
 use-native-transport:
   default: "true"
-  description: "Provides a performance boost for Linux servers."
+  description: "是否为 Linux 启用专用的优化来提升服务器性能，这只对 Linux 有用。"
 view-distance:
   default: "10"
   description: >
-    Sets the amount of world data the server sends the client, measured in chunks in each direction
-    of the player (radius, not diameter). It determines the server-side viewing distance (Default: 10, Min: 3,
-    Max: 32).
+    设置服务器向客户端发送的区块视距，以玩家为中心，以区块为单位的范围（半径，而非直径）。
+
+    - 它决定了客户端的可视距离（默认值：10，最小值：3，最大值：32）。
 white-list:
   default: "false"
-  description: "Enables a whitelist on the server. If enabled, the server will only allow selected users to connect."
+  description: >
+    是否在服务器上启用白名单。
+
+    - 启用后，只有在白名单中（whitelist.json）的玩家才能连接到服务器。

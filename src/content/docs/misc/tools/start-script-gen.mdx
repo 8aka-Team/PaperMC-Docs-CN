@@ -1,6 +1,6 @@
 ---
-title: Start script generator
-description: A start script generator for PaperMC projects.
+title: 脚本生成器
+description: 一个用于 PaperMC 项目的启动脚本生成器
 slug: misc/tools/start-script-gen
 tableOfContents: false
 ---
@@ -8,16 +8,16 @@ tableOfContents: false
 import StartScriptGenerator from "/src/components/tools/StartScriptGenerator.svelte";
 
 <details>
-  <summary>What flags do I choose?</summary>
-  If you're running on a modern JVM, i.e. 17, 21 or higher, try with no flags first.
-  Modern JVMs are very good at handling various applications with default GC settings.
+  <summary>我应该如何选择 flags？</summary>
+  如果您使用的是现代 JVM（例如 17、21 或更高版本），请首先尝试不使用任何标志。
+  现代 JVM 非常擅长使用默认的垃圾回收设置来处理各种应用程序。
 
-  If you have GC problems or are running an older version of Minecraft/an older version of Java,
-  try [Aikar's flags](/paper/aikars-flags), which are optimized specifically for Minecraft.
+  如果您遇到垃圾回收问题，或者运行的是较旧版本的 Minecraft/Java，
+  请尝试使用 [Aikar 的 flags](/paper/aikars-flags)，这些标志是专门为 Minecraft 优化的。
 
-  If you're generating a script for starting [Velocity](https://papermc.io/software/velocity), choose "Velocity".
+  如果您正在为 [Velocity](https://papermc.io/software/velocity) 生成启动脚本，请选择 “Velocity”。
 </details>
-
+如果你是“笨蛋”请参考[笨蛋脚本](https://nitwikit.8aka.org/preparation/dumb-script-using)，如果你是“聪明蛋”想要了解GC的工作机制和使用推荐请参考[通用参数](https://nitwikit.8aka.org/Java/optimize/jvm/common)
 <br />
 
 <StartScriptGenerator client:load />

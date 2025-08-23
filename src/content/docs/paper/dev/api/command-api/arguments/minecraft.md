@@ -1,17 +1,17 @@
 ---
-title: Minecraft-specific
-description: Everything regarding the essential Brigadier arguments.
+title: 特定于 Minecraft
+description: 所有关于基本的 Brigadier 参数的内容
 slug: paper/dev/command-api/arguments/minecraft
 ---
 
-The [Arguments and Literals](/paper/dev/command-api/basics/arguments-and-literals) page covers the most used, native Brigadier arguments. But Minecraft (and Paper) define a few more. These can be accessed
-in a static context using the [`ArgumentTypes`](jd:paper:io.papermc.paper.command.brigadier.argument.ArgumentTypes) class. We will go over all of those in this section.
+[参数和字面量](/paper/dev/command-api/basics/arguments-and-literals)页面涵盖了最常用的原生 Brigadier 参数。
+但 Minecraft（以及 Paper）定义了一些额外的参数。这些可以通过 [ArgumentTypes](jd:paper:io.papermc.paper.command.brigadier.argument.ArgumentTypes) 类在静态上下文中访问。我们将在本节中逐一介绍这些参数。
 
-## Quick overview
-A quick overview of all possible arguments is defined here:
+## 快速概览
+所有可能的参数的快速概览定义在这里：
 
-| Method Name                            | Return Value                                                                                                                             | Quick Link                                                                   |
-|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------|
+| 方法名称                                   | 返回值                                                                                                                                      | 快速链接                                                                                                        |
+|----------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|
 | `blockPosition()`                      | [BlockPositionResolver](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.BlockPositionResolver)                            | [Block Position Argument](/paper/dev/command-api/arguments/location#block-position-argument)                |
 | `blockState()`                         | [BlockState](jd:paper:org.bukkit.block.BlockState)                                                                                       | [Block State Argument](/paper/dev/command-api/arguments/paper#block-state-argument)                         |
 | `component()`                          | [Component (Kyori)](https://jd.advntr.dev/api/latest/net/kyori/adventure/text/Component.html)                                            | [Component Argument](/paper/dev/command-api/arguments/adventure#component-argument)                         |
@@ -32,12 +32,12 @@ A quick overview of all possible arguments is defined here:
 | `player()`                             | [PlayerSelectorArgumentResolver](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver) | [Player Argument](/paper/dev/command-api/arguments/entity-player#player-argument)                           |
 | `players()`                            | [PlayerSelectorArgumentResolver](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver) | [Players Argument](/paper/dev/command-api/arguments/entity-player#players-argument)                         |
 | `playerProfiles()`                     | [PlayerProfileListResolver](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.PlayerProfileListResolver)                    | [Player Profiles Argument](/paper/dev/command-api/arguments/entity-player#player-profiles-argument)         |
-| `resource(RegistryKey)`                | (Depends on RegistryKey)                                                                                                                 | [Resource Argument](/paper/dev/command-api/arguments/registry#resource-argument)                            |
-| `resourceKey(RegistryKey)`             | (Depends on RegistryKey)                                                                                                                 | [Resource Key Argument](/paper/dev/command-api/arguments/registry#resource-key-argument)                    |
+| `resource(RegistryKey)`                | (依赖于`RegistryKey`)                                                                                                                       | [Resource Argument](/paper/dev/command-api/arguments/registry#resource-argument)                            |
+| `resourceKey(RegistryKey)`             | (依赖于`RegistryKey`)                                                                                                                       | [Resource Key Argument](/paper/dev/command-api/arguments/registry#resource-key-argument)                    |
 | `style()`                              | [Style (Kyori)](https://jd.advntr.dev/api/latest/net/kyori/adventure/text/format/Style.html)                                             | [Style Argument](/paper/dev/command-api/arguments/adventure#adventure-style-argument)                       |
 | `signedMessage()`                      | [SignedMessageResolver](jd:paper:io.papermc.paper.command.brigadier.argument.SignedMessageResolver)                                      | [Signed Message Argument](/paper/dev/command-api/arguments/adventure#signed-message-argument)               |
 | `scoreboardDisplaySlot()`              | [DisplaySlot](jd:paper:org.bukkit.scoreboard.DisplaySlot)                                                                                | [Scoreboard Display Slot Argument](/paper/dev/command-api/arguments/enums#scoreboard-display-slot-argument) |
-| `time(int mintime)`                    | Integer                                                                                                                                  | [Time Argument](/paper/dev/command-api/arguments/paper#time-argument)                                       |
+| `time(int mintime)`                    | 整数                                                                                                                                       | [Time Argument](/paper/dev/command-api/arguments/paper#time-argument)                                       |
 | `templateMirror()`                     | [Mirror](jd:paper:org.bukkit.block.structure.Mirror)                                                                                     | [Template Mirror Argument](/paper/dev/command-api/arguments/enums#template-mirror-argument)                 |
 | `templateRotation()`                   | [StructureRotation](jd:paper:org.bukkit.block.structure.StructureRotation)                                                               | [Template Rotation Argument](/paper/dev/command-api/arguments/enums#template-rotation-argument)             |
 | `uuid()`                               | UUID                                                                                                                                     | [UUID Argument](/paper/dev/command-api/arguments/paper#uuid-argument)                                       |

@@ -1,6 +1,6 @@
 ---
-title: Vanilla data files
-description: An explanation of Minecraft's data files.
+title: 原版数据文件
+description: 对 Minecraft 数据文件的说明
 slug: paper/reference/vanilla-data-files
 ---
 
@@ -14,22 +14,22 @@ import WhitelistYML from "/src/config/paper/whitelist-single.yml?raw";
 
 ## `eula.txt`
 
-`eula.txt` is a simple config file that allows you to accept the [EULA](https://aka.ms/MinecraftEULA),
-which is required to run the Minecraft server.
+`eula.txt` 是一个简单的配置文件，允许你接受 [EULA](https://aka.ms/MinecraftEULA)，
+运行 Minecraft 服务器需要接受该协议。
 
 <ConfigNode data={parse(EulaYML)} lang="properties" path={["eula"]} />
 
 ## `banned-ips.json`
 
-`banned-ips.json` is a JSON file that stores IP addresses that are not allowed to connect to the server.
+`banned-ips.json` 是一个 JSON 文件，用于存储不允许连接到服务器的 IP 地址。
 
-:::caution
+:::caution[警告]
 
-This is a data file used by the server, not a configuration file.
+这是一个由服务器使用的数据文件，而不是一个配置文件。
 
-We do not recommend editing this file directly, and this is provided for reference only.
+我们不建议直接编辑此文件，它仅用于参考。
 
-Instead, use the `/ban-ip`, `/pardon-ip`, and `/banlist ips` commands to manage banned-ips.json.
+相反，应使用 `/ban-ip`、`/pardon-ip` 和 `/banlist ips` 命令来管理 `banned-ips.json` 文件。
 
 :::
 
@@ -38,15 +38,15 @@ Instead, use the `/ban-ip`, `/pardon-ip`, and `/banlist ips` commands to manage 
 
 ## `banned-players.json`
 
-`banned-players.json` is a JSON file that stores players that are not allowed to connect to the server.
+`banned-players.json` 是一个 JSON 文件，用于存储不允许连接到服务器的玩家。
 
-:::caution
+:::caution[警告]
 
-This is a data file used by the server, not a configuration file.
+这是一个由服务器使用的数据文件，而不是一个配置文件。
 
-We do not recommend editing this file directly, and this is provided for reference only.
+我们不建议直接编辑此文件，它仅用于参考。
 
-Instead, use the `/ban`, `/pardon`, and `/banlist players` commands to manage banned-players.json.
+相反，应使用 `/ban`、`/pardon` 和 `/banlist players` 命令来管理 `banned-players.json` 文件。
 
 :::
 
@@ -54,17 +54,17 @@ Instead, use the `/ban`, `/pardon`, and `/banlist players` commands to manage ba
 
 ## `ops.json`
 
-`ops.json` is a JSON file that stores player's operator status information.
+`ops.json` 是一个 JSON 文件，用于存储玩家的管理员权限信息。
 
-In Vanilla, this is used as a rudimentary permissions system, and to allow certain player to bypass the player limit.
+在原版 Minecraft 中，它被用作一个简单的权限系统，并允许某些玩家绕过玩家数量限制。
 
-:::caution
+:::caution[警告]
 
-This is a data file used by the server, not a configuration file.
+这是一个由服务器使用的数据文件，而不是一个配置文件。
 
-We do not recommend editing this file directly, and this is provided for reference only.
+我们不建议直接编辑此文件，它仅用于参考。
 
-Instead, use the `/op`, `/deop` commands to manage ops.json.
+相反，应使用 `/op` 和 `/deop` 命令来管理 `ops.json` 文件。
 
 :::
 
@@ -72,18 +72,18 @@ Instead, use the `/op`, `/deop` commands to manage ops.json.
 
 ## `whitelist.json`
 
-`whitelist.json` is a JSON file that stores players that are allowed to connect to the server.
+`whitelist.json` 是一个 JSON 文件，用于存储允许连接到服务器的玩家。
 
-It is used in conjunction with the [`white-list`](/paper/reference/server-properties#white_list) option in `server.properties`.
+它与 `server.properties` 文件中的 [`white-list`](/paper/reference/server-properties#white_list) 选项配合使用。
 
 
-:::caution
+:::caution[警告]
 
-This is a data file used by the server, not a configuration file.
+这是一个由服务器使用的数据文件，而不是一个配置文件。
 
-We do not recommend editing this file directly, and this is provided for reference only.
+我们不建议直接编辑此文件，它仅用于参考。
 
-Instead, use the `/whitelist` command to manage whitelist.json.
+相反，应使用 `/whitelist` 命令来管理 `whitelist.json` 文件。
 
 :::
 

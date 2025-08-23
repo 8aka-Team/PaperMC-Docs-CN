@@ -1,38 +1,38 @@
 ---
-title: Downloads API
-description: Paper provides a downloads API that you can use to access builds.
+title: 下载 API
+description: Paper 提供了一个下载 API，您可以使用它来访问构建
 slug: misc/downloads-api
 ---
 
-PaperMC provides a downloads API to facilitate automated downloads access. Full documentation can be
-found on the [Downloads API Docs](https://fill.papermc.io/swagger-ui/index.html#/).
+PaperMC 提供了一个下载 API，以便于自动化下载访问。
+完整的文档可以在 [下载 API 文档](https://fill.papermc.io/swagger-ui/index.html#/) 中找到。
 
-:::danger
+:::danger[危险]
 
-We emphatically **do not recommend** using unstable builds or auto-updaters within production environments.
+我们强烈**不推荐**在生产环境中使用不稳定的构建版本或自动更新器。
 
 :::
 
-All requests must now include a valid User-Agent header that:
-- Clearly identifies your software or company
-- Is not generic (e.g. curl, wget, or similar defaults)
-- Includes a contact URL or email address (e.g. a homepage, bot info page, or support email)
+所有请求现在必须包含一个有效的 User-Agent 标头，该标头：
+- 清楚地标识您的软件或公司
+- 不是通用的（例如 curl、wget 或类似的默认值）
+- 包含一个联系网址或电子邮件地址（例如主页、机器人信息页面或支持电子邮件）
 
-**Some examples:**
+**一些示例:**
 ```
 mc-image-helper/1.39.11 (https://github.com/itzg/docker-minecraft-server)
 nodecraft/packifier/1.0.0 (staff@nodecraft.com)
 ```
 
-## REST API examples
+## REST API 示例
 
-:::note
+:::note[注意]
 
-We require `jq` to be installed for the examples below. You can install it with `sudo apt-get install jq` on Debian/Ubuntu.
+以下示例需要安装 `jq`。您可以在 Debian/Ubuntu 上通过运行 `sudo apt-get install jq` 来安装它。
 
 :::
 
-### Getting the latest version
+### 获取最新版本
 
 ```shell
 #!/usr/bin/env sh
@@ -43,12 +43,12 @@ USER_AGENT="cool-project/1.0.0 (contact@me.com)"
 LATEST_VERSION=$(curl -s -H "User-Agent: $USER_AGENT" https://fill.papermc.io/v3/projects/${PROJECT} | \
     jq -r '.versions | to_entries[0] | .value[0]')
 
-echo "Latest version is $LATEST_VERSION"
+echo "最新版本是 $LATEST_VERSION"
 ```
 
-This will get the latest available Minecraft version for the given project.
+这将获取给定项目的最新可用 Minecraft 版本。
 
-### Getting the latest stable build number
+### 获取最新稳定版构建编号
 
 ```shell replace
 #!/usr/bin/env sh
@@ -61,15 +61,15 @@ LATEST_BUILD=$(curl -s -H "User-Agent: $USER_AGENT" https://fill.papermc.io/v3/p
   jq -r 'map(select(.channel == "STABLE")) | .[0] | .id')
 
 if [ "$LATEST_BUILD" != "null" ]; then
-  echo "Latest stable build is $LATEST_BUILD"
+  echo "最新稳定构建是 $LATEST_BUILD"
 else
-  echo "No stable build for version $MINECRAFT_VERSION found :("
+  echo "未找到版本 $MINECRAFT_VERSION 的稳定构建 :("
 fi
 ```
 
-This will get the latest stable build for the given project and Minecraft version, if it's available.
+这将获取给定项目和 Minecraft 版本的最新稳定版本，如果可用的话。
 
-### Downloading the latest stable build
+### 正在下载最新稳定版本
 
 ```shell replace
 #!/usr/bin/env sh
@@ -78,41 +78,41 @@ PROJECT="paper"
 MINECRAFT_VERSION="\{LATEST_PAPER_RELEASE}"
 USER_AGENT="cool-project/1.0.0 (contact@me.com)"
 
-# First check if the version exists
+# 首先检查版本是否存在
 VERSION_CHECK=$(curl -s -H "User-Agent: $USER_AGENT" https://fill.papermc.io/v3/projects/${PROJECT}/versions/${MINECRAFT_VERSION}/builds)
 
-# Check if the API returned an error
+# 检查 API 是否返回了错误
 if echo "$VERSION_CHECK" | jq -e '.ok == false' > /dev/null 2>&1; then
-  ERROR_MSG=$(echo "$VERSION_CHECK" | jq -r '.message // "Unknown error"')
-  echo "Error: $ERROR_MSG"
+  ERROR_MSG=$(echo "$VERSION_CHECK" | jq -r '.message // "未知错误"')
+  echo "错误: $ERROR_MSG"
   exit 1
 fi
 
-# Get the download URL directly, or null if no stable build exists
+# 直接获取下载 URL，或者如果不存在稳定版本则返回 null
 PAPERMC_URL=$(curl -s -H "User-Agent: $USER_AGENT" https://fill.papermc.io/v3/projects/${PROJECT}/versions/${MINECRAFT_VERSION}/builds | \
   jq -r 'first(.[] | select(.channel == "STABLE") | .downloads."server:default".url) // "null"')
 
 if [ "$PAPERMC_URL" != "null" ]; then
-  # Download the latest Paper version
+  # 下载最新的 Paper 版本
   curl -o server.jar $PAPERMC_URL
-  echo "Download completed"
+  echo "下载完成"
 else
-  echo "No stable build for version $MINECRAFT_VERSION found :("
+  echo "未找到版本 $MINECRAFT_VERSION 的稳定版本 :("
 fi
 ```
 
-This is the most common use case for the API. It will download the latest stable build for the given project and
-Minecraft version. You should always serve & use the stable builds. Experimental builds are prone to error and
-do not receive support.
+这是API最常见的用例。
+它将下载给定项目和 Minecraft 版本的最新稳定版本。
+您应该始终提供并使用稳定版本。实验性版本容易出错且不提供支持。
 
-## GraphQL API examples
+## GraphQL API 示例
 
-Fill also supports a GraphQL API, which can be accessed at `https://fill.papermc.io/graphql`.
+Fill 还支持一个 GraphQL API，可以通过以下链接访问：`https://fill.papermc.io/graphql`。
 
-A built-in GraphQL playground is available at https://fill.papermc.io/graphiql?path=/graphql.
-Common API tools such as Postman will introspect the API and provide a UI for building queries.
+一个内置的 GraphQL 操作台可在以下地址使用：https://fill.papermc.io/graphiql?path=/graphql。
+像 Postman 这样的常见 API 工具可以对 API 进行内省，并提供用于构建查询的用户界面。
 
-### Getting the latest version
+### 获取最新版本
 ```graphql
 query LatestVersion {
     project(id: "paper") {
@@ -124,7 +124,7 @@ query LatestVersion {
 ```
 
 <details>
-<summary>Example response</summary>
+<summary>示例响应</summary>
 
 ```json
 {
@@ -142,7 +142,7 @@ query LatestVersion {
 
 </details>
 
-### Getting the latest stable build number
+### 获取最新稳定版本号
 ```graphql
 query LatestStableBuild {
     project(id: "paper") {
@@ -156,7 +156,7 @@ query LatestStableBuild {
 ```
 
 <details>
-<summary>Example response</summary>
+<summary>示例响应</summary>
 
 ```json
 {
@@ -178,7 +178,7 @@ query LatestStableBuild {
 
 </details>
 
-### Getting the latest stable build download URL
+### 获取最新稳定版本的下载 URL
 ```graphql
 query LatestStableBuildDownloadURL {
     project(id: "paper") {
@@ -194,7 +194,7 @@ query LatestStableBuildDownloadURL {
 ```
 
 <details>
-<summary>Example response</summary>
+<summary>示例响应</summary>
 
 ```json
 {

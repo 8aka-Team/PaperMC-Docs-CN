@@ -1,16 +1,16 @@
 ---
-title: Permissions
-description: All permissions available in the default Paper server.
+title: 权限
+description: 默认 Paper 服务器中可用的所有权限。
 slug: paper/reference/permissions
 ---
 
-This page lists all permissions that are included in the default Paper server.
+此页面列出了默认 Paper 服务器中包含的所有权限。
 
-## Vanilla command permissions
+## 原版命令权限
 
-The following is a list of permissions for Vanilla commands.
+以下是原版命令的权限列表。
 
-| Command                                                              | Aliases                                               | Permission Node                   | Players Have Permission By Default?                       |
+| 命令                                                                   | 别名                                                    | 权限节点                              | 玩家默认是否有权限？                                                |
 |----------------------------------------------------------------------|-------------------------------------------------------|-----------------------------------|-----------------------------------------------------------|
 | [advancement](https://minecraft.wiki/w/Commands/advancement)         |                                                       | minecraft.command.advancement     | No                                                        |
 | [attribute](https://minecraft.wiki/w/Commands/attribute)             |                                                       | minecraft.command.attribute       | No                                                        |
@@ -96,67 +96,67 @@ The following is a list of permissions for Vanilla commands.
 | [worldborder](https://minecraft.wiki/w/Commands/worldborder)         |                                                       | minecraft.command.worldborder     | No                                                        |
 | [xp](https://minecraft.wiki/w/Commands/xp)                           | <span style="white-space: nowrap;">/experience</span> | minecraft.command.xp              | No                                                        |
 
-## Bukkit command permissions
+## Bukkit 命令权限
 
-The following is a list of permissions for Bukkit commands.
+以下是 Bukkit 命令的权限列表。
 
-| Command | Aliases      | Permission Node        | Players Have Permission By Default? |
-|---------|--------------|------------------------|-------------------------------------|
-| help    | /?           | bukkit.command.help    | Yes                                 |
-| plugins | /pl          | bukkit.command.plugins | Yes                                 |
-| reload  | /rl          | bukkit.command.reload  | No                                  |
-| timings |              | bukkit.command.timings | No                                  |
-| version | /ver, /about | bukkit.command.version | Yes                                 |
+| 命令      | 别名           | 权限节点                   | 玩家默认拥有权限吗？  |
+|---------|--------------|------------------------|-------------|
+| help    | /?           | bukkit.command.help    | Yes         |
+| plugins | /pl          | bukkit.command.plugins | Yes         |
+| reload  | /rl          | bukkit.command.reload  | No          |
+| timings |              | bukkit.command.timings | No          |
+| version | /ver, /about | bukkit.command.version | Yes         |
 
-## Paper command permissions
+## Paper 命令权限
 
-The following is a list of permissions for Paper commands.
+以下是 Paper 命令的权限列表。
 
-| Command | Aliases | Permission Node      | Players Have Permission By Default? |
-|---------|---------|----------------------|-------------------------------------|
-| paper   |         | bukkit.command.paper | No                                  |
+| 命令    | 别名  | 权限节点                 | 玩家默认拥有权限吗？  |
+|-------|-----|----------------------|-------------|
+| paper |     | bukkit.command.paper | No          |
 
-## Vanilla permissions
+## 原版权限
 
-The following is a list of all additional Vanilla permissions.
+以下是所有额外原版权限的列表。
 
-| Permission Node                   | Description                                                                                                           | Players Have Permission By Default? |
-|-----------------------------------|-----------------------------------------------------------------------------------------------------------------------|-------------------------------------|
-| minecraft                         | Gives the user the ability to use all vanilla utilities and commands.                                                 | No                                  |
-| minecraft.admin.command\_feedback | Receive command broadcasts when sendCommandFeedback is true.                                                          | No                                  |
-| minecraft.nbt.place               | Gives the user the ability to place restricted blocks with NBT in creative.                                           | No                                  |
-| minecraft.nbt.copy                | Gives the user the ability to copy NBT in creative.                                                                   | Yes                                 |
-| minecraft.debugstick              | Gives the user the ability to use the debug stick in creative.                                                        | No                                  |
-| minecraft.debugstick.always       | Gives the user the ability to use the debug stick in all game modes.                                                  | No                                  |
-| minecraft.commandblock            | Gives the user the ability to use command blocks.                                                                     | No                                  |
-| minecraft.command.selector        | Gives the user the ability to use [target selectors](https://minecraft.wiki/w/Target_selectors) in command arguments. | No                                  |
+| 权限节点                              | 描述                                                                 | 玩家默认拥有权限吗？ |
+|-----------------------------------|--------------------------------------------------------------------|------------|
+| minecraft                         | 授予用户使用所有原版工具和命令的能力。                                                | No         |
+| minecraft.admin.command\_feedback | 当 sendCommandFeedback 为 true 时接收命令广播。                              | No         |
+| minecraft.nbt.place               | 授予用户在创造模式中放置带有 NBT 的受限方块的能力。                                       | No         |
+| minecraft.nbt.copy                | 授予用户在创造模式中复制 NBT 的能力。                                              | Yes        |
+| minecraft.debugstick              | 授予用户在创造模式中使用调试棒的能力。                                                | No         |
+| minecraft.debugstick.always       | 授予用户在所有游戏模式中使用调试棒的能力。                                              | No         |
+| minecraft.commandblock            | 授予用户使用命令方块的能力。                                                     | No         |
+| minecraft.command.selector        | 授予用户在命令参数中使用[目标选择器](https://minecraft.wiki/w/Target_selectors)的能力。 | No         |
 
-## Bukkit permissions
+## Bukkit 权限
 
-The following is a list of all additional Bukkit permissions.
+以下是所有额外 Bukkit 权限的列表。
 
-| Permission Node        | Description                                          | Players Have Permission By Default? |
-|------------------------|------------------------------------------------------|-------------------------------------|
-| bukkit.broadcast       | Allows the user to receive all broadcast messages    | No                                  |
-| bukkit.broadcast.admin | Allows the user to receive administrative broadcasts | No                                  |
-| bukkit.broadcast.user  | Allows the user to receive user broadcasts           | Yes                                 |
+| 权限节点                   | 描述           | 玩家默认拥有权限吗？ |
+|------------------------|--------------|------------|
+| bukkit.broadcast       | 允许用户接收所有广播消息 | No         |
+| bukkit.broadcast.admin | 允许用户接收管理广播   | No         |
+| bukkit.broadcast.user  | 允许用户接收用户广播   | Yes        |
 
-## Paper permissions
+## Paper 权限
 
-The following is a list of all additional Paper permissions.
+以下是所有额外 Paper 权限的列表。
 
-| Permission Node                        | Description                                                      | Players Have Permission By Default? |
-|----------------------------------------|------------------------------------------------------------------|-------------------------------------|
-| bukkit.command.paper.heap              | Allows the user to run the heap sub command                      | No                                  |
-| bukkit.command.paper.entity            | Allows the user to run the entity sub command                    | No                                  |
-| bukkit.command.paper.reload            | Allows the user to run the reload sub command                    | No                                  |
-| bukkit.command.paper.version           | Allows the user to run the version sub command                   | No                                  |
-| bukkit.command.paper.dumpplugins       | Allows the user to run the dumpplugins sub command               | No                                  |
-| bukkit.command.paper.syncloadinfo      | Allows the user to run the syncloadinfo sub command              | No                                  |
-| bukkit.command.paper.dumpitem          | Allows the user to run the dumpitem sub command                  | No                                  |
-| bukkit.command.paper.mobcaps           | Allows the user to run the mobcaps sub command                   | No                                  |
-| bukkit.command.paper.dumplisteners     | Allows the user to run the dumplisteners sub command             | No                                  |
-| bukkit.command.paper.fixlight          | Allows the user to run the fixlight sub command                  | No                                  |
-| bukkit.command.paper.debug             | Allows the user to run the debug sub command                     | No                                  |
-| paper.antixray.bypass                  | Allows the user to bypass anti-xray if use-permission is enabled | No                                  |
-| paper.bypass-visibility.tab-completion | Allows the user to see hidden players in command tab completions | No                                  |
+| 权限节点                                   | 描述                   | 玩家默认拥有权限吗？ |
+|----------------------------------------|----------------------|------------|
+| bukkit.command.paper.heap              | 允许用户运行堆子命令           | No         |
+| bukkit.command.paper.entity            | 允许用户运行实体子命令          | No         |
+| bukkit.command.paper.reload            | 允许用户运行重新加载子命令        | No         |
+| bukkit.command.paper.version           | 允许用户运行版本子命令          | No         |
+| bukkit.command.paper.dumpplugins       | 允许用户运行转储插件子命令        | No         |
+| bukkit.command.paper.syncloadinfo      | 允许用户运行同步加载信息子命令      | No         |
+| bukkit.command.paper.dumpitem          | 允许用户运行转储物品子命令        | No         |
+| bukkit.command.paper.mobcaps           | 允许用户运行生物容量子命令        | No         |
+| bukkit.command.paper.dumplisteners     | 允许用户运行转储监听器子命令       | No         |
+| bukkit.command.paper.fixlight          | 允许用户运行修复光照子命令        | No         |
+| bukkit.command.paper.debug             | 允许用户运行调试子命令          | No         |
+| paper.antixray.bypass                  | 如果启用了使用权限，允许用户绕反矿透功能 | No         |
+| paper.bypass-visibility.tab-completion | 允许用户在命令自动补全中看到隐藏的玩家  | No         |

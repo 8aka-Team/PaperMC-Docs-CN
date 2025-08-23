@@ -1,176 +1,197 @@
 settings:
   allow-end:
     default: "true"
-    description: Whether to load end-type dimensions.
+    description: >
+      是否开启加载和生成末地维度。
+
+      - 大厅，游戏等不需要末地的子服可以直接关闭以节省内存和 CPU 资源，也可以在 [server.properties](/paper/reference/server-properties/#allow_nether) 中关闭下界
   warn-on-overload:
     default: "true"
-    description: Allows disabling the "Can't keep up!" message.
+    description: 是否开启*瞎几把*提示的 "Can't keep up!" 消息，这个消息的触发频率很高建议直接关闭。
   permissions-file:
     default: permissions.yml
-    description: >-
-      File to load server permissions from. Use of this feature has mostly been
-      replaced by permission plugins.
+    description: >
+      设置加载 bukkit 权限文件的路径。
+
+      - 一些小型服务端不需要使用独立的权限插件，可以直接使用 bukkit 的权限文件来配置权限，服务端运行时输入 /reload 可以重载配置文件（不建议这样做，服务端的重载是很复杂的）也可以重启服务端。
   update-folder:
     default: update
-    description: >-
-      Path to replace new plugin versions with.
-      See [Updating Plugins](/paper/updating#step-2-update-plugins) for more information.
+    description: >
+      设置用于替换新插件版本的路径，需要更新的插件放入该文件夹，服务端重启之后自动替换老版本。
+
+      - 请参阅[更新插件](/paper/updating/#步骤-2更新插件)。
   plugin-profiling:
     default: "false"
-    description: "This option does not operate, as it is disabled by a Paper patch."
+    description: >
+      是否开启 bukkit 自带的 Timings V1 性能分析。
+
+      - 此配置项在 Paper 中不可用，因为它被 Paper 的 Timings V2 和 Spark 功能替代了。
   connection-throttle:
     default: "4000"
-    description: >-
-      How long of a delay to enforce between connections from an IP address.
-      Measured in milliseconds since last attempt.
+    description: 设置在 IP 地址之间强制执行连接间隔的时间长度，以自上次尝试以来的毫秒数为单位进行测量。
   query-plugins:
     default: "true"
-    description: Whether to send plugins in the GS4 Query protocol response.
+    description: 是否在 GS4 查询协议响应中发送插件列表。
   deprecated-verbose:
     default: default
     description: >
-      Whether to warn for use of deprecated events. If "default", the warning is
-      printed if annotated with `@Warning(true)`. Ignored if system property
-      [paper.alwaysPrintWarningState](/paper/reference/system-properties#paperalwaysprintwarningstate)
-      is true.
+      是否对使用已弃用的事件发出警告。
 
-      Valid values are "true", "false", or "default".
+      - 如果设置为 “default”，则当用 `@Warning(true)` 注释时会打印警告。
+        如果系统属性 [paper.alwaysPrintWarningState](/paper/reference/system-properties#paperalwaysprintwarningstate) 为 `true`，则此设置将被忽略。
+
+      - 有效值为 “true”、“false” 或 “default”。
   shutdown-message:
     default: Server closed
     description: |
-      The kick message for the player when the server shuts down.
-      The message is formatted with legacy "§" style formatting.
+      设置服务端关闭时对玩家显示的踢出消息。
+
+      - 该消息采用传统的“§”样式格式化。
+
+      - 中文翻译：服务器已关闭
   minimum-api:
     default: none
     description: >
-      Minimum plugin [api-version](/paper/dev/plugin-yml#api-version). A string
-      containing the server version, from `1.13` to `\{LATEST_PAPER_RELEASE}`. If
-      below this, or not specified, the plugin is prevented from loading.
+      设置插件的最低 [api-version](/paper/dev/plugin-yml#api-version) 要求。
+
+      - 这是一个包含服务端版本的字符串，范围从 `1.13` 到 `\{LATEST_PAPER_RELEASE}`。
+        如果插件的版本低于此值或未指定，则插件将无法加载。
   use-map-color-cache:
     default: "true"
-    description: >-
-      Whether to build and save mappings from RGB colors to the closest map
-      palette color.
+    description: >
+      是否启用为地图构建颜色缓存，该缓存将 RGB 颜色映射到地图调色板中可用的最近颜色。
+
+      - 这使得在渲染地图时能够更快速地进行颜色匹配，从而提高地图渲染的性能。
   world-container:
     default: "N/A"
-    description: >-
-      Specifies the path to the folder where world files are saved. By default, this is the folder where the server JAR file is located.
-      Note: Worlds must be manually moved to this folder for the server to recognize them.
+    description: >
+      设置服务端用来存储世界数据目录的配置项.
 
+      - 默认情况下，这是服务端 JAR 文件所在的文件夹。
+        注意：必须手动将世界文件移动到此文件夹中，服务端才会识别它们。
 spawn-limits:
   monsters:
     default: "70"
     description: >-
-      Set the spawn-limits for monsters. This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_spawn_limits_monster).
+      设置每 Ticks 怪物的生成数量限制。
+
+      - 此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_spawn_limits_monster) 覆盖。
   animals:
     default: "10"
     description: >-
-      Set the spawn-limits for animals. This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_spawn_limits_creature).
+      设置每 Ticks 动物的生成数量限制。
+
+      - 此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_spawn_limits_creature) 覆盖。
   water-animals:
     default: "5"
     description: >-
-      Set the spawn-limits for water animals. This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_spawn_limits_water_creature).
+      设置每 Ticks 水生动物的生成数量限制。
+
+      - 此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_spawn_limits_water_creature) 覆盖。
   water-ambient:
     default: "20"
     description: >-
-      Set the spawn-limits for water ambient mobs. This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_spawn_limits_water_ambient).
+      设置每 Ticks 水生环境生物的生成数量限制。
+
+      - 此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_spawn_limits_water_ambient) 覆盖。
   water-underground-creature:
     default: "5"
     description: >-
-      Set the spawn-limits for water underground creatures. This can be
-      overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_spawn_limits_underground_water_creature).
+      设置每 Ticks 水下地下生物的生成数量限制。
+
+      - 此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_spawn_limits_underground_water_creature) 覆盖。
   axolotls:
     default: "5"
     description: >-
-      Set the spawn-limits for axolotls. This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_spawn_limits_axolotls).
+      设置每 Ticks 美西螈的生成数量限制。
+
+      - 此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_spawn_limits_axolotls) 覆盖。
   ambient:
     default: "15"
     description: >-
-      Set the spawn-limits for ambient mobs. This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_spawn_limits_ambient).
+      设置每 Ticks 环境生物的生成数量限制。
+
+      - 此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_spawn_limits_ambient) 覆盖。
 chunk-gc:
   period-in-ticks:
     default: "600"
     description: >-
-      How long chunks loaded by plugins should last for. Capped by Paper to be
-      20 ticks (1 second).
+      设置加载的区块应持续多少毫秒执行一次 GC 回收，Paper 将其限制为 20 ticks（600 毫秒 = 1 秒）。
 ticks-per:
   animal-spawns:
     default: "400"
     description: >-
-      Number of ticks between each passive creature (animal) spawn attempt.
-      Set to -1 to use [the Vanilla default](https://minecraft.wiki/w/Spawn_limit).
-      This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_creature).
+      设置等待多少次 Ticks 才能尝试生成被动生物（动物）。
+
+      - 设置为 -1 以使用[默认的原版设置](https://minecraft.wiki/w/Spawn_limit)。
+        此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_creature) 覆盖。
   monster-spawns:
     default: "1"
     description: >-
-      Number of ticks between each hostile monster spawn attempt.
-      Set to -1 to use [the Vanilla default](https://minecraft.wiki/w/Spawn_limit).
-      This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_monster).
+      设置等待多少次 Ticks 才能尝试生成敌对怪物。
+
+      - 设置为 -1 以使用[默认的原版设置](https://minecraft.wiki/w/Spawn_limit)。
+        此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_monster) 覆盖。
   water-spawns:
     default: "1"
     description: >-
-      Number of ticks between each water creature spawn attempt.
-      Set to -1 to use [the Vanilla default](https://minecraft.wiki/w/Spawn_limit).
-      This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_water_creature).
+      设置等待多少次 Ticks 才能尝试生成水生生物。
+
+      - 设置为 -1 以使用[默认的原版设置](https://minecraft.wiki/w/Spawn_limit)。
+        此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_water_creature) 覆盖。
   water-ambient-spawns:
     default: "1"
     description: >-
-      Number of ticks between each ambient water mob spawn attempt.
-      Set to -1 to use [the Vanilla default](https://minecraft.wiki/w/Spawn_limit).
-      This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_water_ambient).
+      设置等待多少次 Ticks 才能尝试生成水生环境生物。
+
+      - 设置为 -1 以使用[默认的原版设置](https://minecraft.wiki/w/Spawn_limit)。
+        此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_water_ambient) 覆盖。
   water-underground-creature-spawns:
     default: "1"
     description: >-
-      Number of ticks between each underground water creatures spawn attempt.
-      Set to -1 to use [the Vanilla default](https://minecraft.wiki/w/Spawn_limit).
-      This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_underground_water_creature).
+      设置等待多少次 Ticks 才能尝试生成水下地下生物。
+
+      - 设置为 -1 以使用[默认的原版设置](https://minecraft.wiki/w/Spawn_limit)。
+        此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_underground_water_creature) 覆盖。
   axolotl-spawns:
     default: "1"
     description: >-
-      Number of ticks between each axolotl spawn attempt.
-      Set to -1 to use [the Vanilla default](https://minecraft.wiki/w/Spawn_limit).
-      This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_axolotls).
+      设置等待多少次 Ticks 才能尝试生成美西螈。
+
+      - 设置为 -1 以使用[默认的原版设置](https://minecraft.wiki/w/Spawn_limit)。
+        此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_axolotls) 覆盖。
   ambient-spawns:
     default: "1"
     description: >-
-      Number of ticks between each ambient mob spawn attempt.
-      Set to -1 to use [the Vanilla default](https://minecraft.wiki/w/Spawn_limit).
-      This can be overridden by the
-      [Paper world config](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_ambient).
+      设置等待多少次 Ticks 才能尝试生成环境生物（如蝙蝠等）。
+
+      - 设置为 -1 以使用[默认的原版设置](https://minecraft.wiki/w/Spawn_limit)。
+        此设置可以通过 [Paper 世界配置](/paper/reference/world-configuration#entities_spawning_ticks_per_spawn_ambient) 覆盖。
   autosave:
     default: "6000"
     description: >-
-      Number of ticks between each full auto-save. Set to -1 to disable
-      auto-save.
+      设置每次完整自动保存的间隔时间（单位：毫秒）。
+
+      - 设置为 -1 以禁用自动保存。
+        一些特定的环境可以禁用保存，列如一些游戏服务器，不需要自动保存区块文件的，
 aliases:
   default: now-in-commands.yml
-  description: Static value from converting old versions to the new commands.yml format.
+  description: 设置将旧版本转换为新的 `commands.yml` 格式时的静态值。
 worlds:
-  <world>:
+  <世界名称>:
     biome-provider:
       default: "N/A"
       description: >-
-        The biome provider to use for this world. Plugins must register a `BiomeProvider`
-        to be used here. The format is *plugin-name:extra-parameters* or *plugin-name*
-        if no extra parameters are needed. The plugin name is as defined in the
-        `plugin.yml` or `paper-plugin.yml`.
+        设置为这个世界使用的生物群系提供者。
+
+        - 插件必须注册一个 `BiomeProvider` 才能在此处使用。
+          格式为 *plugin-name:extra-parameters* 或 *plugin-name*（如果不需要额外参数）。
+          插件名称是在 `plugin.yml` 或 `paper-plugin.yml` 中定义的名称。
     generator:
       default: "N/A"
       description: >-
-        The generator to use for this world. Plugins must register a `ChunkGenerator`
-        to be used here. The format is *plugin-name:extra-parameters* or
-        *plugin-name* if no extra parameters are needed. The plugin name is as defined
-        in the `plugin.yml` or `paper-plugin.yml`.
+        设置为这个世界使用的区块生成器。
+
+        - 插件必须注册一个 `ChunkGenerator` 才能在此处使用。
+          格式为 *plugin-name:extra-parameters* 或 *plugin-name*（如果不需要额外参数）。
+          插件名称是在 `plugin.yml` 或 `paper-plugin.yml` 中定义的名称。

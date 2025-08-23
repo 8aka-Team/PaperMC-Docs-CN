@@ -1,15 +1,15 @@
 ---
-title: Custom arguments
-description: Guide on custom arguments.
+title: 自定义参数
+description: 指南：自定义参数。
 slug: paper/dev/command-api/basics/custom-arguments
 ---
 
-Custom arguments are nothing more than a wrapper around existing argument types, which allow a developer to provide an argument with suggestions and reusable parsing in order to
-reduce code repetition.
+自定义参数不过是对现有参数类型的一种封装，
+它允许开发者提供带有建议和可重用解析功能的参数，从而减少代码重复。
 
-## Why would you use custom arguments?
-As example, if you want to have an argument for a player, which is currently online and an operator, you could use a player argument type, add custom suggestions, and throw a
-`CommandSyntaxException` in your `executes(...)` method body. This would look like this:
+## 为什么你会使用自定义参数？
+例如，如果你想有一个参数，用于当前在线且是管理员的玩家，你可以使用玩家参数类型， 添加自定义建议，
+并在你的 `executes(...)` 方法体中抛出一个 `CommandSyntaxException`。这看起来会是这样的：
 
 ```java
 Commands.argument("player", ArgumentTypes.player())
@@ -24,37 +24,37 @@ Commands.argument("player", ArgumentTypes.player())
     .executes(ctx -> {
         final Player player = ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
         if (!player.isOp()) {
-            final Message message = MessageComponentSerializer.message().serialize(text(player.getName() + " is not a server operator!"));
+            final Message message = MessageComponentSerializer.message().serialize(text(player.getName() + " 不是服务器管理员！"));
             throw new SimpleCommandExceptionType(message).create();
         }
 
-        ctx.getSource().getSender().sendRichMessage("Player <player> is an operator!",
+        ctx.getSource().getSender().sendRichMessage("玩家 `<player>` 是管理员！",
             Placeholder.component("player", player.displayName())
         );
         return Command.SINGLE_SUCCESS;
     })
 ```
 
-As you can see, there is a ton of logic not directly involved with the functionality of the command. And if we want to use this same argument on another node, we have to
-copy-paste a lot of code. It goes without saying that this would be incredibly tedious.
+正如你所见，其中包含大量与命令功能本身无关的逻辑。
+如果我们想在另一个节点上使用相同的参数，就需要复制粘贴大量代码。这无疑是极其繁琐的。
 
-The solution to this problem are custom arguments. Before going into detail about them, this is how the argument would look when implemented as a custom argument:
+解决这个问题的方法就是自定义参数。在详细介绍它们之前，这是将该参数实现为自定义参数后的样子：
 
 ```java title="OppedPlayerArgument.java"
 @NullMarked
 public final class OppedPlayerArgument implements CustomArgumentType<Player, PlayerSelectorArgumentResolver> {
 
     private static final SimpleCommandExceptionType ERROR_BAD_SOURCE = new SimpleCommandExceptionType(
-        MessageComponentSerializer.message().serialize(Component.text("The source needs to be a CommandSourceStack!"))
+        MessageComponentSerializer.message().serialize(Component.text("源必须是 `CommandSourceStack`！"))
     );
 
     private static final DynamicCommandExceptionType ERROR_NOT_OPERATOR = new DynamicCommandExceptionType(name -> {
-        return MessageComponentSerializer.message().serialize(Component.text(name + " is not a server operator!"));
+        return MessageComponentSerializer.message().serialize(Component.text(name + " 不是服务器管理员！"));
     });
 
     @Override
     public Player parse(StringReader reader) {
-        throw new UnsupportedOperationException("This method will never be called.");
+        throw new UnsupportedOperationException("这个方法永远不会被调用。");
     }
 
     @Override
@@ -88,25 +88,25 @@ public final class OppedPlayerArgument implements CustomArgumentType<Player, Pla
 }
 ```
 
-At a first look, that seems like way more code than it was needed to just do the logic in the command tree itself. So what is the advantage?
-The answer becomes apparent rather quickly when we look at how the argument is now declared:
+乍一看，这似乎比直接在命令树中实现逻辑所需的代码多得多。
+那么，它的优势在哪里呢？当我们看到参数是如何声明的时候，答案就显而易见了：
 
 ```java
 Commands.argument("player", new OppedPlayerArgument())
     .executes(ctx -> {
         final Player player = ctx.getArgument("player", Player.class);
 
-        ctx.getSource().getSender().sendRichMessage("Player <player> is an operator!",
+        ctx.getSource().getSender().sendRichMessage("玩家 `<player>` 是管理员！",
             Placeholder.component("player", player.displayName())
         );
         return Command.SINGLE_SUCCESS;
     })
 ```
 
-This is way more readable and easy to understand when using a custom argument. And it is reusable! Hopefully, you now have a basic grasp of **why** you should use custom arguments.
+使用自定义参数时，这种方式更易读且易于理解。而且它是可复用的！希望你现在对**为什么**应该使用自定义参数有了基本的了解。
 
-## Examining the `CustomArgumentType` interface
-The interface is declared as follows:
+## 检查 `CustomArgumentType` 接口
+该接口声明如下：
 
 ```java title="CustomArgumentType.java"
 package io.papermc.paper.command.brigadier.argument;
@@ -137,22 +137,22 @@ public interface CustomArgumentType<T, N> extends ArgumentType<T> {
 }
 ```
 
-### Generic types
-There are three generic types present in the interface:
-- `T`: This is the type of the class that is returned when `CommandContext#getArgument` is called on this argument.
-- `N`: The native type of the class which this custom argument extends. Used as the "underlying" argument.
-- `S`: A generic type for the command source. Will usually be a `CommandSourceStack`.
+### 泛型类型
+接口中有三种泛型类型：
+- `T`：这是调用此参数的 `CommandContext#getArgument` 时返回的类的类型。
+- `N`：此自定义参数扩展的类的原生类型。用作“底层”参数。
+- `S`：命令源的泛型类型。通常为 `CommandSourceStack`。
 
-### Methods
-| Method declaration                                                                                                              | Description                                                                                                                                                                   |
-|---------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `ArgumentType<N> getNativeType()`                                                                                               | Here, you declare the underlying argument type, which is used as a base for client-side argument validation.                                                                  |
-| `T parse(final StringReader reader) throws CommandSyntaxException`                                                              | This method is used if `T parse(StringReader, S)` is not overridden. In here, you can run conversion and validation logic.                                                    |
-| `default <S> T parse(final StringReader reader, final S source)`                                                                | If overridden, this method will be preferred to `T parse(StringReader)`. It serves the same purpose, but allows including the source in the parsing logic.                    |
-| `default Collection<String> getExamples()`                                                                                      | This method should **not** be overridden. It is used internally to differentiate certain argument types while parsing.                                                        |
-| `default <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder)` | This method is the equivalent of `RequiredArgumentBuilder#suggests(SuggestionProvider<S>)`. You can override this method in order to send your own suggestions to the client. |
+### 方法
+| 方法声明                                                                                                                            | 描述                                                                                        |
+|---------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
+| `ArgumentType<N> getNativeType()`                                                                                               | 在这里，你声明底层参数类型，它用作客户端参数验证的基础。                                                              |
+| `T parse(final StringReader reader) throws CommandSyntaxException`                                                              | 如果没有覆盖 `T parse(StringReader, S)`，则会使用此方法。在这里，你可以运行转换和验证逻辑。                               |
+| `default <S> T parse(final StringReader reader, final S source)`                                                                | 如果覆盖了此方法，它将优先于 `T parse(StringReader)`。它具有相同的作用，但允许在解析逻辑中包含源。                             |
+| `default Collection<String> getExamples()`                                                                                      | 这个方法**不应该**被覆盖。它在解析时内部用于区分某些参数类型。                                                         |
+| `default <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder)` | 这个方法相当于 `RequiredArgumentBuilder#suggests(SuggestionProvider<S>)`。你可以覆盖此方法，以便向客户端发送自己的建议。 |
 
-### A very basic implementation
+### 一个非常基础的实现
 ```java
 package io.papermc.commands;
 
@@ -177,12 +177,12 @@ public class BasicImplementation implements CustomArgumentType<String, String> {
 }
 ```
 
-Notice the use of `reader.readUnquotedString()`. In addition to allowing existing argument types to parse your argument,
-you can also manually read input. Here, we read an unquoted string, the same as a word string argument type.
+注意这里使用了 `reader.readUnquotedString()`。除了允许现有的参数类型解析你的参数外，你还可以手动读取输入。
+在这里，我们读取一个未加引号的字符串，就像单词字符串参数类型一样。
 
 ## `CustomArgumentType.Converted<T, N>`
-In case that you need to parse the native type to your new type, you can instead use the `CustomArgumentType.Converted` interface.
-This interface is an extension to the `CustomArgumentType` interface, which adds two new, overridable methods:
+如果你需要将原生类型解析为你的新类型，你可以使用 `CustomArgumentType.Converted` 接口。
+这个接口是 `CustomArgumentType` 接口的扩展，它新增了两个可覆盖的方法：
 
 ```java
 T convert(N nativeType) throws CommandSyntaxException;
@@ -192,19 +192,19 @@ default <S> T convert(final N nativeType, final S source) throws CommandSyntaxEx
 }
 ```
 
-These methods work similarly to the `parse` methods, but they instead provide you with the parsed, native type instead of a `StringReader`.
-This reduced the need to manually do string reader operations and instead directly uses the native type's parsing rules.
+这些方法与 `parse` 方法类似，但它们提供的是已解析的原生类型，而不是 `StringReader`。
+这减少了手动进行字符串读取器操作的需要，而是直接使用原生类型的解析规则。
 
-## Error handling during the suggestions phase
-In case you are looking for the ability to make the client show currently typed input as red to display invalid input, it should be noted that this is **not possible** with
-custom arguments. The client is only able to validate arguments it knows about and there is no way to throw a `CommandSyntaxException` during the suggestions phase. The only way to
-achieve that is by using **literals**, but those cannot be modified dynamically during server runtime.
+## 在建议阶段的错误处理
+如果你希望让客户端将当前输入的内容显示为红色以表示无效输入，需要指出的是，这**无法通过自定义参数实现**。
+客户端只能验证它已知的参数类型，而且在建议阶段无法抛出 `CommandSyntaxException`。
+唯一可以实现这一点的方法是使用**字面量**，但它们在服务器运行时无法动态修改。
 
 ![](./assets/ice-cream-invalid.png)
 
-## Example: Ice-cream argument
-A practical example on how you can use a custom argument to your advantage could be a classical enum-type argument. In our case, we use this
-`IceCreamFlavor` enum:
+## 示例：冰淇淋参数
+一个关于如何利用自定义参数的实用示例可以是一个经典的枚举类型参数。
+在我们的例子中，我们使用了这个 `IceCreamFlavor` 枚举：
 
 ```java title="IceCreamFlavor.java"
 package io.papermc.commands.icecream;
@@ -224,7 +224,7 @@ public enum IceCreamFlavor {
 }
 ```
 
-We then can use a converted custom argument type in order to convert between a word string argument and our enum type, like this:
+然后，我们可以使用一个转换型自定义参数类型，将单词字符串参数和我们的枚举类型进行转换，如下所示：
 
 ```java title="IceCreamArgument.java"
 package io.papermc.commands.icecream;
@@ -233,7 +233,7 @@ package io.papermc.commands.icecream;
 public class IceCreamArgument implements CustomArgumentType.Converted<IceCreamFlavor, String> {
 
     private static final DynamicCommandExceptionType ERROR_INVALID_FLAVOR = new DynamicCommandExceptionType(flavor -> {
-        return MessageComponentSerializer.message().serialize(Component.text(flavor + " is not a valid flavor!"));
+        return MessageComponentSerializer.message().serialize(Component.text(flavor + " 这不是一个有效的口味！"));
     });
 
     @Override
@@ -250,7 +250,7 @@ public class IceCreamArgument implements CustomArgumentType.Converted<IceCreamFl
         for (IceCreamFlavor flavor : IceCreamFlavor.values()) {
             String name = flavor.toString();
 
-            // Only suggest if the flavor name matches the user input
+            // 仅当口味名称与用户输入匹配时才提供建议
             if (name.startsWith(builder.getRemainingLowerCase())) {
                 builder.suggest(flavor.toString());
             }
@@ -266,8 +266,8 @@ public class IceCreamArgument implements CustomArgumentType.Converted<IceCreamFl
 }
 ```
 
-Finally, we can just declare our command like this, and we are done! And again, you can just directly get the argument as a ready `IceCreamFlavor`
-type without any additional parsing in the `executes(...)` method, which makes custom argument types very powerful.
+最后，我们可以像这样声明我们的命令，然后就完成了！
+同样，你可以直接在 `executes(...)` 方法中获取参数为 `IceCreamFlavor` 类型，而无需进行任何额外的解析，这使得自定义参数类型非常强大。
 
 ```java
 Commands.literal("icecream")
@@ -275,7 +275,7 @@ Commands.literal("icecream")
         .executes(ctx -> {
             final IceCreamFlavor flavor = ctx.getArgument("flavor", IceCreamFlavor.class);
 
-            ctx.getSource().getSender().sendRichMessage("<b><red>Y<green>U<aqua>M<light_purple>!</b> You just had a scoop of <flavor>!",
+            ctx.getSource().getSender().sendRichMessage("<b><red>Y<green>U<aqua>M<light_purple>!</b> 你刚刚吃了一勺 <flavor>!",
                 Placeholder.unparsed("flavor", flavor.toString())
             );
             return Command.SINGLE_SUCCESS;

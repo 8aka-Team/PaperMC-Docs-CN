@@ -11,7 +11,7 @@ const info = await getCommitInfo(filePath);
   lastUpdated && (
     <p>
       <span class="nowrap">
-        Last updated:
+        最后更新:
         <time datetime={lastUpdated.toISOString()}>
           {lastUpdated.toLocaleDateString(lang, {
             dateStyle: "medium",
@@ -21,8 +21,8 @@ const info = await getCommitInfo(filePath);
       </span>{" "}
       {info && (
         <span class="nowrap">
-          by <a href={info.committer.href}>{info.committer.name}</a>
-          in <a href={`https://github.com/${REPO}/commit/${info.hash}`}>{info.hash.substring(0, 7)}</a>
+          由 <a href={info.committer.href}>{info.committer.name}</a>
+          在 <a href={`https://github.com/${REPO}/commit/${info.hash}`}>{info.hash.substring(0, 7)}</a>
         </span>
       )}
     </p>

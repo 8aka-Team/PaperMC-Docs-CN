@@ -1,25 +1,25 @@
 ---
-title: Custom events
-description: A guide to show you how to add custom events to your plugin.
+title: 自定义事件
+description: 一个指南，展示如何为您的插件添加自定义事件。
 slug: paper/dev/custom-events
 ---
 
-Creating custom events is a great way to add functionality to your plugin.
-This will allow other plugins to listen to your custom events and add functionality to your plugin.
+创建自定义事件是为你的插件添加功能的好方法。
+这将允许其他插件监听你的自定义事件并为你的插件添加功能。
 
-## Creating a custom event
+## 创建自定义事件
 
-To create a custom event, you need to create a class that extends [`Event`](jd:paper:org.bukkit.event.Event).
-Each event requires a [`HandlerList`](jd:paper:org.bukkit.event.HandlerList) that will contain all the listeners that are listening to that event.
-The only exception to this requirement is when you have an event class that cannot be fired, but serves as a parent for other events instead.
-An example of this is [`BlockPistonEvent`](jd:paper:org.bukkit.event.block.BlockPistonEvent), which cannot be listened to directly.
+要创建自定义事件，你需要创建一个继承自[`Event`](jd:paper:org.bukkit.event.Event)的类。
+每个事件都需要一个[`HandlerList`](jd:paper:org.bukkit.event.HandlerList)，它将包含所有正在监听该事件的监听器。
+唯一例外的情况是，当你有一个事件类不能被触发，而是作为其他事件的父类时。
+例如，[`BlockPistonEvent`](jd:paper:org.bukkit.event.block.BlockPistonEvent)不能直接被监听。
 
-This list is used to call the listeners when the event is called.
+当事件被调用时，这个列表用于调用监听器。
 
-:::note
+:::note[注意]
 
-Although `getHandlerList` is not inherited from `Event`, you need to add a static `getHandlerList()` method and return the `HandlerList` for your event.
-Both methods are required for your event to work.
+尽管 `getHandlerList` 并不是从 `Event` 继承的，但你需要添加一个静态的 `getHandlerList()` 方法，
+并返回你事件的 `HandlerList`。这两种方法都是你的事件能够正常工作的必要条件。
 
 :::
 
@@ -39,8 +39,8 @@ public class PaperIsCoolEvent extends Event {
 }
 ```
 
-Now that we have created our event, we can add some functionality to it.
-Perhaps this will contain a message that will be broadcast to the server when the event is called.
+现在我们已经创建了我们的事件，我们可以给它添加一些功能。
+也许这将包含一条消息，当事件被调用时，这条消息将被广播到服务器上。
 
 ```java title="PaperIsCoolEvent.java"
 public class PaperIsCoolEvent extends Event {
@@ -71,9 +71,9 @@ public class PaperIsCoolEvent extends Event {
 }
 ```
 
-## Calling the event
+## 调用事件
 
-Now that we have created our event, we can call it.
+现在我们已经创建了我们的事件，我们可以调用它。
 
 ```java title="ExamplePlugin.java"
 public class ExamplePlugin extends JavaPlugin {
@@ -81,19 +81,19 @@ public class ExamplePlugin extends JavaPlugin {
     // ...
 
     public void callCoolPaperEvent() {
-        PaperIsCoolEvent coolEvent = new PaperIsCoolEvent(Component.text("Paper is cool!"));
+        PaperIsCoolEvent coolEvent = new PaperIsCoolEvent(Component.text("Paper 很酷！"));
         coolEvent.callEvent();
-        // Plugins could have changed the message from inside their listeners here. So we need to get the message again.
-        // This event structure allows for other plugins to change the message to their taste.
-        // Like, for example, a plugin that adds a prefix to all messages.
+        // 插件可能已经在它们的监听器中更改了消息。因此，我们需要再次获取消息。
+        // 这种事件结构允许其他插件根据自己的喜好更改消息。
+        // 例如，一个为所有消息添加前缀的插件。
         Bukkit.broadcast(coolEvent.getMessage());
     }
 }
 ```
 
-## Implementing cancellation
+## 实现取消
 
-If you want to allow your event to be cancelled, you can implement the `Cancellable` interface.
+如果你想允许你的事件被取消，你可以实现 `Cancellable` 接口。
 
 ```java title="PaperIsCoolEvent.java"
 public class PaperIsCoolEvent extends Event implements Cancellable {
@@ -116,7 +116,7 @@ public class PaperIsCoolEvent extends Event implements Cancellable {
 }
 ```
 
-Now, when the event is called, you can check if it is cancelled and act accordingly.
+现在，当事件被调用时，你可以检查它是否被取消，并相应地采取行动。
 
 ```java title="ExamplePlugin.java"
 public class ExamplePlugin extends JavaPlugin {
@@ -124,7 +124,7 @@ public class ExamplePlugin extends JavaPlugin {
     // ...
 
     public void callCoolPaperEvent() {
-        PaperIsCoolEvent coolEvent = new PaperIsCoolEvent(Component.text("Paper is cool!"));
+        PaperIsCoolEvent coolEvent = new PaperIsCoolEvent(Component.text("Paper 很酷！"));
         coolEvent.callEvent();
         if (!coolEvent.isCancelled()) {
             Bukkit.broadcast(coolEvent.getMessage());
@@ -133,9 +133,9 @@ public class ExamplePlugin extends JavaPlugin {
 }
 ```
 
-When an event is cancellable, [`Event#callEvent()`](jd:paper:org.bukkit.event.Event#callEvent())
-will return false if the event was cancelled. This allows you to directly use `callEvent` in your `if` statement,
-instead of having to check [`Cancellable#isCancelled()`](jd:paper:org.bukkit.event.Cancellable#isCancelled()) manually.
+当一个事件可以被取消时，如果事件被取消，[`Event#callEvent()`](jd:paper:org.bukkit.event.Event#callEvent()) 将返回 `false`。
+这允许你直接在 `if` 语句中使用 `callEvent`，
+而无需手动检查 [`Cancellable#isCancelled()`](jd:paper:org.bukkit.event.Cancellable#isCancelled())。
 
 ```java title="ExamplePlugin.java"
 public class ExamplePlugin extends JavaPlugin {
@@ -143,8 +143,8 @@ public class ExamplePlugin extends JavaPlugin {
     // ...
 
     public void callCoolPaperEvent() {
-        PaperIsCoolEvent coolEvent = new PaperIsCoolEvent(Component.text("Paper is cool!"));
-        if (coolEvent.callEvent()) { // Directly get the output from callEvent
+        PaperIsCoolEvent coolEvent = new PaperIsCoolEvent(Component.text("Paper 很酷！"));
+        if (coolEvent.callEvent()) { // 直接从 `callEvent` 获取输出
             Bukkit.broadcast(coolEvent.getMessage());
         }
     }

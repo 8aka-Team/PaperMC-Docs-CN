@@ -1,30 +1,30 @@
 ---
-title: Registration
-description: A guide to registering Brigadier commands.
+title: 注册
+description: 注册 Brigadier 指令指南
 slug: paper/dev/command-api/basics/registration
 ---
 
-In the previous chapters, we have taken an extensive look at how Brigadier works, but never actually elaborated on how to register commands. So we will be doing that right here!
+在前面的章节中，我们已经详细研究了 Brigadier 的工作原理，但从未真正阐述如何注册命令。所以我们将在这里进行说明！
 
-## The LifecycleEventManager
-In Paper, Brigadier commands are registered using the `LifecycleEventManager`. This is a special class which allows us to register commands in such a way that we never have to
-worry about handling various server reload events, like `/reload`. Instead, whatever we register using the `LifecycleEventManager`, will be reregistered each time it is required.
+## 生命周期事件管理器
+在 Paper 中，Brigadier 命令是通过 `LifecycleEventManager` 注册的。
+这是一个特殊的类，允许我们以一种方式注册命令，这样我们就不必担心处理各种服务器重载事件，例如 `/reload`。相反，我们使用 `LifecycleEventManager` 注册的任何内容，每次需要时都会重新注册。
 
-But how does one get access to a `LifecycleEventManager` capable of registering commands? There are two "contexts" in which you can use a LifecycleEventManager. The first one,
-and preferred one, is in the `PluginBootstrap` class of our plugin.
+但是，如何获取一个能够注册命令的 `LifecycleEventManager` 呢？
+有两种“上下文”可以在其中使用 `LifecycleEventManager`。第一种，也是推荐的方式，是在我们插件的 `PluginBootstrap` 类中。
 
-### Registering inside a plugin bootstrapper
+### 在插件启动器中注册
 
-:::note
+:::note[注意]
 
-This requires you to use a [`paper-plugin.yml` plugin](/paper/dev/getting-started/paper-plugins).
+这需要你使用一个 [`paper-plugin.yml` plugin](/paper/dev/getting-started/paper-plugins) 插件。
 
-If you are not using `paper-plugin.yml`, you can instead [register your commands inside your plugin's main class](#registering-inside-a-plugin-main-class).
+如果你没有使用`paper-plugin.yml`，你可以[在插件的主类中注册命令](#registering-inside-a-plugin-main-class)。
 
 :::
 
-We can get access to a `LifecycleEventManager` capable of registering commands by running `context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {})`
-inside our bootstrap method, like this:
+我们可以通过在启动方法中运行 `context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {})`
+来获取一个能够注册命令的 `LifecycleEventManager`，如下所示：
 
 ```java title="CustomPluginBootstrap.java"
 public class CustomPluginBootstrap implements PluginBootstrap {
@@ -32,16 +32,16 @@ public class CustomPluginBootstrap implements PluginBootstrap {
     @Override
     public void bootstrap(BootstrapContext context) {
         context.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            // register your commands here ...
+            // 在这里注册你的命令……
         });
     }
 }
 ```
 
-A quick recap on what all of this means:
-By running `context.getLifecycleManager()`, we get a `LifecycleEventManager<BootstrapContext>` object. We can call
-`LifecycleEventManager#registerEventHandler(LifecycleEventType, LifecycleEventHandler)` on that to get our correct lifecycle event. The first parameter declares
-the lifecycle event type we want to register stuff for, the second parameter is an interface that looks like this:
+快速回顾一下所有这些内容的含义：
+通过运行 `context.getLifecycleManager()`，我们获得一个 `LifecycleEventManager<BootstrapContext>` 对象。
+我们可以在其上调用 `LifecycleEventManager#registerEventHandler(LifecycleEventType, LifecycleEventHandler)` 来获取正确的生命周期事件。
+第一个参数声明我们想要注册内容的生命周期事件类型，第二个参数是一个接口，如下所示：
 
 ```java
 @FunctionalInterface
@@ -50,17 +50,17 @@ public interface LifecycleEventHandler<E extends LifecycleEvent> {
 }
 ```
 
-Due to it being a functional interface, we can, instead of implementing it, just pass in a lambda which has one parameter, `E`, and no return value. The `E` generic type is a
-`ReloadableRegistrarEvent<Commands>`, which is thus also the type of our lambda parameter.
+由于它是一个函数式接口，我们可以不实现它，而是传递一个只有一个参数 `E` 且没有返回值的 lambda 表达式。
+`E` 泛型类型是 `ReloadableRegistrarEvent<Commands>`，因此也是我们 lambda 参数的类型。
 
-The `ReloadableRegistrarEvent<Commands>` class has two methods: `ReloadableRegistrarEvent.Cause cause()` and `Commands registrar()`. The more relevant method for us is
-the `registrar` one. With it we can register our commands.
+`ReloadableRegistrarEvent<Commands>` 类有两个方法：`ReloadableRegistrarEvent.Cause cause()` 和 `Commands registrar()`。
+对我们来说更相关的方法是 `registrar` 方法。通过它可以注册我们的命令。
 
 
-### Registering inside a plugin main class
-Getting access to a `LifecycleEventManager` for commands inside our plugin's main class is very similar to how you access it inside the PluginBootstrap class, with the difference
-that instead of getting the `LifecycleEventManager` using the `BootstrapContext` provided to us in the bootstrap method of our PluginBootstrap class, we can just retrieve it using
-`JavaPlugin#getLifecycleManager`.
+### 在插件主类中注册
+在插件的主类中获取用于命令的`LifecycleEventManager`，
+与在`PluginBootstrap`类的启动方法中通过提供的`BootstrapContext`获取`LifecycleEventManager`非常相似，
+不同之处在于，我们可以直接使用`JavaPlugin#getLifecycleManager`来获取它，而不需要依赖`PluginBootstrap`类中提供的`BootstrapContext`。
 
 ```java title="PluginMainClass.java"
 public final class PluginMainClass extends JavaPlugin {
@@ -68,23 +68,23 @@ public final class PluginMainClass extends JavaPlugin {
     @Override
     public void onEnable() {
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            // register your commands here ...
+            // 在这里注册你的命令……
         });
     }
 }
 ```
 
-This follows the same concept as the PluginBootstrap one, just that instead of being given a `LifecycleEventManager<BootstrapContext>`, we are instead given a
-`LifecycleEventManager<Plugin>`. This doesn't really matter for our use cases, but you might as well be aware of that.
-The rest of the methods works the exact same way as with the `PluginBootstrap` parameterized `LifecycleEventManager`.
+这与 `PluginBootstrap` 中的概念相同，只是我们得到的不是 `LifecycleEventManager<BootstrapContext>`，而是 `LifecycleEventManager<Plugin>`。
+这对我们用例来说并不重要，但你最好知道这一点。
+其余方法的工作方式与 `PluginBootstrap` 参数化的 `LifecycleEventManager` 完全相同。
 
-## Registering commands using the Commands class
-Now that we have access to the instance of a `Commands` class via `commands.registrar()` in our event handler, we have access to a few overloads of the `Commands#register`
-method.
+## 使用` Commands` 类注册命令
+现在我们已经通过事件处理器中的 `commands.registrar()` 获得了 `Commands` 类的实例，
+我们可以使用 `Commands#register` 方法的几种重载版本。
 
-### Registering a LiteralCommandNode
-Most of the time, you will be using a `LiteralArgumentBuilder` to build up your command tree. In order to retrieve a `LiteralCommandNode` from that object, we need to call the
-`LiteralArgumentBuilder#build()` method on it:
+### 注册 `LiteralCommandNode`
+大多数情况下，你会使用 `LiteralArgumentBuilder` 来构建命令树。
+为了从该对象中获取 `LiteralCommandNode`，我们需要调用它的 `LiteralArgumentBuilder#build()` 方法：
 
 ```java
 LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal("testcmd")
@@ -94,7 +94,7 @@ LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal("testcmd")
 LiteralCommandNode<CommandSourceStack> buildCommand = command.build();
 ```
 
-Or in short:
+简而言之：
 
 ```java
 LiteralCommandNode<CommandSourceStack> buildCommand = Commands.literal("testcmd")
@@ -103,8 +103,8 @@ LiteralCommandNode<CommandSourceStack> buildCommand = Commands.literal("testcmd"
     .build();
 ```
 
-Now that we have retrieved our `LiteralCommandNode`, we can register it. For that we have multiple overloads, which optionally allow us to set aliases and/or the description.
-Registering our "testcmd" might look like this:
+现在我们已经获取了 `LiteralCommandNode`，我们可以注册它。
+为此，我们有多个重载方法，可以选择性地设置别名和/或描述。注册我们的 “testcmd” 可能如下所示：
 
 ```java
 this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
@@ -112,12 +112,12 @@ this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, comman
 });
 ```
 
-### Registering a BasicCommand
-A [`BasicCommand`](jd:paper:io.papermc.paper.command.brigadier.BasicCommand) is a Bukkit-like way of defining commands. Instead of building up a command tree,
-we allow all user input and retrieve the arguments as a simple array of strings. This type of commands is particularly useful for very simple, text based commands,
-like a `/broadcast` command. You can read up on more details about basic commands [here](/paper/dev/command-api/misc/basic-command).
+### 注册 `BasicCommand`
+`BasicCommand` 是一种类似 Bukkit 的定义命令的方式。我们不是构建命令树，而是允许所有用户输入，并将参数作为简单的字符串数组检索。
+这种类型的命令特别适用于非常简单、基于文本的命令，例如 `/broadcast` 命令。
+你可以在这里[这里](/paper/dev/command-api/misc/basic-command)了解更多关于基本命令的详细信息。
 
-Assuming you already have your `BasicCommand` object, we can register it like this:
+假设你已经有了你的 `BasicCommand` 对象，我们可以这样注册它：
 
 ```java
 final BasicCommand basicCommand = ...;
@@ -127,7 +127,7 @@ this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, comman
 });
 ```
 
-Similar to the `LiteralCommandNode`, we also have overloads for setting various additional information for our command.
+与 `LiteralCommandNode` 类似，我们也有重载方法来设置命令的各种附加信息。
 
-## Further reference
-* For a quick reference on the LifecycleEventManager, click [here](/paper/dev/lifecycle).
+## 进一步参考
+* 关于 `LifecycleEventManager` 的快速参考，请点击[这里](/paper/dev/lifecycle)。

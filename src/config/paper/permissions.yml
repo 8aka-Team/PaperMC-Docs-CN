@@ -1,28 +1,28 @@
 <permission>:
   default:
     description: |
-      Who this permission is granted to by default.
+      默认授予此权限的对象。
 
-      "true": all players.
+      "true": 所有玩家。
 
-      "false": no players.
+      "false": 没有玩家。
 
-      "op": only operators (also aliased as "isop", "operator", "isoperator", "admin", and "isadmin").
+      "op": 仅限管理员（别名为“isop”、“operator”、“isoperator”、“admin”和“isadmin”）。
 
-      "!op": all players except operators (also aliased as "notop", "!operator", "notoperator", "!admin", "notadmin").
+      "!op": 所有玩家，除了管理员（别名为“notop”、“!operator”、“notoperator”、“!admin”、“notadmin”）。
     default: "op"
   children:
     header:
-      message: A list (not shown) or a map (shown below) of child permissions.
+      message: 一个子权限的列表（未显示）或一个子权限的映射（如下所示）。
     <permission>:
       description: |
-        A child permission of this permission.
+        这个权限的一个子权限。
 
-        The value is either a boolean, where false inverts the whether the permission would be granted to this.
+        该值是一个布尔值，其中 `false` 表示反转是否授予此权限。
 
-        or a top level permission entry,
-        except the default is this parent permissions default value,
-        and any child permissions of the newly created permission are bubbled up to the top level.
+        或者是一个顶级权限条目，
+        除了默认值是此父权限的默认值，
+        并且新创建的权限的任何子权限都会被提升到顶级。
       default: "true"
   description_:
-    description: The description of the permission.
+    description: 该权限的描述。

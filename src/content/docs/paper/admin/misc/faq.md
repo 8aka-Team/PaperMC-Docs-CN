@@ -1,13 +1,13 @@
 ---
-title: Frequently asked questions
-description: Questions frequently asked by our community, answered by us!
+title: 常见问题
+description: 由我们社区经常提出的问题，由我们解答！
 slug: paper/faq
 ---
 
-## Unsupported Java detected, what do I do?!
+## 检测到不支持的 Java 版本，我该怎么办？
 
-Unsupported, early-access, or internal versions of Java are often missing features, have known issues or be straight up broken.
-As such, we cannot provide support for servers running such versions.
-You should install a supported version of Java as explained [here](/misc/java-install).
+不支持的、早期访问的或内部版本的 Java 通常缺少功能、存在已知问题，或者直接就是坏的。
+因此，我们无法为运行这些版本的服务器提供支持。
+你应该按照[这里](/misc/java-install)的说明安装受支持的 Java 版本。
 
-If you still wish to continue, knowing that you are on your own and will receive NO support, you can disable the check with a system property, as explained [here](/paper/reference/system-properties#paperignorejavaversion).
+如果你仍然希望继续，知道你将独自一人且不会得到任何支持，你可以通过系统属性禁用此检查，具体方法请参阅[这里](/paper/reference/system-properties#paperignorejavaversion)。

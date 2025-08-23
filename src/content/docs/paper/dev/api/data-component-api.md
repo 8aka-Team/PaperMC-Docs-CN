@@ -1,133 +1,133 @@
 ---
-title: Data components
-description: A guide to the ItemStack data component API.
+title: 数据组件
+description: 关于 ItemStack 数据组件 API 的指南。
 slug: paper/dev/data-component-api
 sidebar:
   badge:
-    text: Experimental
+    text: 实验性
     variant: danger
 ---
 
-:::danger[Experimental]
+:::danger[实验性]
 
-The data component API is currently experimental, and is additionally subject to change across versions.
+数据组件 API 当前处于实验阶段，并且在不同版本之间可能会发生变化。
 
 :::
 
-The data component API provides a version-specific interface for accessing and manipulating item data that is otherwise not representable by the `ItemMeta` API.
-Through this API, you can read and modify properties of an item, so called data components, in a stable and object-oriented manner.
+数据组件 API 提供了一个版本特定的接口，用于访问和操作无法通过 `ItemMeta` API 表示的物品数据。
+通过这个 API，你可以以稳定且面向对象的方式读取和修改物品的属性，这些属性被称为数据组件。
 
 
-## Introduction
+## 介绍
 
-### What is a data component?
-A data component represents a piece of data associated with an item. Vanilla items can have properties such as custom model data, container loot contents, banner patterns, or potion effects.
+### 什么是数据组件？
+数据组件表示与物品相关联的一段数据。原版物品可以有一些属性，比如自定义模型数据、容器内的战利品内容、旗帜图案，或者药水效果。
 
-### Structure
-![Component Structure](./assets/data-component-api-tree.png)
-For implementation details, [click here](#example-cool-sword).
+### 结构
+![组件结构](./assets/data-component-api-tree.png)
+关于实现细节，[点击这里](#example-cool-sword)。
 
-#### The prototype (default values)
-Items come with an initial set of components that we call the prototype.
-These components are defined on the `ItemType` of the `ItemStack`. They control the base behavior
-of the item, representing a brand new item without any modifications.
+#### 原型（默认值）
+物品附带了一组初始组件，我们称之为原型。
+这些组件定义在 `ItemStack` 的 `ItemType` 上。
+它们控制物品的基本行为，代表一个全新的、没有任何修改的物品。
 
-The prototype gives items their initial properties such as if they are food, a tool, a weapon, etc.
+原型赋予物品它们的初始属性，例如它们是否是食物、工具、武器等。
 
-#### The patch
-The patch represents the modifications made to the item. This may include giving it a custom name,
-modifying the enchantments, damaging it, or adding to the lore. The patch is applied ontop of the prototype,
-allowing us to make modifications to an item.
+#### 补丁
+补丁代表对物品所做的修改。
+这可能包括给它一个自定义名称、修改附魔、损坏它，或者添加到物品描述中。
+补丁被应用在原型之上，允许我们对物品进行修改。
 
-The patch also allows for removing components that were previously in the prototype. This is shown by
-the `minecraft:tool` example in red. We are removing this component, so this sword item will no longer
-break cobweb or other sword blocks faster.
+补丁还允许移除原型中之前存在的组件。
+这在红色的 `minecraft:tool` 示例中有所展示。
+我们正在移除这个组件，所以这把剑物品将不再更快地破坏蛛网或其他剑可以破坏的方块。
 
-We can also add new components, as seen from the new `minecraft:enchantment_glint_override` component, which
-allows us to make it appear as if it were enchanted.
-
-
-## Differences compared to `ItemMeta`
-
-The `ItemMeta` API provides methods to modify `ItemStack`s in a hierarchical manner, such as `CompassMeta`, which allows you to modify the components of a `minecraft:compass`.
-While `ItemMeta` is still very useful, it does not properly represent the prototype/patch relationship that Minecraft items use.
-
-### Key differences
-
-#### Expanded data model
-The data component API exposes a much broader and more detailed set of item properties than `ItemMeta`.
-Data components allow the entire item to be modified in a fashion that better represents how Minecraft does item modifications.
-
-#### Version-specific
-The data component API is designed to adapt to version changes. The data component API may experience breaking changes on version updates as Minecraft makes changes to components.
-Backwards compatibility is not promised.
-
-Because `ItemMeta` is represented in a different format, breaking changes made to components by Mojang may not result in breaking changes to `ItemMeta`.
-
-#### Builders and immutability
-Many complex data components require a builder approach for construction and editing. All data types that are returned by the api are also immutable, so they will not directly modify the component.
-
-#### Patch-only
-`ItemMeta` only represents the patch of an `ItemStack`. This means that you cannot get the original properties (prototype) of the `ItemStack`, such as its default
-durability or default attributes.
-
-#### No snapshots
-Currently, `ItemMeta` represents a **snapshot** of an `ItemStack`'s patched map.
-This is expensive as it requires the entire patch to be read, even values that you may not be using.
-
-The data component API integrates directly with `ItemStack`. Although conceptually similar, the data component API focuses on explicit, strongly typed data retrieval and updates without this additional overhead.
-
-### When should I use `DataComponents` or `ItemMeta`?
-
-You would want to use `ItemMeta` if you:
-- Are doing only simple changes to `ItemStack`s
-- Want to keep cross-version compatibility with your plugin
-
-You would want to use data components if you:
-- Want more complicated `ItemStack` modifications
-- Do not care about cross-version compatibility
-- Want to access default (prototype) values
-- Want to remove components from an `ItemStack`'s prototype
+我们也可以添加新的组件，正如从新的 `minecraft:enchantment_glint_override` 组件中看到的那样，
+它允许我们让它看起来像是附魔了。
 
 
-## Basic usage
-The data component API will fetch values according to the behavior seen in game. So, if the patch removes the `minecraft:tool` component,
-trying to get that component will return null.
+## 与 `ItemMeta` 的差异
 
-### Retrieving a prototype value
+`ItemMeta` API 提供了一种层次化的方式来修改 `ItemStack`，例如 `CompassMeta`，它允许你修改 `minecraft:compass` 的组件。
+尽管 `ItemMeta` 仍然非常有用，但它并不能很好地表示 Minecraft 物品所使用的原型/补丁关系。
+
+### 关键差异
+
+#### 扩展的数据模型
+数据组件 API 暴露了比 `ItemMeta` 更广泛、更详细的物品属性集合。
+数据组件允许以一种更接近 Minecraft 修改物品的方式来修改整个物品。
+
+#### 版本特定
+数据组件 API 被设计为能够适应版本变化。
+随着 Minecraft 对组件进行更改，数据组件 API 可能在版本更新时出现破坏性变化。不保证向后兼容性。
+
+由于 `ItemMeta` 以不同的格式表示，Mojang 对组件所做的破坏性更改可能不会导致 `ItemMeta` 的破坏性更改。
+
+#### 构建器和不可变性
+许多复杂的数据组件需要使用构建器方法来进行构建和编辑。所有由API返回的数据类型也是不可变的，因此它们不会直接修改组件。
+
+#### 仅补丁
+`ItemMeta` 只表示 `ItemStack` 的补丁。
+这意味着你无法获取 `ItemStack` 的原始属性（原型），例如它的默认耐久度或默认属性。
+
+#### 没有快照
+目前，`ItemMeta` 表示 `ItemStack` 补丁映射的**快照**。
+这是昂贵的，因为它需要读取整个补丁，即使你可能并不使用其中的某些值。
+
+数据组件 API 直接与 `ItemStack` 集成。尽管概念上相似，但数据组件 API 关注的是明确的、强类型的检索和更新，而不带有这种额外的开销。
+
+### 我应该使用 `DataComponents` 还是 `ItemMeta`？
+
+如果你：
+- 只对 `ItemStack` 进行简单的更改
+- 希望你的插件保持跨版本兼容性，那么你应该使用 `ItemMeta`。
+
+如果你：
+- 想要进行更复杂的 `ItemStack` 修改
+- 不关心跨版本兼容性
+- 想要访问默认（原型）值
+- 想要从 `ItemStack` 的原型中移除组件，那么你应该使用数据组件。
+
+
+## 基本用法
+数据组件 API 将根据游戏中看到的行为来获取值。
+因此，如果补丁移除了 `minecraft:tool` 组件，尝试获取该组件将返回 `null`。
+
+### 获取原型值
 
 ```java
-// Get the default durability of diamond sword
+// 获取钻石剑的默认耐久度
 int defaultDurability = Material.DIAMOND_SWORD.getDefaultData(DataComponentTypes.MAX_DAMAGE)
 ```
 
-### Checking for a data component
+### 检查数据组件
 
 ```java
-// Check if this item has a custom name data component
+// 检查这个物品是否有自定义名称数据组件
 boolean hasCustomName = stack.hasData(DataComponentTypes.CUSTOM_NAME);
-logger.info("Has custom name? " + hasCustomName);
+logger.info("是否有自定义名称？ " + hasCustomName);
 ```
 
-### Reading a valued data component
+### 读取有值的数据组件
 
 ```java
-// The damage of an item can be null, so we require a null check
+// 物品的伤害值可以是`null`，因此我们需要进行空值检查
 Integer damageValue = stack.getData(DataComponentTypes.DAMAGE);
 if (damageValue != null) {
-    logger.info("Current damage: " + damageValue);
+    logger.info("当前伤害: " + damageValue);
 } else {
-    logger.info("This item doesn't have a damage component set.");
+    logger.info("这个物品没有设置伤害组件。");
 }
 
-// Certain components, like the max stack size, will always be present on an item
+// 某些组件，比如最大堆叠数量，总是会出现在一个物品上
 Integer maxStackSize = stack.getData(DataComponentTypes.MAX_STACK_SIZE);
 ```
 
-### Setting a valued data component
+### 设置有值的数据组件
 
 ```java
-// Set a custom model data value on this item
+// 为这个物品设置一个自定义模型数据值
 stack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelData()
     .addFloat(0.5f)
     .addFlag(true)
@@ -135,95 +135,95 @@ stack.setData(DataComponentTypes.CUSTOM_MODEL_DATA, CustomModelData.customModelD
 );
 ```
 
-### Removing or resetting a data component
+### 移除或重置数据组件
 
 ```java
-// Remove an existing component (e.g. tool)
+// 移除一个已存在的组件（例如工具）
 stack.unsetData(DataComponentTypes.TOOL);
 
-// Reset a component to the default (prototype) value for its item type (e.g. max stack size)
+// 将一个组件重置为其物品类型的默认（原型）值（例如最大堆叠数量）
 stack.resetData(DataComponentTypes.MAX_STACK_SIZE);
 ```
 
-### Non-valued data components
+### 无值数据组件
 
-Some components are only flags and don't carry any sort of value:
+一些组件只是标志，不携带任何值：
 
 ```java
-// Make the item a glider to be used like elytra (combined with the equippable component)
+// 使物品成为一个滑翔翼，像鞘翅一样使用（结合可装备组件）
 stack.setData(DataComponentTypes.GLIDER);
 
-// Remove the glider flag
+// 移除滑翔翼标志
 stack.unsetData(DataComponentTypes.GLIDER);
 ```
 
-## Advanced usage with builders
+## 使用构建器的高级用法
 
-Many data components have complex structures that require builders.
+许多数据组件具有复杂的结构，需要使用构建器。
 
-### Modifying prototype component values
+### 修改原型组件值
 
 ```java
 ItemStack helmet = ItemStack.of(Material.DIAMOND_HELMET);
-// Get the equippable component for this item, and make it a builder.
-// Note: Not all types have .toBuilder() methods
-// This is the prototype value of the diamond helmet.
+// 获取这个物品的可装备组件，并将其转换为构建器。
+// 注意：并非所有类型都有`.toBuilder()`方法。
+// 这是钻石头盔的原型值。
 Equippable.Builder builder = helmet.getData(DataComponentTypes.EQUIPPABLE).toBuilder();
 
-// Make the helmet look like netherite
-// We get the prototype equippable value from NETHERITE_HELMET
+// 让头盔看起来像下界合金头盔。
+// 我们从`NETHERITE_HELMET`获取原型可装备值。
 builder.assetId(Material.NETHERITE_HELMET.getDefaultData(DataComponentTypes.EQUIPPABLE).assetId());
-// And give it a spooky sound when putting it on
+// 并且在戴上它时发出一种恐怖的声音
 builder.equipSound(SoundEventKeys.ENTITY_GHAST_HURT);
 
-// Set our new item
+// 设置我们的新物品
 helmet.setData(DataComponentTypes.EQUIPPABLE, builder);
 ```
-This will create a diamond helmet that looks like a netherite helmet and plays a spooky ghast sound when equipped.
+这将创建一个看起来像下界合金头盔的钻石头盔，并且在装备时会发出一种恐怖的恶魂声音。
 
-### Example: Written book
+### 示例：已书写的书
 
 ```java
 ItemStack book = ItemStack.of(Material.WRITTEN_BOOK);
 WrittenBookContent.Builder builder = WrittenBookContent.writtenBookContent("My Book", "AuthorName");
 
-// Add a page
-builder.addPage(Component.text("This is a new page!"));
+// 添加一页
+builder.addPage(Component.text("这是一个新页面！"));
 
-// Add a page that shows differently for people who have swear filtering on
-// Players who have disabled filtering, will see "I hate Paper!", while those with filtering on will see the "I love Paper!".
+// 添加一页，对于开启了过滤的玩家会显示不同内容。
+// 关闭了过滤的玩家会看到“I hate Paper!”，而开启了过滤的玩家会看到“I love Paper!”。
 builder.addFilteredPage(
     Filtered.of(Component.text("I hate Paper!"), Component.text("I love Paper!"))
 );
 
-// Change generation
+// 更改生成
 builder.generation(1);
 
-// Apply changes
+// 应用更改
 book.setData(DataComponentTypes.WRITTEN_BOOK_CONTENT, builder.build());
 ```
 
-### Example: Cool sword
+### 示例：酷炫的剑
 
 ```java
 ItemStack sword = ItemStack.of(Material.DIAMOND_SWORD);
-sword.setData(DataComponentTypes.LORE, ItemLore.lore().addLine(Component.text("Cool sword!")).build());
+sword.setData(DataComponentTypes.LORE, ItemLore.lore().addLine(Component.text("酷炫的剑！")).build());
 sword.setData(DataComponentTypes.ENCHANTMENTS, ItemEnchantments.itemEnchantments().add(Enchantment.SHARPNESS, 10).build());
 sword.setData(DataComponentTypes.RARITY, ItemRarity.RARE);
 
-sword.unsetData(DataComponentTypes.TOOL); // Remove the tool component
+sword.unsetData(DataComponentTypes.TOOL); // 移除工具组件
 
 sword.setData(DataComponentTypes.MAX_DAMAGE, 10);
-sword.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true); // Make it glow!
+sword.setData(DataComponentTypes.ENCHANTMENT_GLINT_OVERRIDE, true); // 让它发光！
 ```
 
-## Matching items without certain data components
+## 匹配没有某些数据组件的物品
 
-When comparing items, you sometimes want to ignore certain values. For this, we can use the
-[`ItemStack#matchesWithoutData`](jd:paper:org.bukkit.inventory.ItemStack#matchesWithoutData(org.bukkit.inventory.ItemStack,java.util.Set))
-method.
+在比较物品时，
+有时你可能希望忽略某些值。
+为此，我们可以使用 [`ItemStack#matchesWithoutData`](jd:paper:org.bukkit.inventory.ItemStack#matchesWithoutData(org.bukkit.inventory.ItemStack,java.util.Set)) 方法。
 
-For example, here we compare two diamond swords whilst ignoring their durability:
+例如，这里我们在比较两把钻石剑时忽略了它们的耐久度：
 
 ```java
 ItemStack originalSword = ItemStack.of(Material.DIAMOND_SWORD);
@@ -231,5 +231,5 @@ ItemStack damagedSword = ItemStack.of(Material.DIAMOND_SWORD);
 damagedSword.setData(DataComponentTypes.DAMAGE, 100);
 
 boolean match = damagedSword.matchesWithoutData(originalSword, Set.of(DataComponentTypes.DAMAGE), false);
-logger.info("Do the sword match? " + match); // -> true
+logger.info("这把剑匹配吗？ " + match); // -> true
 ```

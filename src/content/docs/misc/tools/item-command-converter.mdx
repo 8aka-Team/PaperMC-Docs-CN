@@ -1,20 +1,20 @@
 ---
-title: Item command converter
-description: A tool to update commands from the old NBT-based item format to item components.
+title: 物品命令转换器
+description: 一个工具，用于将旧的基于 NBT 的物品格式命令更新为物品组件
 slug: misc/tools/item-command-converter
 tableOfContents: false
 ---
 
 import ItemCommandConverter from "/src/components/tools/ItemCommandConverter.svelte";
 
-In 1.20.5, Mojang has moved from unstructured NBT to the so-called item components. While Minecraft
-will automatically update all existing items for you, only Paper will update commands and text
-components containing items where possible. This tool helps you convert old item commands to the
-new format externally.
+在 1.20.5 中，Mojang 从非结构化的 NBT 转移到了所谓的物品组件。
+虽然 Minecraft 会自动为您更新所有现有的物品，
+但只有 Paper 会在可能的情况下更新包含物品的命令和文本组件。
+这个工具可以帮助您在外部将旧的物品命令转换为新格式。
 
 
-Note that you need to select the *Entity Argument* mode if you want to convert entity data outside of
-the summon command, as we require the entity type to convert data correctly.
+请注意，如果您想在 `summon` 命令之外转换实体数据，
+您需要选择 *实体参数* 模式，因为我们需要实体类型来正确转换数据。
 
 <br />
 

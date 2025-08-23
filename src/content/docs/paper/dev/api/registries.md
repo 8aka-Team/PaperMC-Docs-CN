@@ -1,144 +1,144 @@
 ---
-title: Registries
-description: A guide to registries and their modification on Paper.
+title: 注册表
+description: 关于 Paper 上注册表及其修改的指南。
 slug: paper/dev/registries
 sidebar:
   badge:
-    text: Experimental
+    text: 实验性
     variant: danger
 ---
 
-:::danger[Experimental]
-The Registry API and anything that uses it is currently experimental and may change in the future.
+:::danger[实验性]
+注册表 API 及其使用的一切目前都是实验性的，未来可能会发生变化。
 :::
 
-## What is a registry?
+## 什么是注册表？
 
-In the context of Minecraft, a registry holds onto a set of values of the same type, identifying
-each by a key. An example of such a registry would be the [ItemType registry](jd:paper:org.bukkit.Registry#ITEM) which holds all known item types.
-Registries are available via the [RegistryAccess](jd:paper:io.papermc.paper.registry.RegistryAccess) class.
+在 Minecraft 的上下文中，注册表用于存储一组相同类型的值，并通过键来标识每个值。
+例如， [ItemType registry](jd:paper:org.bukkit.Registry#ITEM) 存储了所有已知的物品类型。
+注册表可以通过 [RegistryAccess](jd:paper:io.papermc.paper.registry.RegistryAccess) 类访问。
 
-While a large portion of registries are defined by the server and client independently, more and
-more are defined by the server and sent to the client while joining the server.
-This enables the server, and to that extent plugins, to define custom content for both itself and
-clients playing on it.
-Notable examples include **enchantments** and **biomes**.
+虽然许多注册表是由服务器和客户端独立定义的，
+但越来越多的注册表是由服务器定义并在玩家加入服务器时发送给客户端的。
+这使得服务器，以及在一定程度上的插件，
+能够为自身和在其上运行的客户端定义自定义内容。
+显著的例子包括**附魔**和**生物群系**。
 
-### Retrieving values from a registry
+### 从注册表中检索值
 
-To retrieve elements from a registry, their respective keys can be used.
-The API defines two types of keys.
-- `net.kyori.adventure.key.Key` represents a namespace and a key.
-- [TypedKey](jd:paper:io.papermc.paper.registry.TypedKey) wraps an Adventure key,
-  but also includes the [key of
-  the registry](jd:paper:io.papermc.paper.registry.TypedKey#registryKey()) the
-  [TypedKey](jd:paper:io.papermc.paper.registry.TypedKey) belongs to.
+要从注册表中检索元素，可以使用它们各自的键。
+API 定义了两种类型的键。
+- `net.kyori.adventure.key.Key` 表示一个命名空间和一个键。
+- [TypedKey](jd:paper:io.papermc.paper.registry.TypedKey) 包装了一个
+  Adventure 键，
+  同时还包含了 [TypedKey](jd:paper:io.papermc.paper.registry.TypedKey)
+  所属的[注册表的键](jd:paper:io.papermc.paper.registry.TypedKey#registryKey())。
 
-An example of retrieving the `Sharpness` enchantment using
-[TypedKeys](jd:paper:io.papermc.paper.registry.TypedKey) looks as follows:
+使用 [TypedKeys](jd:paper:io.papermc.paper.registry.TypedKey)
+检索 `Sharpness` 附魔的示例如下：
 
 ```java
-// Fetch the enchantment registry from the registry access
+// 从注册表访问中获取附魔注册表
 final Registry<Enchantment> enchantmentRegistry = RegistryAccess
     .registryAccess()
     .getRegistry(RegistryKey.ENCHANTMENT);
 
-// Get the sharpness enchantment using its key.
-// getOrThrow may be replaced with get if the registry may not contain said value
+// 使用其键获取锋利附魔。
+// 如果注册表可能不包含该值，可以用 `get` 替换 `getOrThrow`
 final Enchantment enchantment = enchantmentRegistry.getOrThrow(TypedKey.create(
     RegistryKey.ENCHANTMENT, Key.key("minecraft:sharpness"))
 );
 
-// Same as above, but using the instance's method
+// 与上述相同，但使用实例的方法
 final Enchantment enchantment = enchantmentRegistry.getOrThrow(
     RegistryKey.ENCHANTMENT.typedKey(Key.key("minecraft:sharpness"))
 );
 
-// Same as above, but using generated create method
-// available for data-driven registries or "writable" ones
-// (those bound to a lifecycle event in RegistryEvents).
+// 与上述相同，但使用生成的 `create` 方法
+// 适用于数据驱动的注册表或“可写”的注册表
+// （那些绑定到 `RegistryEvents` 生命周期事件的注册表）
 final Enchantment enchantment = enchantmentRegistry.getOrThrow(
     EnchantmentKeys.create(Key.key("minecraft:sharpness"))
 );
 
-// Same as above too, but using generated typed keys.
-// Only Vanilla entries have generated keys, for custom entries, the above method must be used.
+// 与上述相同，但使用生成的类型键
+// 只有原版条目有生成的键，对于自定义条目，必须使用上述方法
 final Enchantment enchantment = enchantmentRegistry.getOrThrow(EnchantmentKeys.SHARPNESS);
 ```
 
-### Referencing registry values
+### 引用注册表值
 
-Referencing entries in a registry is easier said than done.
-While in most cases, a plain [Collection](jd:java:java.util.Collection) of the values might suffice, alternative approaches are
-more often used by Minecraft and will hence be encountered.
+引用注册表中的条目说起来容易，做起来难。
+在大多数情况下，一个简单的 [Collection](jd:java:java.util.Collection) 值集合可能就足够了，
+但 Minecraft 更常使用替代方法，因此你会遇到这些方法。
 
-A [`RegistrySet`](jd:paper:io.papermc.paper.registry.set.RegistrySet) defines a
-collection of elements that *relate* to a registry.
+[`RegistrySet`](jd:paper:io.papermc.paper.registry.set.RegistrySet)
+定义了一个与注册表 *相关* 的元素集合。
 
-Its most common subtype is the
-[`RegistryKeySet`](jd:paper:io.papermc.paper.registry.set.RegistryKeySet) which
-simply holds onto [TypedKey](jd:paper:io.papermc.paper.registry.TypedKey) instances.
-An advantage of this data structure is its ability to remain valid even if the values of a
-registry change.
+它最常见的子类型是 [`RegistryKeySet`](jd:paper:io.papermc.paper.registry.set.RegistryKeySet)，
+它只是持有 [TypedKey](jd:paper:io.papermc.paper.registry.TypedKey) 实例。
+这种数据结构的一个优点是，
+即使注册表的值发生变化，
+它仍然有效。
 
-A [`RegistryKeySet`](jd:paper:io.papermc.paper.registry.set.RegistryKeySet) can be
-created via the factory methods on [`RegistrySet`](jd:paper:io.papermc.paper.registry.set.RegistrySet) like this:
+可以通过 [`RegistryKeySet`](jd:paper:io.papermc.paper.registry.set.RegistryKeySet)
+上的工厂方法创建 [`RegistrySet`](jd:paper:io.papermc.paper.registry.set.RegistrySet)，如下所示：
 ```java
-// Create a new registry key set that holds a collection enchantments
+// 创建一个用于持有附魔集合的新注册表键集合
 final RegistryKeySet<Enchantment> bestEnchantments = RegistrySet.keySet(
     RegistryKey.ENCHANTMENT,
-    // Arbitrary keys of enchantments to store in the key set.
+    // 要存储在键集合中的附魔的任意键。
     EnchantmentKeys.CHANNELING,
     EnchantmentKeys.create(Key.key("papermc:softspoon"))
 );
 ```
 
-A [`Tag`](jd:paper:io.papermc.paper.registry.tag.Tag) follows up the concept
-of a [`RegistryKeySet`](jd:paper:io.papermc.paper.registry.set.RegistryKeySet)
-but is itself named and can hence be referenced.
-A list of Vanilla tags can be found [on the Minecraft wiki](https://minecraft.wiki/w/Tag#Java_Edition_2).
+[`Tag`](jd:paper:io.papermc.paper.registry.tag.Tag) 是 [`RegistryKeySet`](jd:paper:io.papermc.paper.registry.set.RegistryKeySet) 的扩展，
+它本身具有名称，
+因此可以被引用。
+可以在 [Minecraft Wiki](https://minecraft.wiki/w/Tag#Java_Edition_2) 上找到原版标签的列表。
 
-## Mutating registries
+## 修改注册表
 
-Beyond plain reading access to registries, Paper also offers a way for plugins to modify registries.
+除了对注册表的普通读取权限外，Paper 还为插件提供了修改注册表的方法。
 
-:::caution
-Mutating registries needs to be done during the server's bootstrap phase.
-As such, this section is only applicable to [Paper plugins](/paper/dev/getting-started/paper-plugins).
+:::caution[警告]
+修改注册表需要在服务器的启动阶段完成。
+因此，本节内容仅适用于 [Paper 插件](/paper/dev/getting-started/paper-plugins)。
 
-**Exceptions** thrown by plugins during this phase will cause the server to shutdown before loading,
-as missing values or modifications to the registries would otherwise cause data loss.
+在这一阶段，插件抛出的 **异常** 会导致服务器在加载之前关闭，
+因为注册表中缺少值或对注册表的修改可能会导致数据丢失。
 :::
 
-:::note
-Mutating registries is done via the
-[LifecycleEventManager](jd:paper:io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager).
-See the [Lifecycle Events](/paper/dev/lifecycle) page for more information.
+:::note[注意]
+修改注册表是通过
+[LifecycleEventManager](jd:paper:io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager) 完成的。
+更多信息请参阅 [生命周期事件](/paper/dev/lifecycle) 页面。
 :::
 
-The general entrypoint for mutating registries is
-the [RegistryEvents](jd:paper:io.papermc.paper.registry.event.RegistryEvents) type,
-which provides an entry point for each registry that can be modified.
-Modification of a registry can take two different forms.
+修改注册表的通用入口是
+[RegistryEvents](jd:paper:io.papermc.paper.registry.event.RegistryEvents) 类型，
+它为每个可修改的注册表提供了一个入口点。
+对注册表的修改可以采取两种不同的形式。
 
-### Create new entries
+### 创建新条目
 
-Creating new entries is done via the [`compose` lifecycle event](jd:paper:io.papermc.paper.registry.event.RegistryEventProvider#compose())
-on the respective registries.
-The compose event is called after a registry's content has been loaded from "vanilla" sources, like the built-in
-datapack or any detected, enabled, datapacks. Plugins can hence register their own entries at this point.
-The following example shows how to create a new enchantment:
+通过在相应注册表上使用 [`compose` 生命周期事件](jd:paper:io.papermc.paper.registry.event.RegistryEventProvider#compose())件来创建新条目。
+`compose` 事件在注册表的内容从“原版”来源加载之后触发，
+例如内置数据包或任何已检测到且启用的数据包。
+因此，插件可以在这一点注册自己的条目。
+以下示例展示了如何创建一个新的附魔：
 
 ```java title="TestPluginBootstrap.java"
 public class TestPluginBootstrap implements PluginBootstrap {
 
     @Override
     public void bootstrap(BootstrapContext context) {
-        // Register a new handler for the compose lifecycle event on the enchantment registry
+        // 在附魔注册表上为 `compose` 生命周期事件注册一个新的处理器
         context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.compose().newHandler(event -> {
             event.registry().register(
-                // The key of the registry
-                // Plugins should use their own namespace instead of minecraft or papermc
+                // 注册表的键
+                // 插件应使用自己的命名空间，而不是使用 `minecraft` 或 `papermc`
                 EnchantmentKeys.create(Key.key("papermc:pointy")),
                 b -> b.description(Component.text("Pointy"))
                     .supportedItems(event.getOrCreateTag(ItemTypeTagKeys.SWORDS))
@@ -154,20 +154,20 @@ public class TestPluginBootstrap implements PluginBootstrap {
 }
 ```
 
-### Modifying existing entries
+### 修改现有条目
 
-Modification of existing entries is useful for plugins that aim to change the way Vanilla entries
-behave. For this, use the [`entryAdd` lifecycle event](jd:paper:io.papermc.paper.registry.event.RegistryEventProvider#entryAdd()).
-The event is called for _\*any\*_ entry added to a registry, however the API provides an easy way to target a specific entry for modification.
-The following example shows how to increase the maximum level of the `Sharpness` enchantment.
+修改现有条目对于旨在改变原版条目行为的插件非常有用。
+为此，可以使用 [`entryAdd` 生命周期事件](jd:paper:io.papermc.paper.registry.event.RegistryEventProvider#entryAdd())。
+该事件会在注册表中添加 *任何* 条目时触发，但 API 提供了一种简单的方法来针对特定条目进行修改。
+以下示例展示了如何增加 `Sharpness` 附魔的最大等级。
 
 ```java
 @Override
 public void bootstrap(BootstrapContext context) {
     context.getLifecycleManager().registerEventHandler(RegistryEvents.ENCHANTMENT.entryAdd()
-        // Increase the max level to 20
+        // 将最大等级提升到 20
         .newHandler(event -> event.builder().maxLevel(20))
-        // Configure the handler to only be called for the Vanilla sharpness enchantment.
+        // 配置处理器仅对原版的锋利附魔生效。
         .filter(EnchantmentKeys.SHARPNESS)
     );
 }

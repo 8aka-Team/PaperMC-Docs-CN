@@ -1,11 +1,11 @@
 header:
   message: |
-    #By changing the setting below to TRUE you are indicating your agreement to our EULA (https://aka.ms/MinecraftEULA).
+    #通过将以下设置更改为 TRUE，您表明您同意我们的 EULA（[MinecraftEULA](https://aka.ms/MinecraftEULA)）
 
     #\<date\>
   inline: true
 eula:
   default: "false"
   description: >-
-    Whether to accept the Minecraft EULA.
-    This must be set to "true" to run the server.
+    是否接受 Minecraft EULA。
+    必须将其设置为“true”才能运行服务器。

@@ -1,17 +1,17 @@
 ---
-title: Listeners
-description: Developer guide for how to listen to the broadcasted events.
+title: 监听器
+description: 开发者指南，介绍如何监听广播的事件。
 slug: paper/dev/event-listeners
 ---
 
-Events are an efficient way to listen for specific actions that happen in the game. They can be called by the server, or by plugins.
-These are called by the server or plugins when something happens, such as a player joining the server, or a block being broken.
-Plugins are able to call custom events, such as a player completing a quest, for other plugins to listen for.
+事件是一种高效的方式，用于监听游戏中发生的特定行为。它们可以由服务器调用，也可以由插件调用。
+当发生某些事情时，例如玩家加入服务器或方块被破坏，服务器或插件会调用这些事件。
+插件还可以调用自定义事件，例如玩家完成任务，供其他插件监听。
 
-## Your listener class
+## 您的 listener 类
 
-To listen for events, you need to create a class that implements [`Listener`](jd:paper:org.bukkit.event.Listener).
-This class can be called anything you want, but it is recommended to name it something related to the events you are listening for.
+要监听事件，你需要创建一个实现了 [`Listener`](jd:paper:org.bukkit.event.Listener) 的类。
+这个类可以叫任何名字，但建议命名为与你正在监听的事件相关的名称。
 
 ```java title="ExampleListener.java"
 public class ExampleListener implements Listener {
@@ -21,13 +21,13 @@ public class ExampleListener implements Listener {
 
 ## `@EventHandler`
 
-To listen for an event, you need to create a method that is annotated with [`@EventHandler`](jd:paper:org.bukkit.event.EventHandler).
-This method can be named anything you want, but it is recommended to name it something meaningful related to the event it is listening for.
+要监听一个事件，你需要创建一个带有 [`@EventHandler`](jd:paper:org.bukkit.event.EventHandler) 注解的方法。
+这个方法可以叫任何名字，但建议命名为与它所监听的事件相关的有意义的名称。
 
-## The listener method
+## 监听器方法
 
-The method body does not need to return any data, for this reason, use void as the return type.
-Listeners take in a single parameter, which is the event that is being listened to.
+方法体不需要返回任何数据，因此使用 `void` 作为返回类型。
+监听器接收一个参数，即正在监听的事件。
 
 ```java title="ExampleListener.java"
 public class ExampleListener implements Listener {
@@ -39,23 +39,23 @@ public class ExampleListener implements Listener {
 }
 ```
 
-:::note[Events]
+:::note[事件]
 
-There is no list of events that can be listened to, however take a
-look [here](jd:paper:org.bukkit.event.Event)
-to see all classes that extend `Event`.
+虽然没有一个专门列出可以监听的事件的列表，
+但你可以查看[这里](jd:paper:org.bukkit.event.Event)，
+以查看所有继承自 `Event` 的类。
 
-An event can only be listened to if it has a static `getHandlerList` method.
+只有当一个事件具有静态的 `getHandlerList` 方法时，它才可以被监听。
 
 :::
 
-## Registering the listener
+## 注册监听器
 
-To register the listener, you need to call `Bukkit.getPluginManager().registerEvents()`
-and pass in your listener class instance and an instance of your plugin.
+要注册监听器，你需要调用 `Bukkit.getPluginManager().registerEvents()`，
+并传入你的监听器类实例和你的插件实例。
 
-This will register your listener class and allow it to listen for events.
-This is commonly done in the `onEnable()` method of your plugin so that it is registered when the server starts ticking.
+这将注册你的监听器类并允许它监听事件。
+这通常在插件的 `onEnable()` 方法中完成，以便在服务器开始运行时注册。
 
 ```java title="ExamplePlugin.java"
 public class ExamplePlugin extends JavaPlugin {
@@ -67,9 +67,9 @@ public class ExamplePlugin extends JavaPlugin {
 }
 ```
 
-## Event priority
+## 事件优先级
 
-You can also specify the priority of the event.
+你也可以指定事件的优先级。
 
 ```java title="ExampleListener.java"
 public class ExampleListener implements Listener {
@@ -80,7 +80,7 @@ public class ExampleListener implements Listener {
     }
 }
 ```
-There are six different priorities that you can use:
+你可以使用六种不同的优先级：
 - [`EventPriority.LOWEST`](jd:paper:org.bukkit.event.EventPriority#LOWEST)
 - [`EventPriority.LOW`](jd:paper:org.bukkit.event.EventPriority#LOW)
 - [`EventPriority.NORMAL`](jd:paper:org.bukkit.event.EventPriority#NORMAL)
@@ -88,21 +88,21 @@ There are six different priorities that you can use:
 - [`EventPriority.HIGHEST`](jd:paper:org.bukkit.event.EventPriority#HIGHEST)
 - [`EventPriority.MONITOR`](jd:paper:org.bukkit.event.EventPriority#MONITOR)
 
-The order of the priorities is somewhat counter-intuitive. The **higher** the priority, the **later** the event is called.
-For example, if it is important that your plugin has the last say in a certain event - to avoid it being changed - you
-should use `EventPriority.HIGHEST`.
+优先级的顺序有些反直觉。
+**优先级越高**，事件被调用得**越晚**。
+例如，如果你的插件需要在某个事件中拥有最后的决定权——以避免它被更改——你应该使用 `EventPriority.HIGHEST`。
 
-:::note
+:::note[注意]
 
-The `MONITOR` priority is used to monitor the event, but not change it. It is called after all other priorities have been called.
-This means you can get the result of any plugin interaction such as cancellation or modification.
+`MONITOR`优先级用于监控事件，但不会更改它。
+它会在所有其他优先级调用之后被调用。这意味着你可以获取任何插件交互的结果，例如取消或修改。
 
 :::
 
-## Event cancellation
+## 事件取消
 
-Some events can be cancelled, preventing the given action from being completed.
-These events implement [`Cancellable`](jd:paper:org.bukkit.event.Cancellable).
+一些事件可以被取消，从而阻止给定的动作完成。
+这些事件实现了 [`Cancellable`](jd:paper:org.bukkit.event.Cancellable)。
 
 ```java title="ExampleListener.java"
 public class ExampleListener implements Listener {
@@ -114,16 +114,16 @@ public class ExampleListener implements Listener {
 }
 ```
 
-:::caution
+:::caution[警告]
 
-It is important to consider that another plugin could have cancelled or changed the event before your plugin is called.
-Always check the event before doing anything with it.
+重要的是要考虑另一个插件可能在你的插件被调用之前已经取消或更改了该事件。
+在对该事件进行任何操作之前，始终要检查该事件。
 
 :::
 
-The above example will cancel the event, meaning that the player will not be able to move.
-Once an event is cancelled, it will continue to call any other listeners for that event unless they add
-`ignoreCancelled = true` to the `@EventHandler` annotation to ignore cancelled events.
+上面的例子将取消该事件，这意味着玩家将无法移动。
+一旦事件被取消，它将继续调用该事件的其他监听器，
+除非它们在 `@EventHandler` 注解中添加 `ignoreCancelled = true` 以忽略已取消的事件。
 
 ```java title="ExampleListener.java"
 public class ExampleListener implements Listener {

@@ -1,59 +1,59 @@
 ---
-title: Using databases
-description: Databases are the recommended way to store a large amount of data. This guide outlines a few key details.
+title: 使用数据库
+description: 数据库是存储大量数据的推荐方式。本指南概述了一些关键细节
 slug: paper/dev/using-databases
 ---
 
-When you are storing larger amounts of data inside a plugin, we recommend using a database. This guide will walk you through the startup process.
+当你在插件中存储大量数据时，我们推荐使用数据库。本指南将引导你完成启动过程。
 
-## What is a database?
+## 什么是数据库？
 
-A database is a collection of information that is stored electronically on a computer system. There are many different types of databases,
-and the main two categories are SQL and NoSQL.
+数据库是存储在计算机系统上的电子信息集合。
+有许多不同类型的数据库，主要分为 SQL 和 NoSQL 两大类。
 
 ### NoSQL vs SQL
 
-A NoSQL (Not Only SQL) database is a type of database management system that differs from the traditional relational database model.
-Unlike traditional SQL databases, which store data in structured tables with predefined schemas, NoSQL databases are schema-less
-and offer flexible data models.
+NoSQL（Not Only SQL）数据库是一种与传统关系型数据库模型不同的数据库管理系统。
+与传统 SQL 数据库（将数据存储在具有预定义模式的结构化表中）
+不同，NoSQL 数据库是无模式的，并提供灵活的数据模型。
 
-They are designed to handle large volumes of unstructured or semi-structured data.
-NoSQL databases use various data models, such as key-value, document, column-family, or graph, depending on
-the specific requirements of the application.
+它们被设计用来处理大量非结构化或半结构化的数据。
+NoSQL 数据库使用各种数据模型，
+如键值对、文档、列族或图，具体取决于应用程序的具体需求。
 
-On the other hand, an SQL database is a type of database management system that follows the relational database model.
-It organizes data into structured tables with predefined schemas, where each table represents an entity and columns
-represent attributes of that entity. SQL (Structured Query Language) is used to interact with the database,
-allowing users to perform various operations like querying, inserting, updating, and deleting data.
+另一方面，SQL 数据库是一种遵循关系型数据库模型的数据库管理系统。
+它将数据组织成具有预定义模式的结构化表，每个表代表一个实体，列代表该实体的属性。
+SQL（Structured Query Language）用于与数据库交互，
+允许用户执行各种操作，如查询、插入、更新和删除数据。
 
-## File-based vs standalone databases
+## 基于文件的数据库与独立数据库
 
-When working with databases, you have two options: file-based or standalone. File-based databases are stored in a file on the disk,
-and are usually used for smaller databases. Standalone databases operate in a separate process, and are usually used for larger data models.
+在使用数据库时，你有两种选择：基于文件的数据库和独立数据库。
+基于文件的数据库存储在磁盘上的一个文件中，通常用于较小的数据库。独立数据库在单独的进程中运行，通常用于较大的数据模型。
 
-### File-based databases
+### 基于文件的数据库
 
-File-based databases are all stored within a single file on the disk. They are usually used for smaller databases, as they are easier to set up and use.
-They can be created and handled from within your plugin code, but offer lesser performance than standalone databases.
-Some examples of file-based databases are `SQLite` and `H2`.
+基于文件的数据库都存储在磁盘上的一个文件中。它们通常用于较小的数据库，因为它们更容易设置和使用。
+你可以从插件代码中创建和处理它们，但它们的性能不如独立数据库。
+`SQLite` 和 `H2` 是基于文件的数据库的一些例子。
 
 <details>
-  <summary>Simple SQLite Setup</summary>
+  <summary>简单的 SQLite 设置</summary>
 
 #### SQLite
 
-To work with SQLite, you will need a driver to connect / initialize the database.
+要使用 SQLite，你需要一个驱动程序来连接/初始化数据库。
 
-:::note
+:::note[注意]
 
-The JDBC Driver is bundled with Paper, so you do not need to shade/relocate it in your plugin.
+JDBC 驱动程序已包含在 Paper 中，因此你无需在插件中包含/重新定位它。
 
 :::
 
-##### Usage
+##### 使用方法
 
-You must invoke a [`Class#forName(String)`](jd:java:java.lang.Class#forName(java.lang.String))
-on the driver to allow it to initialize and then create the connection to the database:
+你必须调用驱动程序的 [`Class#forName(String)`](jd:java:java.lang.Class#forName(java.lang.String))
+来允许它初始化，然后创建与数据库的连接：
 
 ```java title="DatabaseManager.java"
 public class DatabaseManager {
@@ -65,40 +65,40 @@ public class DatabaseManager {
 }
 ```
 
-You then have access to a [`Connection`](jd:java:java.sql:java.sql.Connection) object,
-which you can use to create a [`Statement`](jd:java:java.sql:java.sql.Statement) and execute SQL queries.
-To learn more about the Java Database Connectivity API, see [here](https://www.baeldung.com/java-jdbc)
+然后你可以获取一个 [`Connection`](jd:java:java.sql:java.sql.Connection) 对象，
+你可以使用它来创建一个 [`Statement`](jd:java:java.sql:java.sql.Statement) 并执行 SQL 查询。
+有关 Java 数据库连接 API 的更多信息，请参阅 [这里](https://www.baeldung.com/java-jdbc)。
 
 </details>
 
-### Standalone databases
+### 独立数据库
 
-As previously mentioned, standalone databases operate in a separate process. They are harder to set up and use,
-but offer better performance than file-based databases. Some examples of standalone databases are `MySQL`, `MariaDB` and `PostgreSQL`.
-There are many more, but these are some of the most popular ones. Each has their own advantages and disadvantages,
-so it is up to you to decide which one to use.
+如前所述，独立数据库在单独的进程中运行。
+它们的设置和使用更复杂，但性能优于基于文件的数据库。
+`MySQL`、`MariaDB` 和 `PostgreSQL` 是一些独立数据库的例子。
+还有很多其他选择，但这些是比较流行的。每种数据库都有其自身的优缺点，因此需要你自行决定使用哪一种。
 
-The connectors for these databases often have connection pooling. Database connection pooling is where it creates
-a pool of pre-established and reusable database connections. Instead of opening a new connection every time a
-database operation is required, the application can request a connection from the pool, use it for the required task,
-and then return it back to the pool for future reuse. This significantly reduces the overhead of creating and tearing
-down connections repeatedly, leading to improved application performance and better scalability.
+这些数据库的连接器通常具有连接池功能。
+数据库连接池是指创建一个预先建立且可重复使用的数据库连接池。
+应用程序在需要执行数据库操作时，可以从连接池中请求一个连接，
+使用该连接完成所需任务，然后将其返回到连接池中以供后续重复使用。
+这显著减少了反复创建和关闭连接的开销，从而提高了应用程序的性能和可扩展性。
 
 <details>
-  <summary>Simple MySQL Setup</summary>
+  <summary>简单的 MySQL 设置</summary>
 
 #### MySQL
 
-Working with MySQL requires a few more steps, however it can offer performance benefits for larger databases with
-many tables and concurrent accesses. This is a short setup guide for using the [Hikari](https://github.com/brettwooldridge/HikariCP) library with MySQL.
+使用 MySQL 需要一些额外的步骤，但它可以为具有许多表和并发访问的大型数据库提供性能优势。
+以下是一个简短的指南，介绍如何将 [Hikari](https://github.com/brettwooldridge/HikariCP) 库与 MySQL 一起使用。
 
-:::note
+:::note[注意]
 
-This will require a running MySQL database to connect to.
+这需要一个正在运行的 MySQL 数据库来连接。
 
 :::
 
-First, add the dependency to your project with the following dependency:
+首先，使用以下依赖项将依赖项添加到你的项目中：
 
 ##### Maven
 ```xml
@@ -117,37 +117,37 @@ dependencies {
 }
 ```
 
-:::caution
+:::caution[危险]
 
-The Hikari library is not bundled with Paper, so you will need to shade/relocate it. In Gradle, you will need to use the [Shadow plugin](https://gradleup.com/shadow/).
-Alternatively, you can use the library loader with your Paper plugin to load the library at runtime. See [here](/paper/dev/getting-started/paper-plugins#loaders)
-for more information on how to use this.
+Hikari库没有与Paper一起打包，因此你需要对其进行遮蔽（shade）或重定位（relocate）。
+在Gradle中，你需要使用[Shadow插件](https://gradleup.com/shadow/)。
+或者，你可以使用库加载器在运行时加载你的Paper插件中的库。有关如何使用此功能的更多信息，请参阅[这里](/paper/dev/getting-started/paper-plugins#loaders)。
 
 :::
 
-##### Usage
+##### 使用方法
 
-Once you have the dependency added, we can work with the connector in our code:
+添加依赖项后，我们可以在代码中使用连接器：
 
 ```java title="DatabaseManager.java"
 public class DatabaseManager {
 
   public void connect() {
     HikariConfig config = new HikariConfig();
-    config.setJdbcUrl("jdbc:mysql://localhost:3306/mydatabase"); // Address of your running MySQL database
-    config.setUsername("username"); // Username
-    config.setPassword("password"); // Password
-    config.setMaximumPoolSize(10); // Pool size defaults to 10
+    config.setJdbcUrl("jdbc:mysql://localhost:3306/mydatabase"); // 正在运行的 MySQL 数据库的地址
+    config.setUsername("username"); // 用户名
+    config.setPassword("password"); // 密码
+    config.setMaximumPoolSize(10); // 连接池大小默认为 10
 
-    config.addDataSourceProperty("", ""); // MISC settings to add
+    config.addDataSourceProperty("", ""); // 要添加的其他设置
     HikariDataSource dataSource = new HikariDataSource(config);
 
     try (Connection connection = dataSource.getConnection()) {
-      // Use a try-with-resources here to autoclose the connection.
+      // 使用 try-with-resources 来自动关闭连接。
       PreparedStatement sql = connection.prepareStatement("SQL");
-      // Execute statement
+      // 执行语句
     } catch (Exception e) {
-      // Handle any exceptions that arise from getting / handing the exception.
+      // 处理从获取/处理异常中产生的任何异常。
     }
   }
 }
@@ -155,40 +155,40 @@ public class DatabaseManager {
 
 </details>
 
-## Security
+## 安全性
 
-### SQL Injection
+### SQL 注入
 
-SQL injection is a malicious technique where attackers exploit improper input validation to execute unauthorized SQL commands,
-potentially causing data breaches or damage to the database.
+SQL 注入是一种恶意技术，攻击者利用不当的输入验证来执行未经授权的 SQL 命令，
+可能会导致数据泄露或对数据库造成损害。
 
-For example, consider the following code:
+例如，考虑以下代码：
 
 ```java
 public void login(String username, String password) {
     String sql = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
-    // Execute SQL
+    // 执行 SQL
 }
 ```
 
-If the user enters the following as their username:
+如果用户输入以下内容作为用户名：
 
 ```
 ' OR 1=1; --
 ```
 
-The SQL statement will become:
+SQL 语句将变为：
 
 ```sql
-SELECT * FROM users WHERE username = '' OR 1=1; -- AND password = 'password'
+SELECT * FROM users WHERE username = '' OR 1=1; -- AND password = '密码'
 ```
 
-This will return all users in the database, regardless of the password they entered. This is a simple example,
-but it can be used to do much more malicious things, such as deleting the entire database or stealing user data.
+这将返回数据库中的所有用户，而不管他们输入的密码是什么。
+这是一个简单的例子，但它可以用来做更恶意的事情，比如删除整个数据库或窃取用户数据。
 
-### Prepared statements
+### 预编译语句
 
-Using prepared statements in Java with [`PreparedStatement`](jd:java:java.sql:java.sql.PreparedStatement)s
-helps prevent SQL injection. They separate SQL code from user input by using placeholders, reducing the risk of executing unintended SQL commands.
-**Always** use prepared statements to ensure the security and integrity of your data. Read more about SQL injection
-[here](https://www.baeldung.com/sql-injection).
+在 Java 中使用带有占位符的预编译语句（`PreparedStatement`）可以有效防止 SQL 注入。
+它们通过将 SQL 代码与用户输入分离，降低了执行意外 SQL 命令的风险。
+**始终**使用预编译语句，以确保数据的安全性和完整性。
+有关 SQL 注入的更多信息，请参阅 [这里](https://www.baeldung.com/sql-injection)。

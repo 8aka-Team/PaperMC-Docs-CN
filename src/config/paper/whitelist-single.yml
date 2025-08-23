@@ -1,8 +1,8 @@
 header:
-  message: This is a single entry in the root array found in whitelist.json.
+  message: 这是在`whitelist.json`中根数组的一个条目。
 uuid:
-  description: The UUID of the player on the whitelist.
-  default: the UUID of the player on the whitelist
+  description: 白名单中玩家的UUID。
+  default: 白名单中玩家的UUID
 name:
-  description: The name of the player on the whitelist.
-  default: the name of the player on the whitelist
+  description: 白名单中玩家的名称。
+  default: 白名单中玩家的名字

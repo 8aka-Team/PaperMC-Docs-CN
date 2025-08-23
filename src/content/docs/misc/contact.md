@@ -1,25 +1,24 @@
 ---
-title: Contact us
-description: There are many ways to contact us, see here for more information.
+title: 联系我们
+description: 有许多方式可以联系我们，更多信息请查看这里
 slug: misc/contact
 ---
 
 ## Discord
 
-The PaperMC project handles most communication via Discord. Use the following invite: https://discord.gg/papermc
+PaperMC 项目主要通过 Discord 进行沟通。请使用以下邀请链接：[https://discord.gg/papermc](https://discord.gg/papermc)
 
 ## Forums
 
-Reach out for support, or contact us on our forums.
+寻求支持，或在我们的论坛上联系我们。
 
 - [Forums](https://forums.papermc.io)
 
 ## Twitter/X
 
-We often tweet out version release notes, update notices, and other information via our Twitter
-page.
+我们经常通过我们的 X 页面发布版本更新说明、更新通知和其他信息。
 
 - [@PaperPowered](https://x.com/PaperPowered)
 
-You should not DM or @ this account for support. It is not checked as regularly as the above
-locations.
+您不应通过直接消息或 @ 此账号来寻求支持。
+它不像上述地点那样经常被检查。

@@ -1,18 +1,18 @@
 header:
-  message: This is a single entry in the root array found in ops.json.
+  message: 这是在 `ops.json` 中根数组的一个条目。
 uuid:
-  description: The UUID representing the operator.
-  default: the UUID of the operator
+  description: 代表管理员的UUID。
+  default: 管理员的UUID
 name:
-  description: The name of the operator.
-  default: the name of the operator
+  description: 管理员的名字。
+  default: 管理员的名称
 level:
   description: |
-    The level of the operator permissions.
+    管理员权限的等级。
 
-    The expected format is an integer between 0 and 4.
+    预期的格式是 0 到 4 之间的整数。
   default: "0"
 
 bypassesPlayerLimit:
-  description: Whether this operator bypasses the player limit.
+  description: 该管理员是否绕过玩家限制。
   default: "false"

@@ -1,53 +1,53 @@
 ---
-title: Minecraft internals
-description: A brief overview of how to use internals in your plugin.
+title: 内部机制
+description: 简要介绍如何在插件中使用内部机制
 slug: paper/dev/internals
 ---
 
-The code that runs Minecraft is not open source. Bukkit is an API that allows plugins to interact with the server. This
-is implemented by CraftBukkit and interacts with Minecraft's code. You will often hear the terms NMS and CraftBukkit
-when talking about Minecraft internals.
+运行 Minecraft 的代码并不是开源的。Bukkit 是一个允许插件与服务器交互的 API。
+它由 CraftBukkit 实现，并与 Minecraft 的代码进行交互。
+在讨论 Minecraft 内部机制时，你经常会听到 NMS 和 CraftBukkit 这两个术语。
 
-:::danger[Using Minecraft internals]
+:::danger[使用 Minecraft 内部机制]
 
-Using Minecraft internals is not recommended. This is because using internal code directly is not guaranteed to be
-stable and it changes often. This means that your plugin may break when a new version of Minecraft is released.
-Whenever possible, you should use API instead of internals.
+不推荐使用 Minecraft 内部机制。这是因为直接使用内部代码并不能保证其稳定性，并且它经常会发生变化。
+这意味着当发布新的 Minecraft 版本时，你的插件可能会出现问题。
+只要有可能，你应该使用 API 而不是内部机制。
 
-**PaperMC will offer no direct support for programming against Minecraft internals.**
+**PaperMC 不会直接支持针对 Minecraft 内部机制的编程**
 
 :::
 
-## What is NMS?
+## 什么是 NMS？
 
-NMS stands for `net.minecraft.server` and refers to a Java package that contains a lot of Mojang's code. This code is
-proprietary and is not open source. This code is not guaranteed to be stable when invoked externally and may change at
-any time.
+NMS 是 `net.minecraft.server` 的缩写，指的是一个包含大量 Mojang 代码的 Java 包。
+这些代码是专有的，并不是开源的。
+当从外部调用时，这些代码并不能保证其稳定性，并且可能会随时发生变化。
 
-## Accessing Minecraft internals
+## 访问 Minecraft 内部机制
 
-In order to use Mojang and CraftBukkit code, you may either use the `paperweight-userdev` Gradle plugin or use reflection.
-[`paperweight-userdev`](https://github.com/PaperMC/paperweight-test-plugin) is the recommended way to access internal code
-as it is easier to use due to being able to have the remapped code in your IDE. You can find
-out more about this in the [`paperweight-userdev`](/paper/dev/userdev) section.
+为了使用 Mojang 和 CraftBukkit 的代码，你可以使用 `paperweight-userdev` Gradle 插件或反射。
+推荐使用 [`paperweight-userdev`](https://github.com/PaperMC/paperweight-test-plugin) 来访问内部代码，
+因为它可以让你在 IDE 中使用重映射后的代码，使用起来更加方便。
+你可以通过查看 [paperweight-userdev](/paper/dev/userdev) 部分来了解更多信息。
 
-However, if you are unable to use `paperweight-userdev`, you can use reflection.
+然而，如果你无法使用 `paperweight-userdev`，你可以使用反射。
 
-### Reflection
+### 反射
 
-Reflection is a way to access code at runtime. This allows you to access code that may not be available at compile time.
-Reflection is often used to access internal code across multiple versions. However, reflection does come
-with performance impacts if used improperly. For example, if you are accessing a method or field more than once,
-you should cache the [`Field`](jd:java:java.lang.reflect.Field)/
-[`Method`](jd:java:java.lang.reflect.Method) to prevent the performance
-impact of looking up the field/method each time.
+反射是一种在运行时访问代码的方式。
+它允许你访问在编译时可能不可用的代码。
+反射通常用于跨多个版本访问内部代码。
+然而，如果使用不当，反射确实会对性能产生影响。
+例如，如果你多次访问同一个方法或字段，你应该缓存该 [`Field`](jd:java:java.lang.reflect.Field)
+或 [`Method`](jd:java:java.lang.reflect.Method)，以避免每次查找字段/方法时的性能开销。
 
-:::caution[1.20.4 and older]
+:::caution[1.20.4 及更早版本]
 
-The internal CraftBukkit code was relocated to `org.bukkit.craftbukkit.<version>` unless you ran a Mojang-mapped version
-of Paper. This was unlikely to be the case in most production environments until 1.20.5. This means that any attempts to reflect had to
-include the version. For example, `org.bukkit.craftbukkit.v1_20_R2.CraftServer` was the full class and package name
-for the CraftServer class in version 1.20.2. You could access these classes easily with some reflection utilities.
+在 1.20.5 之前，内部的 CraftBukkit 代码被重新定位到 `org.bukkit.craftbukkit.<version>`，除非你运行的是经过 Mojang 映射（Mojang-mapped）的 Paper 版本。
+在大多数生产环境中，这种情况直到 1.20.5 才变得常见。
+这意味着任何反射尝试都必须包含版本号。
+例如，`org.bukkit.craftbukkit.v1_20_R2.CraftServer` 是 1.20.2 版本中 CraftServer 类的完整类名和包名。你可以通过一些反射工具轻松访问这些类。
 
 ```java
 private static final String CRAFTBUKKIT_PACKAGE = Bukkit.getServer().getClass().getPackageName();
@@ -56,54 +56,54 @@ public static String cbClass(String clazz) {
   return CRAFTBUKKIT_PACKAGE + "." + clazz;
 }
 
-// You can then use this method to get the CraftBukkit class:
+// 然后你可以使用这种方法来获取 CraftBukkit 类：
 Class.forName(cbClass("entity.CraftBee"));
 ```
 
 :::
 
-Minecraft's code is obfuscated. This means that the names of classes and methods are changed to make them harder to
-understand. Paper deobfuscates these identifiers for development and since 1.20.5, also for runtime.
+Minecraft 的代码是经过混淆的。这意味着类和方法的名称被更改，以使其更难理解。
+Paper 在开发过程中会反混淆这些标识符，并且从 1.20.5 开始，也会在运行时进行反混淆。
 
-:::caution[1.20.4 and older]
+:::caution[1.20.4 及更早版本]
 
-Previously, to provide compatibility with legacy plugins, Paper was reobfuscated at runtime.
-You could use a library like [reflection-remapper](https://github.com/jpenilla/reflection-remapper) to automatically remap the
-reflection references. This allowed you to use the deobfuscated, Mojang-mapped names in your code. This was recommended as
-it made the code easier to understand.
+以前，为了与旧版插件保持兼容，Paper 会在运行时重新混淆代码。
+你可以使用像 [reflection-remapper](https://github.com/jpenilla/reflection-remapper) 这样的库来自动重新映射反射引用。
+这允许你在代码中使用反混淆后的、经过 Mojang 映射的名称。
+这被推荐使用，因为它使代码更容易理解。
 
 :::
 
-### Mojang-mapped servers
+### Mojang 映射的服务器
 
-Running a Mojang-mapped (moj-map) server is an excellent way to streamline your processes because you can develop using
-the same mappings that will be present at runtime. This eliminates the need for remapping in your compilation, which in
-turn simplifies debugging and allows you to hotswap plugins.
+运行一个 Mojang 映射（moj-map）服务器是简化你开发流程的绝佳方式，
+因为你可以使用在运行时会存在的相同映射来开发。
+这消除了在编译过程中重新映射的需要，进而简化了调试，并允许你热插拔插件。
 
-As of 1.20.5, Paper ships with a Mojang-mapped runtime by default instead of reobfuscating the server to Spigot mappings.
-By adopting Mojang mappings, you ensure that your plugin won't require internal remapping at runtime.
-For more information, see the [plugin remapping](/paper/dev/project-setup#plugin-remapping) section
-and [userdev](/paper/dev/userdev#1205-and-beyond) documentation covering these changes.
+从 1.20.5 开始，Paper 默认使用 Mojang 映射的运行时，而不是将服务器重新混淆为 Spigot 映射。
+通过采用 Mojang 映射，你可以确保你的插件在运行时不需要内部重新映射。
+有关更多信息，请参阅 [插件重新映射](/paper/dev/project-setup#plugin-remapping)
+部分以及涵盖这些变化的 [userdev](/paper/dev/userdev#1205-and-beyond) 文档。
 
-### Getting the current Minecraft version
+### 获取当前 Minecraft 版本
 
-You can get the current Minecraft version to allow you to use the correct code for a specific version. This can be done
-with one of the following methods:
+你可以获取当前的 Minecraft 版本，以便使用特定版本的正确代码。
+这可以通过以下方法之一实现：
 
 ```java replace
-// Example value: \{LATEST_PAPER_RELEASE}
+// 示例值: \{LATEST_PAPER_RELEASE}
 String minecraftVersion = Bukkit.getServer().getMinecraftVersion();
 
-// Example value: \{LATEST_PAPER_RELEASE}-R0.1-SNAPSHOT
+// 示例值: \{LATEST_PAPER_RELEASE}-R0.1-SNAPSHOT
 String bukkitVersion = Bukkit.getServer().getBukkitVersion();
 
-// Example value for 1.20.1: 3465
+// 1.20.1 的示例值: 3465
 int dataVersion = Bukkit.getUnsafe().getDataVersion();
 ```
 
-:::danger[Parsing the version]
+:::danger[解析版本]
 
-Parsing the version from the package name of classes is no longer possible as of 1.20.5 as Paper stopped relocating the CraftBukkit package.
-See the [reflection](#reflection) section for more information.
+从 1.20.5 开始，由于 Paper 停止重新定位 CraftBukkit 包，因此无法再通过类的包名解析版本。
+有关更多信息，请参阅 [反射](#反射) 部分。
 
 :::

@@ -1,212 +1,211 @@
 ---
-title: Introduction
+title: 介绍
 slug: paper/dev/component-api/introduction
-description: An introduction to how components work.
+description: 关于组件如何工作的介绍。
 ---
 
-:::note
+:::note[注意]
 
-This documentation page applies to both the Paper and Velocity projects.
-
-:::
-
-Since Minecraft 1.7, the game has utilized components to represent text to be displayed
-by clients. Components offer a number of benefits over plain text strings which are enumerated below.
-Paper and Velocity natively implements the Adventure API to add component support wherever possible.
-
-## Why you should use Components
-
-Previously, text was a linear structure with the only formatting options being
-confusing symbols like `§c` and `§k` to control basic colors and styles of text.
-Components are a tree-like structure that inherits style and colors from their parents.
-
-Components have several types which do different things than just display raw text, like
-translating text to the client's language based on a key, or showing a client-specific keybind
-to a player.
-
-All these component types support more style options like any RGB color, interaction events
-(click and hover). The other component types and these style options have poor or missing
-representations in the legacy string format.
-
-## Usage
-
-Representing text as components is now the supported way of representing text for Paper and Velocity. They are used
-for almost all aspects of text being displayed to clients. Text like item names, lore, bossbars, team prefixes and
-suffixes, custom names, and much more all support components in respective APIs.
-[Mojang has stated](https://bugs-legacy.mojang.com/browse/MC-190605?focusedId=993040&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-993040)
-that client support for the legacy format with `§` will be removed in the future.
-
-
-:::tip
-
-In the Paper API, there are lots of deprecated methods and types that deal with this legacy format. This is to
-signal that a better alternative in components is available and should be migrated to going forward.
+本文档页面适用于 Paper 和 Velocity 项目。
 
 :::
 
-## Creating components
+自 Minecraft 1.7 版本以来，游戏一直使用组件来表示客户端显示的文本。
+与纯文本字符串相比，组件具有许多优势，具体如下。
+Paper 和 Velocity 原生实现了 Adventure API，尽可能地在各个地方添加了对组件的支持。
 
-Components can be interacted with as objects. There are different interfaces for each type along with
-builders for all the types. These objects are immutable so when constructing more complex components, it's
-recommended to use builders to avoid creating new Component instances with every change.
+## 为什么你应该使用组件
+
+以前，文本是一种线性结构，唯一的格式化选项是一些令人困惑的符号，
+比如 `§c` 和 `§k`，用于控制文本的基本颜色和样式。
+组件是一种树状结构，可以从其父级继承样式和颜色。
+
+组件有几种类型，它们的功能不仅仅是显示原始文本，
+例如可以根据键值将文本翻译成客户端的语言，
+或者向玩家显示特定于客户端的按键绑定。
+
+所有这些组件类型都支持更多的样式选项，
+例如任意 RGB 颜色、交互事件（点击和悬停）。
+其他组件类型以及这些样式选项在旧版字符串格式中的表示要么不完整，要么缺失。
+
+## 使用方法
+
+将文本表示为组件现在是 Paper 和 Velocity 支持的文本表示方式。
+它们几乎用于客户端显示文本的所有方面。
+例如物品名称、物品描述、Boss 条、团队前缀和后缀、自定义名称等，所有这些文本都在各自的 API 中支持组件。
+[据 Mojang 表示](https://bugs-legacy.mojang.com/browse/MC-190605?focusedId=993040&page=com.atlassian.jira.plugin.system.issuetabpanels%3Acomment-tabpanel#comment-993040)，
+未来将移除客户端对带有 `§` 的旧版格式的支持。
+
+:::tip[提示]
+
+在 Paper API 中，有许多处理这种旧版格式的方法和类型已经被弃用。
+这是为了表明组件中有一个更好的替代方案，并且应该在未来迁移到该方案。
+
+:::
+
+## 创建组件
+
+组件可以作为对象进行交互。
+每种类型都有不同的接口，以及适用于所有类型的构建器。
+这些对象是不可变的，因此在构建更复杂的组件时，建议使用构建器，以避免在每次更改时都创建新的组件实例。
 
 ```java
-// This is a sub-optimal construction of the
-// component as each change creates a new component
+// 这是一种次优的组件构建方式，
+// 因为每次更改都会创建一个新的组件
 final Component component = Component.text("Hello")
     .color(TextColor.color(0x13f832))
-    .append(Component.text(" world!", NamedTextColor.GREEN));
+    .append(Component.text(" 世界！", NamedTextColor.GREEN));
 
-/* This is an optimal use of the builder to create
-   the same component. Also note that Adventure
-   Components are designed for use with static method imports
-   to make code less verbose */
+/* 这是使用构建器创建相同组件的最优方式。
+  此外，请注意，
+  Adventure 组件旨在与静态方法导入结合使用，
+  以使代码更加简洁 */
 final Component component = text()
     .content("Hello").color(color(0x13f832))
-    .append(text(" world!", GREEN))
+    .append(text(" 世界！", GREEN))
     .build();
 ```
 
-:::note[In-Depth Documentation]
+:::note[深入文档]
 
-For complete documentation on the Adventure Component API Paper and Velocity use, please look at the
-[Adventure documentation](https://docs.advntr.dev).
+有关 Paper 和 Velocity 使用的 Adventure 组件 API 的完整文档，
+请参阅 [Adventure 文档](https://docs.advntr.dev)。
 
 :::
 
 ## MiniMessage
 
-Paper and Velocity include the MiniMessage library, which is a string representation of components. If you prefer working with
-strings rather than objects, MiniMessage is vastly superior to the legacy string format. It can utilize the tree
-structure for style inheritance and can represent the more complex component types while legacy cannot.
+Paper 和 Velocity 包含 MiniMessage 库，这是组件的字符串表示形式。
+如果你更喜欢使用字符串而不是对象，MiniMessage 比旧版字符串格式要优越得多。
+它可以利用树结构进行样式继承，并且能够表示更复杂的组件类型，而旧版格式则不能。
 
 ```java
 final Component component = MiniMessage.miniMessage().deserialize(
-    "<#438df2><b>This is the parent component; its style is " +
-    "applied to all children.\n<u><!b>This is the first child, " +
-    "which is rendered after the parent</!b></u><key:key.inventory></b></#438df2>"
+    "<#438df2><b>这是父组件；其样式是 " +
+    "应用于所有子组件.\n<u><!b>这是第一个子组件, " +
+    "它会在父组件之后呈现</!b></u><key:key.inventory></b></#438df2>"
 );
 
 
-// if the syntax above is too verbose for you, create a helper method!
+// 如果上面的语法对你来说太繁琐了，可以创建一个辅助方法！
 
 public final class Components {
-    public static Component mm(String miniMessageString) { // mm, short for MiniMessage
+    public static Component mm(String miniMessageString) { // mm，即 MiniMessage 的缩写
         return MiniMessage.miniMessage().deserialize(miniMessageString);
     }
 }
 
 // ...
 
-import static io.papermc.docs.util.Components.mm; // replace with your own package
+import static io.papermc.docs.util.Components.mm; // 替换为自己的包
 
-final Component component = mm("<blue>Hello <red>World!");
+final Component component = mm("<blue>你好 <red>世界！");
 ```
 
-We recommend using this format for user-facing input such as commands or configuration values.
+我们建议使用这种格式来处理面向用户的输入，例如命令或配置值。
 
-:::note[In-Depth Documentation]
+:::note[深入文档]
 
-MiniMessage is a part of Adventure, and you can find its documentation on [Adventure's documentation](https://docs.advntr.dev/minimessage/index.html).
-
-:::
-
-:::tip
-
-MiniMessage has a [web viewer](https://webui.advntr.dev/), which is useful for constructing more complicated components and seeing the results in real time.
+MiniMessage 是 Adventure 的一部分，你可以通过 [Adventure 的文档](https://docs.advntr.dev/minimessage/index.html) 来查看它的文档。
 
 :::
 
-## JSON format
+:::tip[提示]
 
-Components can be serialized and deserialized from a standard JSON format. This format is used
-in Vanilla in various commands which accept component arguments like `/tellraw`. Below is a simple example
-of this format.
+MiniMessage 有一个 [网页查看器](https://webui.advntr.dev/)，它对于构建更复杂的组件并实时查看结果非常有用。
+
+:::
+
+## JSON 格式
+
+组件可以从标准的 JSON 格式进行序列化和反序列化。
+这种格式在原版游戏中被用于各种接受组件参数的命令中，
+例如 `/tellraw`。以下是一个这种格式的简单示例。
 
 ```json
 {
-  "text": "This is the parent component; its style is applied to all children.\n",
+  "text": "这是父组件；其样式应用于所有子组件。\n",
   "color": "#438df2",
   "bold": true,
   "extra": [
     {
-      "text": "This is this first child, which is rendered after the parent",
+      "text": "这是第一个子组件，它会在父组件之后呈现。",
       "underlined": true,
-      // This overrides the parent's "bold" value just for this component
+      // 这会仅为此组件覆盖父组件的“粗体”值
       "bold": false
     },
     {
-      // This is a keybind component which will display the client's keybind for that action
+      // 这是一个按键绑定组件，它将显示客户端的该操作的按键绑定
       "keybind": "key.inventory"
     }
   ]
 }
 ```
 
-:::note[In-Depth Documentation]
+:::note[深入文档]
 
-The JSON format is fully documented on the [Minecraft Wiki](https://minecraft.wiki/w/Raw_JSON_text_format).
-
-:::
-
-:::tip
-
-There are online tools to make generating this format much easier like [JSON Text Generator](https://minecraft.tools/en/json_text.php).
+JSON 格式的详细文档可以在 [Minecraft Wiki](https://minecraft.wiki/w/Raw_JSON_text_format) 上找到。
 
 :::
 
-## Serializers
+:::tip[提示]
 
-Paper and Velocity come bundled with different serializers for converting between
-[`Component`](https://jd.advntr.dev/api/latest/net/kyori/adventure/text/Component.html)s and other forms of serialized text.
+有一些在线工具可以更轻松地生成这种格式，例如 [JSON 文本生成器](https://minecraft.tools/en/json_text.php)。
+
+:::
+
+## 序列化器
+
+Paper 和 Velocity 都内置了不同的序列化器，
+用于在 [`Component`](https://jd.advntr.dev/api/latest/net/kyori/adventure/text/Component.html) 和其他形式的序列化文本之间进行转换。
 
 ### [`GsonComponentSerializer`](https://jd.advntr.dev/text-serializer-gson/latest)
 
-Converts between `Component`
-and JSON-formatted strings with convenience methods to directly deal with Gson's
-[`JsonElement`](https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/JsonElement.html).
-This conversion is lossless and is the preferred form of serialization for components that do not have to be edited by users regularly.
+可以使用便利方法直接处理 Gson 的 [`JsonElement`](https://javadoc.io/doc/com.google.code.gson/gson/latest/com.google.gson/com/google/gson/JsonElement.html)，
+在 `Component` 和 JSON 格式的字符串之间进行转换。
+这种转换是无损的，
+是那些不需要经常由用户编辑的组件的首选序列化形式。
 
 ### [`MiniMessage`](https://jd.advntr.dev/text-minimessage/latest)
 
-Converts between `Component`
-and a MiniMessage-formatted string. This conversion is lossless and is the preferred form of
-serialization for components that have to be edited by users. There is also extensive customization you can add to the
-serializer, which is [documented here](https://docs.advntr.dev/minimessage/api.html#getting-started).
+在 `Component` 和 MiniMessage 格式的字符串之间进行转换。
+这种转换是无损的，是那些需要由用户编辑的组件的首选序列化形式。
+你还可以为序列化器添加大量的自定义内容，
+相关内容已在 [API 文档](https://docs.advntr.dev/minimessage/api.html#getting-started) 中进行了说明。
 
 ### [`PlainTextComponentSerializer`](https://jd.advntr.dev/text-serializer-plain/latest)
 
-Serializes a `Component` into a plain text string. This is very lossy as all style information as well as most other
-types of components will lose information. There may be special handling for
-[`TranslatableComponent`](https://jd.advntr.dev/api/latest/net/kyori/adventure/text/TranslatableComponent.html)s to be serialized
-into a default language, but generally this shouldn't be used except in certain circumstances, like logging to a text file.
+将 `Component` 序列化为纯文本字符串。
+这种转换会丢失大量信息，因为所有样式信息以及大多数其他类型的组件都会丢失。
+虽然可能会对 [`TranslatableComponent`](https://jd.advntr.dev/api/latest/net/kyori/adventure/text/TranslatableComponent.html) 进行特殊处理，将其序列化为默认语言，
+但通常情况下，这种序列化方式只应在特定情境下使用，例如记录到文本文件中。
 
 ### [`LegacyComponentSerializer`](https://jd.advntr.dev/text-serializer-legacy/latest)
 
-:::caution
+:::caution[警告]
 
-This is not recommended for use as the legacy format may be removed in the future.
+不建议使用这种方式，因为旧版格式可能会在未来被移除。
 
 :::
 
-Converts between `Component` and the legacy string format.
-This conversion is very lossy as component types and events do not have a legacy string representation.
+在 `Component` 和旧版字符串格式之间进行转换。
+由于组件类型和事件在旧版字符串格式中没有对应的表示，这种转换会丢失大量信息。
 
-A more useful use case is converting legacy text to MiniMessage format in a migration process.
+一个更有用的用例是在迁移过程中将旧版文本转换为 MiniMessage 格式。
 ```java
-final String legacyString = ChatColor.RED + "This is a legacy " + ChatColor.GOLD + "string";
+final String legacyString = ChatColor.RED + "这是一个旧版 " + ChatColor.GOLD + "string";
 
-// runs the legacy string through two serializers to convert legacy -> MiniMessage
+// 通过两个序列化器运行旧版字符串，以将旧版格式转换为 MiniMessage 格式。
 final String miniMessageString = MiniMessage.miniMessage().serialize(
     LegacyComponentSerializer.legacySection().deserialize(legacyString)
 );
 ```
 
-:::note
+:::note[注意]
 
-There are 2 built-in legacy serializers, one dealing with `§` symbols and the other for
-`&` symbols. They have their own instances available through
-[`LegacyComponentSerializer#legacySection()`](https://jd.advntr.dev/text-serializer-legacy/latest/net/kyori/adventure/text/serializer/legacy/LegacyComponentSerializer.html#legacySection())
-and [`LegacyComponentSerializer#legacyAmpersand()`](https://jd.advntr.dev/text-serializer-legacy/latest/net/kyori/adventure/text/serializer/legacy/LegacyComponentSerializer.html#legacyAmpersand()).
+有两种内置的旧版序列化器，一种用于处理 `§` 符号，
+另一种用于处理 `&` 符号。它们分别可以通过以下方法获取实例：
+- [LegacyComponentSerializer#legacySection()](https://jd.advntr.dev/text-serializer-legacy/latest/net/kyori/adventure/text/serializer/legacy/LegacyComponentSerializer.html#legacySection)()
+- [LegacyComponentSerializer#legacyAmpersand()](https://jd.advntr.dev/text-serializer-legacy/latest/net/kyori/adventure/text/serializer/legacy/LegacyComponentSerializer.html#legacyAmpersand)()
 
 :::

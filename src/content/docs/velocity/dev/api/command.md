@@ -1,23 +1,22 @@
 ---
-title: Command API
-description: How to create commands within Velocity.
+title: 命令 API
+description: 如何在 Velocity 中创建命令
 slug: velocity/dev/command-api
 ---
 
-The command API lets you create commands that can be executed by a player connected to the proxy or
-the console.
+命令 API 允许你创建可以由连接到代理服务器的玩家或控制台执行的命令。
 
-## Creating a command
+## 创建命令
 
-Each command class needs to implement a [`Command`](jd:velocity:com.velocitypowered.api.command.Command) sub-interface.
-The choice depends on the type of arguments and the granularity of suggestions provided to the client. These include:
+每个命令类都需要实现一个 [`Command`](jd:velocity:com.velocitypowered.api.command.Command) 子接口。
+选择哪个接口取决于参数的类型和提供给客户端的建议的粒度。这些接口包括：
 
 ### [`BrigadierCommand`](jd:velocity:com.velocitypowered.api.command.BrigadierCommand)
 
-Internally, Velocity uses the [Brigadier](https://github.com/Mojang/brigadier) library to register
-and dispatch command actions. You can register your own `CommandNode`s by wrapping them in a
-`BrigadierCommand`. Let's see an example of a command that will tell whoever executes the command
-"Hello World" in light blue text.
+在内部，Velocity 使用 [Brigadier](https://github.com/Mojang/brigadier) 库来注册和分发命令操作。
+你可以通过将你的 `CommandNode` 包装在 `BrigadierCommand` 中来注册它们。
+让我们看一个例子，
+这个命令会用浅蓝色文字向执行命令的人显示 `Hello World`。
 
 ```java
 package com.example.velocityplugin;
@@ -36,88 +35,87 @@ public final class TestBrigadierCommand {
 
     public static BrigadierCommand createBrigadierCommand(final ProxyServer proxy) {
         LiteralCommandNode<CommandSource> helloNode = BrigadierCommand.literalArgumentBuilder("test")
-            // Here you can filter the subjects that can execute the command.
-            // This is the ideal place to do "hasPermission" checks
+            // 在这里你可以筛选可以执行命令的主体。
+            // 这是进行"hasPermission"检查的理想位置
             .requires(source -> source.hasPermission("test.permission"))
-            // Here you can add the logic that will be used in
-            // the execution of the "/test" command without any argument
+            // 在这里你可以添加在执行"/test"命令时使用的逻辑
+            // 不带任何参数
             .executes(context -> {
-                // Here you get the subject that executed the command
+                // 在这里你获取执行命令的主体
                 CommandSource source = context.getSource();
 
                 Component message = Component.text("Hello World", NamedTextColor.AQUA);
                 source.sendMessage(message);
 
-                // Returning Command.SINGLE_SUCCESS means that the execution was successful
-                // Returning BrigadierCommand.FORWARD will send the command to the server
+                // 返回 Command.SINGLE_SUCCESS 表示执行成功
+                // 返回 BrigadierCommand.FORWARD 将命令发送到服务器
                 return Command.SINGLE_SUCCESS;
             })
-            // Using the "then" method, you can add sub-arguments to the command.
-            // For example, this subcommand will be executed when using the command "/test <some argument>"
-            // A RequiredArgumentBuilder is a type of argument in which you can enter some undefined data
-            // of some kind. For example, this example uses a StringArgumentType.word() that requires
-            // a single word to be entered, but you can also use different ArgumentTypes provided by Brigadier
-            // that return data of type Boolean, Integer, Float, other String types, etc
+            // 使用"then"方法，你可以为命令添加子参数。
+            // 例如，这个子命令将在使用命令"/test <某个参数>"时执行
+            // RequiredArgumentBuilder 是一种参数类型，你可以在其中输入某种未定义的数据。
+            // 例如，这个例子使用 StringArgumentType.word() 要求输入一个单词，
+            // 但你也可以使用 Brigadier 提供的不同 ArgumentType，
+            // 它们返回 Boolean、Integer、Float、其他 String 类型等数据
             .then(BrigadierCommand.requiredArgumentBuilder("argument", StringArgumentType.word())
-                // Here you can define the hints to be provided in case the ArgumentType does not provide them.
-                // In this example, the names of all connected players are provided
+                // 在这里你可以定义在 ArgumentType 不提供提示时要提供的提示。
+                // 在这个例子中，提供了所有已连接玩家的名称
                 .suggests((ctx, builder) -> {
-                    // Here we provide the names of the players along with a tooltip,
-                    // which can be used as an explanation of a specific argument or as a simple decoration
+                    // 在这里我们提供玩家的名字以及一个工具提示，
+                    // 它可以用作特定参数的解释或简单的装饰
                     proxy.getAllPlayers().forEach(player -> builder.suggest(
                             player.getUsername(),
-                            // A VelocityBrigadierMessage takes a component.
-                            // In this case, the player's name is provided with a rainbow
-                            // gradient created using MiniMessage.
+                            // VelocityBrigadierMessage 接受一个组件。
+                            // 在这种情况下，使用 MiniMessage 创建的彩虹渐变
+                            // 提供玩家的名字
                             VelocityBrigadierMessage.tooltip(
                                     MiniMessage.miniMessage().deserialize("<rainbow>" + player.getUsername())
                             )
                     ));
-                    // If you do not need to add a tooltip to the hint
-                    // or your command is intended only for versions lower than Minecraft 1.13,
-                    // you can omit adding the tooltip, since for older clients,
-                    // the tooltip will not be displayed.
+                    // 如果你不需要为提示添加工具提示
+                    // 或者你的命令仅针对 Minecraft 1.13 以下版本，
+                    // 你可以省略添加工具提示，因为对于较旧的客户端，
+                    // 工具提示不会显示。
                     builder.suggest("all");
                     return builder.buildFuture();
                 })
-                // Here the logic of the command "/test <some argument>" is executed
+                // 在这里执行命令"/test <某个参数>"的逻辑
                 .executes(context -> {
-                    // Here you get the argument that the CommandSource has entered.
-                    // You must enter exactly the name as you have named the argument
-                    // and you must provide the class of the argument you expect, in this case... a String
+                    // 在这里你获取 CommandSource 输入的参数。
+                    // 你必须输入与你命名参数时完全相同的名称
+                    // 并且必须提供你期望的参数类，在这种情况下是 String
                     String argumentProvided = context.getArgument("argument", String.class);
-                    // This method will check if the given string corresponds to a
-                    // player's name and if it does, it will send a message to that player
+                    // 这个方法将检查给定的字符串是否对应于
+                    // 玩家的名字，如果是，它将向该玩家发送消息
                     proxy.getPlayer(argumentProvided).ifPresent(player ->
                         player.sendMessage(Component.text("Hello!"))
                     );
-                    // Returning Command.SINGLE_SUCCESS means that the execution was successful
-                    // Returning BrigadierCommand.FORWARD will send the command to the server
+                    // 返回 Command.SINGLE_SUCCESS 表示执行成功
+                    // 返回 BrigadierCommand.FORWARD 将命令发送到服务器
                     return Command.SINGLE_SUCCESS;
                 })
             )
             .build();
 
-        // BrigadierCommand implements Command
+        // BrigadierCommand 实现了 Command
         return new BrigadierCommand(helloNode);
     }
 }
 ```
 
-Brigadier commands have full backward compatibility with 1.12.2 and lower versions.
+Brigadier 命令与 1.12.2 及以下版本完全兼容。
 
-Custom plugin command argument types are not supported in Velocity, as they would require the client
-to also support them. We recommend sticking to the predefined Brigadier types provided.
+Velocity 不支持自定义插件命令参数类型，因为这需要客户端也支持它们。
+我们建议使用 Brigadier 提供的预定义类型。
 
 ### [`SimpleCommand`](jd:velocity:com.velocitypowered.api.command.SimpleCommand)
 
-Modeled after the convention popularized by Bukkit and BungeeCord, a `SimpleCommand` has three
-methods: one for when the command is executed, one to provide suggestions for tab completion, and
-one to check a [`CommandSource`](jd:velocity:com.velocitypowered.api.command.CommandSource)
-has permission to use the command. All methods receive a
-[`SimpleCommand.Invocation`](jd:velocity:com.velocitypowered.api.command.SimpleCommand$Invocation)
-object, which contains the `CommandSource` that executed the command and the arguments as an array of strings.
-The previous example can also be implemented using this interface:
+按照 Bukkit 和 BungeeCord 普及的惯例，`SimpleCommand` 有三个方法：
+一个用于命令执行时，一个用于提供 tab 补全建议，
+一个用于检查 [`CommandSource`](jd:velocity:com.velocitypowered.api.command.CommandSource) 是否有权限使用该命令。
+所有方法都接收一个 [`SimpleCommand.Invocation`](jd:velocity:com.velocitypowered.api.command.SimpleCommand$Invocation) 对象，
+其中包含执行命令的 `CommandSource` 和作为字符串数组的参数。
+前面的例子也可以使用这个接口实现：
 
 ```java
 package com.example.velocityplugin;
@@ -134,32 +132,31 @@ public final class TestCommand implements SimpleCommand {
     @Override
     public void execute(final Invocation invocation) {
         CommandSource source = invocation.source();
-        // Get the arguments after the command alias
+        // 获取命令别名后的参数
         String[] args = invocation.arguments();
 
-        source.sendMessage(Component.text("Hello World!", NamedTextColor.AQUA));
+        source.sendMessage(Component.text("你好，世界！", NamedTextColor.AQUA));
     }
 
-    // This method allows you to control who can execute the command.
-    // If the executor does not have the required permission,
-    // the execution of the command and the control of its autocompletion
-    // will be sent directly to the server on which the sender is located
+    // 这个方法允许你控制谁可以执行命令。
+    // 如果执行者没有所需的权限，
+    // 命令的执行和其自动补全的控制
+    // 将直接发送到发送者所在的服务器
     @Override
     public boolean hasPermission(final Invocation invocation) {
         return invocation.source().hasPermission("command.test");
     }
 
-    // With this method you can control the suggestions to send
-    // to the CommandSource according to the arguments
-    // it has already written or other requirements you need
+    // 通过这个方法你可以根据 CommandSource 已经写入的参数
+    // 或其他你需要的要求来控制要发送的建议
     @Override
     public List<String> suggest(final Invocation invocation) {
         return List.of();
     }
 
-    // Here you can offer argument suggestions in the same way as the previous method,
-    // but asynchronously. It is recommended to use this method instead of the previous one
-    // especially in cases where you make a more extensive logic to provide the suggestions
+    // 在这里你可以以与前一个方法相同的方式提供参数建议，
+    // 但是异步地。建议使用这个方法而不是前一个方法，
+    // 特别是在你为提供建议而进行更广泛的逻辑处理的情况下
     @Override
     public CompletableFuture<List<String>> suggestAsync(final Invocation invocation) {
         return CompletableFuture.completedFuture(List.of());
@@ -167,23 +164,23 @@ public final class TestCommand implements SimpleCommand {
 }
 ```
 
-It's important to note [`invocation.arguments()`](jd:velocity:com.velocitypowered.api.command.CommandInvocation#arguments())
-doesn't include the command alias (e.g. `teleport` for `/teleport foo bar`). In the event that no arguments are specified, an empty array will be
-passed, rather than a null array.
+需要指出的是， [`invocation.arguments()`](jd:velocity:com.velocitypowered.api.command.CommandInvocation#arguments())
+不包含命令别名（例如`/teleport foo bar`中的`teleport`）。
+如果没有指定任何参数，将传递一个空数组，而不是`null`数组。
 
-If a player or the console executes the following command: `/stats Player2 kills`, the first
-argument will be `Player2`, which we can access using `invocation.arguments()[0]` and the second
-argument will be `kills`.
+如果玩家或控制台执行了以下命令：`/stats Player2 kills`，第一个参数将是`Player2`，
+我们可以通过`invocation.arguments()[0]`来访问它，
+第二个参数将是`kills`。
 
 ### [`RawCommand`](jd:velocity:com.velocitypowered.api.command.RawCommand)
 
-There's certain cases where you don't need to process the arguments. These may include:
+有些情况下你不需要处理参数。这些情况可能包括：
 
-- A `/say` style command, where the arguments contain the message as a string; or
-- You're using an external command framework to process your commands.
+- 类似`/say`的命令，参数包含作为字符串的消息；或者
+- 你正在使用外部命令框架来处理你的命令。
 
-A raw command indicates the proxy to pass the command alias and its arguments directly without
-further processing. Let's see an example of a command that echoes the received input:
+原生命令表示代理将直接传递命令别名及其参数，而无需进一步处理。
+让我们来看一个回显收到的输入的命令示例：
 
 ```java
 package com.example.velocityplugin;
@@ -205,19 +202,17 @@ public final class EchoCommand implements RawCommand {
 }
 ```
 
-## Registering a command
+## 注册命令
 
-Now that we have created a command, we need to register it in order for it to work. To register
-commands, you use the [`CommandManager`](jd:velocity:com.velocitypowered.api.command.CommandManager).
-We get the command manager by executing
-[`proxyServer.getCommandManager()`](jd:velocity:com.velocitypowered.api.proxy.ProxyServer#getCommandManager())
-with the proxy instance, or by injecting it using the [`@Inject`](https://javadoc.io/doc/com.google.inject/guice/latest/com/google/inject/Inject.html)
-annotation in the main class. The register method requires two parameters, the command metadata and the command object.
+现在我们已经创建了一个命令，我们需要将其注册，以便它能够正常工作。
+为了注册命令，你需要使用 [`CommandManager`](jd:velocity:com.velocitypowered.api.command.CommandManager)。
+你可以通过调用 [`proxyServer.getCommandManager()`](jd:velocity:com.velocitypowered.api.proxy.ProxyServer#getCommandManager()) （使用代理实例）
+或者在主类中通过 [`@Inject`](https://javadoc.io/doc/com.google.inject/guice/latest/com/google/inject/Inject.html) 注解来注入它，从而获取命令管理器。
+注册方法需要两个参数：命令元数据和命令对象。
 
-The [`CommandMeta`](jd:velocity:com.velocitypowered.api.command.CommandMeta)
-contains the case-insensitive aliases and more advanced features.
-`CommandManager` provides a meta builder via the
-[`#metaBuilder(String alias)`](jd:velocity:com.velocitypowered.api.command.CommandManager#metaBuilder(java.lang.String)) method.
+[`CommandMeta`](jd:velocity:com.velocitypowered.api.command.CommandMeta) 包含不区分大小写的别名和更多高级功能。
+`CommandManager` 通过
+[`#metaBuilder(String alias)`](jd:velocity:com.velocitypowered.api.command.CommandManager#metaBuilder(java.lang.String)) 方法提供元数据构建器。
 
 ```java
 package com.example.velocityplugin;
@@ -241,27 +236,27 @@ public final class HelloWorldPlugin {
     @Subscribe
     public void onProxyInitialize(ProxyInitializeEvent event) {
         CommandManager commandManager = proxy.getCommandManager();
-        // Here you can add meta for the command, as aliases and the plugin to which it belongs (RECOMMENDED)
+        // 在这里你可以为命令添加元数据，如别名和它所属的插件（推荐）
         CommandMeta commandMeta = commandManager.metaBuilder("test")
-            // This will create a new alias for the command "/test"
-            // with the same arguments and functionality
+            // 这将为命令"/test"创建一个新的别名
+            // 具有相同的参数和功能
             .aliases("otherAlias", "anotherAlias")
             .plugin(this)
             .build();
 
-        // You can replace this with "new EchoCommand()" or "new TestCommand()"
+        // 你可以用"new EchoCommand()"或"new TestCommand()"替换这个
         // SimpleCommand simpleCommand = new TestCommand();
         // RawCommand rawCommand = new EchoCommand();
-        // The registration is done in the same way, since all 3 interfaces implement "Command"
+        // 注册方式相同，因为所有 3 个接口都实现了"Command"
         BrigadierCommand commandToRegister = TestBrigadierCommand.createBrigadierCommand(proxy);
 
-        // Finally, you can register the command
+        // 最后，你可以注册命令
         commandManager.register(commandMeta, commandToRegister);
     }
 }
 ```
 
-If you're registering a `BrigadierCommand`, you may prefer to use the
-[`#register(BrigadierCommand)`](jd:velocity:com.velocitypowered.api.command.CommandManager#register(com.velocitypowered.api.command.BrigadierCommand))
-method or [`#metaBuilder(BrigadierCommand)`](jd:velocity:com.velocitypowered.api.command.CommandManager#metaBuilder(com.velocitypowered.api.command.BrigadierCommand))
-to specify additional aliases.
+如果你正在注册一个 `BrigadierCommand`，
+你可能更倾向于使用 [`#register(BrigadierCommand)`](jd:velocity:com.velocitypowered.api.command.CommandManager#register(com.velocitypowered.api.command.BrigadierCommand))
+方法或 [`#metaBuilder(BrigadierCommand)`](jd:velocity:com.velocitypowered.api.command.CommandManager#metaBuilder(com.velocitypowered.api.command.BrigadierCommand))
+来指定额外的别名。

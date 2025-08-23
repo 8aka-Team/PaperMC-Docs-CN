@@ -2,10 +2,10 @@
   type Option = { label: string; value: string; description?: string };
 
   const modes: Option[] = [
-    { label: "Command", value: "command" },
-    { label: "Item argument", value: "item-argument" },
-    { label: "Component argument", value: "component-argument" },
-    { label: "Entity argument", value: "entity-argument" },
+    { label: "命令", value: "command" },
+    { label: "物品参数", value: "item-argument" },
+    { label: "组件参数", value: "component-argument" },
+    { label: "实体参数", value: "entity-argument" },
   ];
 
   const entityTypes: Option[] = [
@@ -96,11 +96,11 @@
     .map((e) => ({ label: e, value: e }))
     .sort((e1, e2) => e1.label.localeCompare(e2.label));
 
-  type State = "success" | "error" | "loading" | "idle";
+  type State = "完成" | "错误" | "加载" | "空闲";
 </script>
 
 <script lang="ts">
-  let convState = $state<State>("idle");
+  let convState = $state<State>("空闲");
   let input = $state("");
   let output = $state("");
 
@@ -117,12 +117,12 @@
   let entityType = $derived<Option>(entityTypes.find((m) => m.value === entityTypeId) ?? entityTypes[0]);
 
   const convert = async () => {
-    if (convState === "loading") {
+    if (convState === "加载") {
       return;
     }
 
-    convState = "loading";
-    output = "Converting...";
+    convState = "加载";
+    output = "正在转换...";
     try {
       const query = mode.value === "entity-argument" ? `?entityType=${entityType!.value}` : "";
       const response = await fetch(`https://item-converter.papermc.io/convert-${mode.value}${query}`, {
@@ -132,16 +132,16 @@
 
       if (response.ok) {
         output = await response.text();
-        convState = "success";
+        convState = "完成";
       } else {
-        output = `Failed to convert command. (${await response.text()})`;
-        convState = "error";
+        output = `命令转换失败。 (${await response.text()})`;
+        convState = "错误";
       }
     } catch (e) {
-      output = "Failed to convert command, check the console.";
+      output = "命令转换失败，请检查控制台。";
       console.error(e);
 
-      convState = "error";
+      convState = "错误";
     }
   };
 
@@ -153,15 +153,15 @@
 
 <div class="not-content generator">
   <div class="area">
-    <p class="label">Input:</p>
-    <textarea placeholder="Enter your 1.20.4 command here..." bind:value={input}></textarea>
+    <p class="label">输入:</p>
+    <textarea placeholder="在这里输入您的 1.20.4 命令..." bind:value={input}></textarea>
   </div>
 
   <div class="controls">
-    <button onclick={convert} disabled={convState === "loading"}>Convert</button>
+    <button onclick={convert} disabled={convState === "加载"}>转换</button>
     {#if mode.value === "entity-argument"}
       <div class="dropdown">
-        <div class="label">Entity type:</div>
+        <div class="label">实体类型:</div>
         <select bind:value={entityTypeId} class="dropdown-code">
           {#each entityTypes as option (option.label)}
             <option value={option.value}>{option.label ?? option.value}</option>
@@ -170,7 +170,7 @@
       </div>
     {/if}
     <div class="dropdown">
-      <div class="label">Mode:</div>
+      <div class="label">模式:</div>
       <select bind:value={modeId}>
         {#each modes as option (option)}
           <option value={option.value}>{option.label ?? option.value}</option>
@@ -180,13 +180,13 @@
   </div>
 
   <div class="area">
-    <p class="label">Output:</p>
-    <textarea placeholder="Press 'Convert' to convert the command." readonly bind:value={output}></textarea>
+    <p class="label">输出:</p>
+    <textarea placeholder="点击“转换”以转换命令。" readonly bind:value={output}></textarea>
   </div>
 
   <div class="controls">
-    <button class:copied onclick={copyToClipboard} disabled={convState !== "success"}>
-      {copied ? "Copied!" : "Copy"}
+    <button class:copied onclick={copyToClipboard} disabled={convState !== "完成"}>
+      {copied ? "已复制！" : "复制"}
     </button>
   </div>
 </div>

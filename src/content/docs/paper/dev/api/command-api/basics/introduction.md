@@ -1,55 +1,55 @@
 ---
-title: Introduction
-description: A guide to Paper's Brigadier command API.
+title: 介绍
+description: 一份关于 Paper 的 Brigadier 命令 API 的指南。
 slug: paper/dev/command-api/basics/introduction
 ---
 
-Paper's command system is built on top of Minecraft's Brigadier command system. This system provides a powerful and flexible way to define commands and arguments.
-It offers many advantages above the previously widely used Bukkit command system:
-- Less parsing or error checking required by the developer for arguments.
-- Better user experience with client error checking.
-- Integration with reload events, allowing the definition of commands usable in datapacks.
-- Easier creation of subcommands.
+Paper 的命令系统是基于 Minecraft 的 Brigadier 命令系统构建的。该系统提供了一种强大且灵活的方式来定义命令和参数。
+与之前广泛使用的 Bukkit 命令系统相比，它具有许多优势：
+- 开发者需要对参数进行的解析或错误检查更少。
+- 客户端错误检查提供更好的用户体验。
+- 与重载事件集成，允许在数据包中定义可用的命令。
+- 更容易创建子命令。
 
-:::note
+:::note[注意]
 
-To see a comparison between the new Brigadier system and the old Bukkit system, [click here](/paper/dev/command-api/misc/comparison-bukkit-brigadier).
-
-:::
-
-## Guide
-
-:::tip
-
-If the Brigadier API seems too complicated, you can start with
-[basic commands](/paper/dev/command-api/misc/basic-command). They
-provide a simple way of creating commands, with only a small learning curve.
+要查看新的 Brigadier 系统与旧的 Bukkit 系统之间的比较，[点击这里](/paper/dev/command-api/misc/comparison-bukkit-brigadier)。
 
 :::
 
-The following sites are worth-while to look through first when learning about Brigadier:
-- [The Command Tree](/paper/dev/command-api/basics/command-tree)
-- [Arguments and Literals](/paper/dev/command-api/basics/arguments-and-literals)
-- [Command Executors](/paper/dev/command-api/basics/executors)
-- [Command Registration](/paper/dev/command-api/basics/registration)
-- [Command Requirements](/paper/dev/command-api/basics/requirements)
-- [Argument Suggestions](/paper/dev/command-api/basics/argument-suggestions)
-- [Custom Arguments](/paper/dev/command-api/basics/custom-arguments)
+## 指南
 
-For a reference of more advanced arguments, you should look here:
-- [Minecraft Arguments](/paper/dev/command-api/arguments/minecraft)
+:::tip[提示]
 
-:::danger[Future pages]
-
-The following pages will be added to the documentation in the future:
-
-- **Tutorial: Creating Utility Commands**
-- **The Command Dispatcher**
-- **Forks and Redirects**
-- **Tutorial: Extending the vanilla execute command**
+如果 Brigadier API 看起来太复杂，
+你可以从 [基础命令](/paper/dev/command-api/misc/basic-command) 开始。
+它们提供了一种简单的方式来创建命令，学习曲线较短。
 
 :::
 
-## Additional support
-For support regarding the command API, you can always ask in our [Discord server](https://discord.gg/PaperMC) under the
-[`#paper-dev`](https://discord.com/channels/289587909051416579/555462289851940864) channel!
+在学习 Brigadier 时，以下网站值得一读：
+- [命令树](/paper/dev/command-api/basics/command-tree)
+- [参数和字面量](/paper/dev/command-api/basics/arguments-and-literals)
+- [命令执行器](/paper/dev/command-api/basics/executors)
+- [命令注册](/paper/dev/command-api/basics/registration)
+- [命令要求](/paper/dev/command-api/basics/requirements)
+- [参数建议](/paper/dev/command-api/basics/argument-suggestions)
+- [自定义参数](/paper/dev/command-api/basics/custom-arguments)
+
+对于更高级的参数参考，请查看这里：
+- [Minecraft 参数](/paper/dev/command-api/arguments/minecraft)
+
+:::danger[未来页面]
+
+以下页面将在未来添加到文档中：
+
+- **教程：创建实用命令**
+- **命令调度器**
+- **分支和重定向**
+- **教程：扩展原版的 execute 命令**
+
+:::
+
+## 额外支持
+关于命令 API 的支持，
+您可以在我们的 [Discord 服务器](https://discord.gg/PaperMC) 中的 [`#paper-dev`](https://discord.com/channels/289587909051416579/555462289851940864   ) 频道提问！

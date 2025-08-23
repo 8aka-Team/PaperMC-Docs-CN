@@ -44,7 +44,8 @@ const formatDefault = (value?: string): Default => {
 <div class:list={["not-content", "node", json && "node-json", child || "node-root"]}>
   {json && <p class="muted">{"{"}</p>}
   {
-    Object.entries(data).map(([key, rawValue], i, entries) => {
+    data && Object.entries(data).map(([key, rawValue], i, entries) => {
+    // data && 临时修复 vanilla 页面崩溃的问题
       let displayKey = key.replace(/_+$/, ""); // remove trailing underscores, used for duplicating keys
       if (json) {
         displayKey = `"${displayKey}"`;

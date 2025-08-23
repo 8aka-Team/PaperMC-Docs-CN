@@ -1,304 +1,258 @@
 ---
-title: Overview
-description: An overview of how Folia works.
+title: 概述
+description: 关于 Folia 工作原理的概述。
 slug: folia/reference/overview
 ---
 
-Described in this document is the abstract overview
-of changes done by Folia. Folia splits the chunks within all loaded worlds
-into independently ticking regions so that the regions are ticked
-independently and in parallel. Described first will be intra region
-operations, and then inter region operations.
+本文档描述了 Folia 所做的更改的抽象概述。
+Folia 将所有已加载世界中的区块划分为独立计时的区域，
+以便这些区域可以独立且并行地进行计时。
+首先描述的是区域内操作，然后是区域间操作。
 
-## Rules for independent regions
+## 独立区域的规则
 
-In order to ensure that regions are independent, the rules for
-maintaining regions must ensure that a ticking region
-has no directly adjacent neighbor regions which are ticking.
-The following rules guarantee the invariant is upheld:
-1. Any ticking region may not grow while it is ticking.
-2. Any ticking region must initially own a small buffer of chunks outside
-   its perimeter.
-3. Regions may not _begin_ to tick if they have a neighboring adjacent
-   region.
-4. Adjacent regions must eventually merge to form a single region.
+为了确保区域的独立性，维护区域的规则必须确保一个正在运行的区域没有直接相邻的正在运行的邻近区域。
+以下规则保证了不变量的维护：
+1. 任何正在运行的区域在运行期间不能增长。
+2. 任何正在运行的区域最初必须在其周边拥有一定数量的区块缓冲区。
+3. 如果有相邻的邻近区域，区域则不能 _开始_ 运行。
+4. 相邻的区域最终必须合并成一个区域。
 
-Additionally, to ensure that a region is not composed of independent regions
-(which would hinder parallelism), regions composed of more than
-one independent area must be eventually split into independent regions
-when possible.
+此外，为了确保一个区域不是由独立区域组成的（这将阻碍并行性），
+由多个独立区域组成的区域必须在可能的情况下最终被拆分成独立的区域。
 
-Finally, to ensure that ticking regions may store and maintain data
-about the current region (i.e. tick count, entities within the region, chunks
-within the region, block/fluid tick lists, and more), regions have
-their own data object that may only be accessed while ticking the region and
-by the thread ticking the region. Also, there are callbacks to merging
-or splitting regions so that the data object may be updated appropriately.
+最后，为了确保运行的区域可以存储和维护有关当前区域的数据
+（例如，运行次数、区域内的实体、区域内的区块、方块/流体运行列表等），
+区域有自己的数据对象，该对象只能在运行区域时由运行该区域的线程访问。
+此外，还有合并或拆分区域的回调，以便适当更新数据对象。
 
-The implementation of these rules is described in [Region Logic](/folia/reference/region-logic).
+这些规则的实现描述在 [区域逻辑](/folia/reference/region-logic) 中。
 
-The end result of applying these rules is that a ticking region can ensure that
-only the current thread has write access to any data contained within the region,
-and that at any given time the number of independent regions is close to maximum.
+应用这些规则的最终结果是，
+一个正在运行的区域可以确保只有当前线程对区域内包含的任何数据具有写访问权限，
+并且在任何给定时间，独立区域的数量接近最大值。
 
-## Intra-region operations
+## 区域内操作
 
-Intra-region operations refer to any operations that only deal with data
-for a single region by the owning region, or to merge/split logic.
+区域内操作是指只处理单个区域数据的操作，
+由拥有该区域的区域执行，或者涉及合并/拆分逻辑。
 
-### Ticking for independent regions
+### 独立区域的运行
 
-Independent regions tick independently and in parallel. To tick independently
-means that regions maintain their own deadlines for scheduling the next tick. For
-example, consider two regions A and B such that A's next tick start is at t=15ms
-and B's next tick start is at t=0ms. Consider the following sequence of events:
-1. At t = 0ms, B begins to tick.
-2. At t = 15ms, A begins to tick.
-3. At t = 20ms, B is finished its tick. It is then scheduled to tick again at t = 50ms.
-4. At t = 50ms, B begins its 2nd tick.
-5. At t = 70ms, B finishes its 2nd tick and is scheduled to tick again at t = 100ms.
-6. At t = 95ms, A finishes its _first_ tick. It is scheduled to tick again at t = 95ms.
+独立区域独立且并行地运行。
+独立运行意味着区域维护自己的下一个运行的截止时间。
+例如，考虑两个区域 A 和 B，A 的下一个运行开始时间是 t=15ms，B 的下一个运行开始时间是 t=0ms。
+考虑以下事件序列：
+1. 在 t=0ms  时，B 开始运行。
+2. 在 t=15ms 时，A 开始运行。
+3. 在 t=20ms 时，B 完成了它的运行。然后它被安排在 t=50ms 时再次运行。
+4. 在 t=50ms 时，B 开始它的第二次运行。
+5. 在 t=70ms 时，B 完成了它的第二次运行，并被安排在 t=100ms 时再次运行。
+6. 在 t=95ms 时，A 完成了它的 _第一次_ 运行。它被安排在 t=95ms 时再次运行。
 
-It is important to note that at no time was B's schedule affected by the fact that
-A fell behind its 20TPS target.
+需要注意的是，
+B 的运行计划从未受到 A 未能达到 20TPS 目标的影响。
 
-To implement the described behavior, each region maintains a repeating
-task on a scheduled executor (see `SchedulerThreadPool`) that schedules
-tasks according to an earliest-start-time-first scheduling algorithm. The
-algorithm is similar to EDF, but schedules according to start time. However,
-given that the deadline for each tick is 50ms + the start time, it behaves
-identically to the EDF algorithm.
+为了实现上述行为，
+每个区域都在计划执行器（参见 `SchedulerThreadPool`）上维护一个重复任务，
+该任务根据最早开始时间优先的调度算法安排任务。
+该算法类似于 EDF，但根据开始时间进行调度。
+然而，考虑到每个运行的截止时间是 50ms + 开始时间，它的行为与 EDF 算法完全相同。
 
-The EDF-like algorithm is selected so that as long as the thread pool is
-not maximally utilized, that all regions that take <= 50ms to tick will
-maintain 20TPS. However, the scheduling algorithm is neither NUMA aware
-nor CPU core aware - it will not make attempts (when n regions > m threads)
-to pin regions to certain cores.
+选择这种类似 EDF 的算法是为了确保只要线程池没有被充分利用，
+所有运行时间 <= 50ms 的区域都将保持 20TPS。
+然而，这种调度算法既不是 NUMA 感知的，
+也不是 CPU 核心感知的——它不会尝试（当 n 个区域 > m 个线程时）将区域固定到某些核心上。
 
-Since regions tick independently, they maintain their own tick counters. The
-implications of this are described in the next section.
+由于区域独立运行，每个区域都有它们维护自己的 Tick 计数器。
+这一事实的含义将在下一部分中描述。
 
-### Tick counters
+### Tick 计数器
 
-In standard Vanilla, there are several important tick counters: Current Tick,
-Game Time Tick, and Daylight Time Tick. The Current Tick counter is used
-for determining the tick number since the server has booted. The Game Time
-Tick is maintained per world and is used to schedule block ticks
-for redstone, fluids, and other physics events. The Daylight Time Tick
-is simply the number of ticks since noon, maintained per world.
+在标准原版游戏中，有几个重要的运行计数器：
+当前运行次数、游戏时间运行次数和白天时间运行次数。
+当前运行次数用于确定服务器启动以来的运行次数。
+游戏时间运行次数是按世界维护的，用于安排红石、流体和其他物理事件的方块运行。
+白天时间运行次数仅仅是自中午以来的运行次数，按世界维护。
 
-In Folia, the Current Tick is maintained per region. The Game Time Tick
-is split into two counters: Redstone Time and Global Game Time.
-Redstone Time is maintained per region. Global Game Time and
-Daylight Time are maintained by the "global region."
+在 Folia 中，当前运行次数是按区域维护的。
+游戏时间运行次数被拆分为两个计数器：红石时间和全局游戏时间。
+红石时间是按区域维护的。
+全局游戏时间和白天时间由“全局区域”维护。
 
-At the start of each region tick, the global game time tick and
-daylight time tick are copied from the global region and any time
-the current region retrieves those values, it will retrieve from
-the copy received at the start of tick. This is to ensure that
-for any two calls to retrieve the tick number throughout the tick,
-that those two calls report the same tick number.
+在每个区域运行开始时，
+全局游戏时间运行次数和白天时间运行次数从全局区域复制过来，
+当前区域在运行期间检索这些值时，将从运行开始时收到的副本中检索。
+这是为了确保在运行期间的任何两次检索运行次数的调用，
+这两次调用报告相同的运行次数。
 
-The global game time is maintained for a couple of reasons:
-1. There needs to be a counter representing how many ticks a world
-   has existed for, since the game does track total number of days
-   the world has gone on for.
-2. Significant amounts of new entity AI code uses game time (for
-   a reason I cannot divine) to store absolute deadlines of tasks.
-   It is not impossible to write code to adjust the deadlines of
-   all of these tasks, but the amount of work is significant.
+维护全局游戏时间的原因有几个：
+1. 需要一个计数器来表示一个世界已经存在了多少个运行次数，因为游戏确实会跟踪世界已经持续的总天数。
+2. 大量新的实体 AI 代码使用游戏时间（出于我无法理解的原因）来存储任务的绝对截止时间。
+   虽然编写代码来调整所有这些任务的截止时间并非不可能，但工作量相当大。
 
-#### Global region
+#### 全局区域
 
-The global region is a single scheduled task that is always scheduled
-to run at 20TPS that is responsible for maintaining data that is not
-tied to any specific region: game rules, global game time, daylight time,
-console command handling, world border, weather, and others. Unlike the other
-regions, the global region does not need to perform any special logic
-for merging or splitting because it is never split or merged - there is
-only one global region at any time. The global region does not own
-any region specific data.
+全局区域是一个始终以 20TPS 运行的计划任务，
+负责维护不特定于任何区域的数据：
+游戏规则、全局游戏时间、白天时间、控制台命令处理、世界边界、天气等。
+与其他区域不同，全局区域不需要执行任何合并或拆分的特殊逻辑，
+因为它永远不会被拆分或合并——任何时候只有一个全局区域。
+全局区域不拥有任何区域特定的数据。
 
-#### Merging and splitting region tick times
+#### 合并和拆分区域运行时间
 
-Since redstone and current ticks are maintained per region, there needs
-to be appropriate logic to adjust the tick deadlines used by the block/fluid
-tick scheduler and anything else that schedules by redstone/current
-absolute tick time so that the relative deadline is unaffected.
+由于红石和当前运行次数是按区域维护的，
+因此需要适当的逻辑来调整方块/流体运行调度器和其他任何按红石/当前绝对运行次数安排的任务所使用的运行截止时间，
+以确保相对截止时间不受影响。
 
-When merging a region x (from) into a region y (into or to),
-we can either adjust both the deadlines of x and y or just one of x and y.
-It is simply easier to adjust one, and arbitrarily the region x is chosen.
-Then, the deadlines of x must be adjusted so that considering the current
-ticks of y that the relative deadlines remain unchanged.
+当将区域 x（从）合并到区域 y（到）时，
+我们可以调整 x 和 y 的截止时间，或者只调整 x 或 y 中的一个。
+只调整一个会更简单，而 x 被任意选择。
+然后，必须调整 x 的截止时间，
+以便在考虑 y 的当前运行次数时，相对截止时间保持不变。
 
-Consider a deadline d1 = from tick + relative deadline in region x.
-We then want the adjusted deadline d2 to be d2 = to tick + relative deadline
-in region y, so that the relative tick deadline is maintained. We can
-achieve this by applying an offset o to d1 so that d1 + o = d2, and the
-offset used is o = tick to - tick from. This offset must be calculated
-for redstone tick and current tick separately, since the logic to increase
-redstone tick can be turned off by the `Level#tickTime` field.
+考虑一个截止时间 d1 = 从运行次数 + 区域 x 中的相对截止时间。
+然后，我们希望调整后的截止时间 d2 为 d2 = 到运行次数 + 区域 y 中的相对截止时间，以便保持相对运行截止时间。
+我们可以通过应用一个偏移量 o 到 d1 来实现这一点，使得 d1 + o = d2，
+使用的偏移量是 o = 到运行次数 - 从运行次数。
+由于增加红石运行次数的逻辑可以通过 `Level#tickTime` 字段关闭，
+因此必须分别计算红石运行次数和当前运行次数的偏移量。
 
-Finally, the split case is easy - when a split occurs,
-the independent regions from the split inherit the redstone/current tick
-from the parent region. Thus, the relative deadlines are maintained as there
-is no tick number change.
+最后，拆分的情况很简单——当发生拆分时，
+拆分后的独立区域从父区域继承红石/当前运行次数。
+因此，相对截止时间得以保持，因为没有运行次数的变化。
 
-In all cases, redstone or any other events scheduled by current tick
-remain unaffected when regions split or merge as the relative deadline
-is maintained by applying an offset in the merge case and by copying
-the tick number in the split case.
+在所有情况下，当区域拆分或合并时，
+红石或任何其他按当前运行次数安排的事件都保持不变，
+因为在合并情况下通过应用偏移量来保持相对截止时间，在拆分情况下通过复制运行次数来保持。
 
-## Inter-region operations
+## 区域间操作
 
-Inter-region operations refer to operations that work with other regions that are not
-the current ticking region that are in a completely unknown state. These
-regions may be transient, may be ticking, or may not even exist.
+区域间操作是指与当前运行区域之外的其他区域进行操作，
+这些区域可能处于完全未知的状态。
+这些区域可能是过渡的，可能是正在运行的，甚至可能根本不存在。
 
-### Utilities to assist operations
+### 辅助操作的工具
 
-In order to assist in inter region operations, several utilities are provided.
-In NMS, these utilities are the `EntityScheduler`, the `RegionizedTaskQueue`,
-the global region task queue, and the region-local data provider
-`RegionizedData`. The Folia API has similar analogues, but does not have
-a region-local data provider as the NMS data provider holds critical
-locks and is invoked in critical areas of code when performing any
-callback logic and is thus highly susceptible to fatal plugin errors
-involving lengthy I/O or world state modification.
+为了协助区域间操作，提供了几种工具。
+在NMS中，这些工具是 `EntityScheduler`、`RegionizedTaskQueue`、全局区域任务队列和区域本地数据提供者 `RegionizedData`。
+Folia API 有类似的类似物，
+但没有区域本地数据提供者，因为 NMS 数据提供者持有关键锁，
+并且在执行任何回调逻辑时在代码的关键部分被调用，
+因此非常容易受到涉及长时间 I/O 或世界状态修改的致命插件错误的影响。
 
 #### `EntityScheduler`
 
-The `EntityScheduler` allows tasks to be scheduled to be executed on the
-region that owns the entity. This is particularly useful when dealing
-with entity teleportation, as once an entity begins an asynchronous
-teleport the entity cannot tick until the teleport has completed, and
-the timing is undefined.
+`EntityScheduler` 允许安排任务在拥有该实体的区域上执行。
+这在处理实体传送时特别有用，因为一旦实体开始异步传送，
+该实体在传送完成之前不能运行，而且时间是不确定的。
 
 #### `RegionizedTaskQueue`
 
-The `RegionizedTaskQueue` allows tasks to be scheduled to be executed on
-the next tick of a region that owns a specific location, or creating
-such region if it does not exist. This is useful for tasks that may
-need to edit or retrieve world/block/chunk data outside the current region.
+`RegionizedTaskQueue` 允许安排任务在拥有特定位置的区域的下一个运行中执行，
+或者如果该区域不存在，则创建这样的区域。
+这对于可能需要在当前区域之外编辑或检索世界/方块/区块数据的任务很有用。
 
-#### Global region task queue
+#### 全局区域任务队列
 
-The global region task queue is simply used to perform edits on data
-that the global region owns, such as game rules, day time, weather,
-or to execute commands using the console command sender.
+全局区域任务队列只是用于对全局区域拥有的数据进行编辑，
+例如游戏规则、白天时间、天气，或者使用控制台命令发送者执行命令。
 
 #### `RegionizedData`
 
-The `RegionizedData` class allows regions to define region-local data,
-which allow regions to store data without having to consider concurrent
-data access from other regions. For example, current per region
-entity/chunk/block/fluid tick lists are maintained so that regions do not
-need to consider concurrent access to these data sets.
+`RegionizedData` 类允许区域定义区域本地数据，
+从而允许区域存储数据而无需考虑来自其他区域的并发数据访问。
+例如，每个区域的当前实体/区块/方块/流体运行列表得以维护，
+这样区域就不需要考虑对这些数据集的并发访问。
 
-The utilities allow various cross-region issues to be resolved in a
-simple fashion, such as editing block/entity/world state from any region
-by using tasks queues, or by avoiding concurrency issues by using
-RegionizedData. More advanced operations such as teleportation,
-player respawning, and portalling, all make use of these utilities
-to ensure the operation is thread-safe.
+这些工具允许以简单的方式解决各种跨区域问题，
+例如通过使用任务队列从任何区域编辑方块/实体/世界状态，
+或者通过使用 `RegionizedData` 避免并发问题。
+更高级的操作，如传送、玩家重生和传送门传送，
+都利用这些工具来确保操作是线程安全的。
 
-### Entity intra- and inter-dimension teleports
+### 实体内区域和跨区域传送
 
-Entities need special logic in order to teleport safely between
-other regions or other dimensions. In all cases however, the call to
-teleport/place an entity must be invoked on the region owning the entity.
-The `EntityScheduler` can be used to easily schedule code to execute in such
-a context.
+为了在其他区域或维度之间安全地传送实体，需要特殊的逻辑。
+然而，在所有情况下，传送/放置实体的调用必须在拥有该实体的区域上进行。
+可以使用 `EntityScheduler` 轻松地安排在这样的上下文中执行代码。
 
-#### Simple teleportation
+#### 简单传送
 
-In a simple teleportation, the entity already exists in a world at a location
-and the target location and dimension are known.
-This operation is split into two parts: transform and async place.
-In this case, the transform operation removes the entity from the current
-world, then adjusts the position. The async place operation schedules a task
-to the target location using the `RegionizedTaskQueue` to add the entity to
-the target dimension at the target position.
+在简单的传送中，实体已经存在于世界中的某个位置，
+并且目标位置和维度是已知的。
+这个操作分为两个部分：转换和异步放置。
+在这种情况下，转换操作将实体从当前世界中移除，然后调整位置。
+异步放置操作使用 `RegionizedTaskQueue` 安排一个任务到目标位置，
+将实体添加到目标维度的目标位置。
 
-The various implementation details such as non-player entities being
-copied in the transform operation are left out, as those are not relevant
-for the high level overview.
+各种实现细节，例如在转换操作中非玩家实体被复制，
+被省略了，因为这些与高级概述无关。
 
-Things such as player login and player respawn are generally
-considered simple teleportation. The player login case only differs
-since the player does not exist in any world at the start, and that the async
-transform must additionally find a place to spawn the player.
-The player respawn is similar to the player login as the respawn
-differs by having the player in the world at the time of respawn.
+玩家登录和玩家重生通常被认为是简单的传送。
+玩家登录的情况有所不同，因为玩家在开始时不存在于任何世界中，
+并且异步转换还必须找到一个地方来生成玩家。
+玩家重生与玩家登录类似，因为重生时玩家已经存在于世界中。
 
-#### Portal teleport
+#### 传送门传送
 
-Portal teleport differs from simple teleportation as portalling does
-_not_ know the exact location of the teleport. Thus, the transform step
-does not update the entity position, but rather a new operation is inserted
-between transform and async place: an async search/create, which is responsible
-for finding and/or creating the exit portal.
+传送门传送与简单传送不同，因为传送门传送 **_不知道_** 传送的确切位置。
+因此，转换步骤不会更新实体位置，
+而是插入了一个新的操作在转换和异步放置之间：异步搜索/创建，
+它负责寻找和/或创建出口传送门。
 
-Additionally, the current Vanilla code can refuse a teleport if the
-entity is non-player and the nether exit portal does not already exist. But
-since the portal location is only determined by the async place, it is
-too late to abort - so, the portal logic has been re-done so that there is no
-difference between players and entities. Now both entities and players
-create exit portals, whether it be for the nether or end.
+此外，当前的原版代码如果实体是非玩家且下界出口传送门不存在，可能会拒绝传送。
+但由于传送门的位置只在异步放置时确定，此时取消已经太晚了——因此，
+传送门逻辑已经被重新设计，使得玩家和实体之间没有区别。
+现在，无论是玩家还是实体，无论是下界还是末地，都会创建出口传送门。
 
-#### Shutdown during teleport
+#### 传送期间关闭
 
-Since the teleport happens over multiple steps, the server shutdown
-process must deal with uncompleted teleportations manually.
+由于传送是分多个步骤进行的，
+服务器关闭过程必须手动处理未完成的传送。
 
-## Server shutdown process
+## 服务器关闭过程
 
-The shutdown process occurs by spawning a separate shutdown thread,
-which then runs the shutdown logic:
-1. Shutdown the tick region scheduler, stopping any further ticks
-2. Halt metrics processing
-3. Disable plugins
-4. Stop accepting new connections
-5. Send disconnect (but do not remove) packets to all players
-6. Halt the chunk systems for all worlds
-7. Execute shutdown logic for all worlds by finish all pending teleports
-   for all regions, then saving all chunks in the world, and finally
-   saving the level data for the world (level.dat and other .dat files).
-8. Save all players
-9. Shutting down the resource manager
-10. Releasing the level lock
-11. Halting remaining executors (Util executor, region I/O threads, etc.)
+关闭过程通过启动一个单独的关闭线程来完成，该线程随后运行关闭逻辑：
+1. 关闭运行区域调度器，停止任何进一步的运行。
+2. 停止指标处理。
+3. 禁用插件。
+4. 停止接受新的连接。
+5. 向所有玩家发送断开连接（但不移除）的数据包。
+6. 停止所有世界中的区块系统。
+7. 通过完成所有区域的所有待处理传送，然后保存世界中的所有区块，最后保存世界的数据（level.dat 和其他 .dat 文件），为所有世界执行关闭逻辑。
+8. 保存所有玩家。
+9. 关闭资源管理器。
+10. 释放级别锁。
+11. 停止剩余的执行器（Util 执行器、区域 I/O 线程等）。
 
 
-The important differences to Vanilla is that the player kick and
-world saving logic is replaced by steps 5-8.
+与原版游戏的重要区别在于，
+玩家踢出和世界保存逻辑被替换为步骤 5-8。
 
-For step 5, the players cannot be kicked before teleportations are finished,
-as kicking would save the player dat file. So, save is moved after.
+对于步骤 5，玩家不能在传送完成之前被踢出，因为踢出会保存玩家数据文件。
+因此，保存操作被移到后面。
 
-For step 6, the chunk system halt is done before saving so that all chunk
-generation is halted. This will reduce the load on the server as it shuts
-down, which may be critical in memory-constrained scenarios.
+对于步骤 6，在保存之前停止区块系统，以便停止所有区块生成。
+这将在服务器关闭时减少服务器的负载，这在内存受限的情况下可能至关重要。
 
-For step 7, teleportations are completed differently depending on the type:
-simple or portal.
+对于步骤 7，传送的完成方式取决于类型：
+简单传送或传送门传送。
 
-Simple teleportations are completed by ensuring the addition
-of the teleporting entity to the destination chunk specified
-by teleportation. This allows the entity to be saved at the target
-position, as if the teleportation did complete before shutdown.
+简单传送通过确保传送的实体被添加到传送指定的目标区块中来完成。
+这使得实体可以在目标位置被保存，
+就好像传送在关闭之前已经完成一样。
 
-Portal teleportations are completed by forcing the addition
-of the teleporting entity to the source chunk, from where the entity should
-have been teleported _from_. Since the target location is not known, the entity
-can only be placed back at the origin (no teleportation). While this behavior
-is not ideal, the shutdown logic _must_ account for any broken world state -
-which means that finding or creating the target exit portal may not be an option.
+传送门传送通过强制将传送的实体添加到源区块中来完成，
+实体本应从该区块传送 **_出去_** 。
+由于目标位置未知，实体只能被放回原点（不进行传送）。
+虽然这种行为并不理想，
+但关闭逻辑 **_必须_** 考虑任何损坏的世界状态——这意味着寻找或创建目标出口传送门可能不是一个选项。
 
-The teleportation completion must be performed before the world save so that
-the teleport completed entities save.
+传送完成必须在世界保存之前进行，
+以便传送完成的实体得以保存。
 
-For step 8, only save players after the teleportations are completed.
+对于步骤 8，在传送完成之后再保存玩家。
 
-The remaining steps are Vanilla.
+其余步骤与原版游戏一致。

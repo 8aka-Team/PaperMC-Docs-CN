@@ -1,6 +1,6 @@
 ---
-title: Registry
-description: Documentation for arguments retrieving registry values.
+title: 注册
+description: 关于从注册表中检索参数值的文档。
 slug: paper/dev/command-api/arguments/registry
 version: 1.21.5
 ---
@@ -45,18 +45,18 @@ import EnchantsRegistry from "./assets/registry-arguments/enchants-registry.mp4"
 
 import Video from "/src/components/Video.astro";
 
-Registries in Minecraft hold all sort of information - possible item or block types, enchantments, potion effects, ... and more!
+Minecraft 中的注册表包含各种信息——可能的物品或方块类型、附魔、药水效果……以及更多！
 
-There are two types of registry arguments: `resource` and `resourceKey`.
-The main difference between those arguments is the return value: The `resource` argument returns the parsed value, whilst the `resourceKey` only returns a `TypedKey`, which
-you can use to retrieve the value yourself.
+注册表参数有两种类型：`resource` 和 `resourceKey`。
+这两种参数的主要区别在于返回值：`resource` 参数返回解析后的值，
+而 `resourceKey` 只返回一个 `TypedKey`，你可以用它自己检索值。
 
-## Resource argument
-Just like any other argument, you can get a `ArgumentType<T>` reference to it using `ArgumentTypes.resource(RegistryKey<T>)`. A selection of possible registry keys can be
-found below. They are accessed in a static context using the [`RegistryKey`](jd:paper:io.papermc.paper.registry.RegistryKey) interface.
+## 资源参数
+就像其他任何参数一样，你可以使用 `ArgumentTypes.resource(RegistryKey<T>)` 获取它的 `ArgumentType<T>` 引用。
+以下是一些可能的注册表键，它们可以通过 [`RegistryKey`](jd:paper:io.papermc.paper.registry.RegistryKey) 接口以静态方式访问。
 
-Each entry in `RegistryKey` returns a `RegistryKey<T>`. The `<T>` generic parameter here describes the return type. This means that if we were to retrieve
-[`RegistryKey.ITEM`](jd:paper:io.papermc.paper.registry.RegistryKey#ITEM), the return type would be an `ItemType`, since it is defined as follows:
+`RegistryKey` 中的每个条目都返回一个 `RegistryKey<T>`。这里的 `<T>` 泛型参数描述了返回类型。
+这意味着如果我们检索 [`RegistryKey.ITEM`](jd:paper:io.papermc.paper.registry.RegistryKey#ITEM)，返回类型将是 `ItemType`，因为它被定义为如下：
 
 ```java title="RegistryKey.java"
 public sealed interface RegistryKey<T> extends Keyed permits RegistryKeyImpl {
@@ -66,7 +66,7 @@ public sealed interface RegistryKey<T> extends Keyed permits RegistryKeyImpl {
 }
 ```
 
-And really, there isn't much more to it. For that exact reason, here is an example on the implementation of such an argument:
+实际上，这并没有更多内容。正因为如此，这里有一个关于这种参数实现的示例：
 
 ```java
 public static LiteralCommandNode<CommandSourceStack> enchantmentRegistry() {
@@ -86,68 +86,68 @@ public static LiteralCommandNode<CommandSourceStack> enchantmentRegistry() {
                     return Command.SINGLE_SUCCESS;
                 }
 
-                ctx.getSource().getSender().sendRichMessage("<red>This command requires a player!");
+                ctx.getSource().getSender().sendRichMessage("<red>这个命令需要一个玩家！");
                 return Command.SINGLE_SUCCESS;
             }))
         .build();
 }
 ```
 
-We define an `enchantment` argument using a enchantment registry key resource and retrieve the value of that using `ctx.getArgument("enchantment", Enchantment.class)`.
-Finally, we enchant the item of the executing player's hand with whatever enchantment the sender chose at level 10 and send a success message.
+我们使用附魔注册表键资源定义了一个 `enchantment` 参数，并通过 `ctx.getArgument("enchantment", Enchantment.class)` 获取该值。
+最后，我们将执行玩家手中的物品附魔为发送者选择的附魔类型，等级为 10，并发送一条成功消息。
 
-Here is how it looks in-game:
+这是游戏中的样子：
 <Video src={EnchantsRegistry} />
 
-:::caution
+:::caution[警告]
 
-There are certain edge-cases, where this argument, due to missing registries on the client, will cause a **Network Protocol Error**.
-Basically, the only argument where this is the case right now is with the `STRUCTURE` registry key.
+存在某些边缘情况，由于客户端缺少注册表，此参数将导致 **网络协议错误**。
+基本上，目前唯一出现这种情况的参数是 `STRUCTURE` 注册表键。
 
 ```java
-// Registering this command will cause clients to not be able to connect to the server.
+// 注册此命令将导致客户端无法连接到服务器。
 final LiteralCommandNode<CommandSourceStack> invalidRegistryArgument = Commands.literal("registry-structure")
     .then(Commands.argument("value", ArgumentTypes.resource(RegistryKey.STRUCTURE)))
     .build();
 ```
 
-Due to this fact, it is advised to only use the `STRUCTURE` registry key argument with a `resourceKey(...)` argument type and parse the values yourself.
+由于这一事实，建议仅在使用 `resourceKey(...)` 参数类型时使用 `STRUCTURE` 注册表键参数，并自行解析这些值。
 
 :::
 
-## Resource key argument
-For the client, there is barely any difference between the using `ArgumentTypes.resource` or `ArgumentTypes.resourceKey`. The only difference is that
-using `ArgumentTypes.resourceKey` does not provide **error checking**. We can visualize this using `RegistryKey.ITEM`.
+## 资源键参数
+对于客户端来说，使用 `ArgumentTypes.resource` 和 `ArgumentTypes.resourceKey` 几乎没有区别。
+唯一的区别是，使用 `ArgumentTypes.resourceKey` 不提供**错误检查**。我们可以通过 `RegistryKey.ITEM` 来说明这一点。
 
-Here is the tab completion when using `ArgumentTypes.resource(RegistryKey.ITEM)`:
+这是使用 `ArgumentTypes.resource(RegistryKey.ITEM)` 时的选项补全：
 <Video src={ResourceItem} /><br/>
 
-And here is the tab completion when using `ArgumentTypes.resourceKey(RegistryKey.ITEM)`:
+这是使用 `ArgumentTypes.resourceKey(RegistryKey.ITEM)` 时的选项补全：
 <Video src={ResourceKeyItem} /><br/>
 
-:::note
+:::note[注意]
 
-In the example given above, due to an unhandled null pointer exception, the command does not successfully run. The code for that command is directly trying to use the value retrieved
-by the registry access by doing `ItemType item = RegistryAccess.registryAccess().getRegistry(itemKey.registryKey()).get(itemKey.key())`. If you try to do any
-operation with the result, it might be null and error.
+在上述示例中，由于未处理的空指针异常，命令未能成功运行。
+该命令的代码直接尝试通过执行 `ItemType item = RegistryAccess.registryAccess().getRegistry(itemKey.registryKey()).get(itemKey.key())` 来使用注册表访问检索到的值。
+如果尝试对结果执行任何操作，它可能是空的并导致错误。
 
-You should **always** check the result of a registry retrieval operation. An example for that is given below in the [direct code comparison](#direct-code-comparison).
-
-:::
-
-The resource argument provides a much cleaner user experience, whilst the `resourceKey` argument has one very important use case: You get the raw
-`TypedKey<T>` returned as an argument result. This object is particularly useful, as it provides all information required to be able to retrieve
-a value from a registry yourself.
-
-:::tip
-
-Unless you have a specific reason for using the `resourceKey` argument over the `resource` one, the `resource` argument is preferred due to the client-side error
-checking and simple usability.
+您应该**始终**检查注册表检索操作的结果。下面的[直接代码比较](#direct-code-comparison)中给出了一个示例。
 
 :::
 
-### Direct code comparison
-Here is a simple code snipped on how one could use the `RegistryKey.ITEM` registry with a `resource` argument type:
+资源参数提供了一种更干净的用户体验，
+而 `resourceKey` 参数有一个非常重要的用例：您会将原始的 `TypedKey<T>` 作为参数结果返回。
+这个对象特别有用，因为它提供了从注册表中检索值所需的所有信息。
+
+:::tip[提示]
+
+除非您有特定理由使用 `resourceKey` 参数而不是 `resource` 参数，
+否则由于客户端的错误检查和简单的可用性，建议使用 `resource` 参数。
+
+:::
+
+### 直接代码比较
+以下是一个简单的代码片段，展示了如何使用 `RegistryKey.ITEM` 注册表和 `resource` 参数类型：
 
 ```java
 Commands.argument("item", ArgumentTypes.resource(RegistryKey.ITEM))
@@ -162,8 +162,8 @@ Commands.argument("item", ArgumentTypes.resource(RegistryKey.ITEM))
     });
 ```
 
-Here is the same code, using a `resourceKey` argument type. Instead of directly retrieving the argument using `ctx.getArgument("item", TypedKey.class)`, we instead use the
-[`RegistryArgumentExtractor`](jd:paper:io.papermc.paper.command.brigadier.argument.RegistryArgumentExtractor) to retrieve our `TypedKey<ItemType>`.
+以下是使用 `resourceKey` 参数类型的相同代码。
+我们没有直接通过 `ctx.getArgument("item", TypedKey.class)` 获取参数，而是使用了 [`RegistryArgumentExtractor`](jd:paper:io.papermc.paper.command.brigadier.argument.RegistryArgumentExtractor) 来获取我们的 `TypedKey<ItemType>`。
 
 ```java
 Commands.argument("item", ArgumentTypes.resourceKey(RegistryKey.ITEM))
@@ -172,7 +172,7 @@ Commands.argument("item", ArgumentTypes.resourceKey(RegistryKey.ITEM))
         ItemType item = RegistryAccess.registryAccess().getRegistry(itemKey.registryKey()).get(itemKey.key());
 
         if (item == null) {
-            ctx.getSource().getSender().sendRichMessage("<red>Please provide a valid item!");
+            ctx.getSource().getSender().sendRichMessage("<red>请提供一个有效的物品！");
             return Command.SINGLE_SUCCESS;
         }
 
@@ -184,159 +184,159 @@ Commands.argument("item", ArgumentTypes.resourceKey(RegistryKey.ITEM))
     })
 ```
 
-### Using a TypedKey
-First, in order to get the correct registry, you can run `RegistryAccess#getRegistry(RegistryKey)`. In order to get a `RegistryAccess`, you can just use the static
-`RegistryAccess.registryAccess()` method. The `RegistryKey` is retrieved using `TypedKey#registryKey()`.
-Now, in order to get the final value `T`, you can run `Registry#get(Key)`, where the key can be retrieved using `TypedKey#key()`. This will return the backing instance
-from that resource key or null, if no value has been found.
+### 使用 TypedKey
+首先，为了获取正确的注册表，你可以运行 `RegistryAccess#getRegistry(RegistryKey)`。
+为了获取一个 `RegistryAccess`，你可以直接使用静态的 `RegistryAccess.registryAccess()` 方法。`RegistryKey` 可以通过 `TypedKey#registryKey()` 获取。
+接下来，为了获取最终的值 `T`，你可以运行 `Registry#get(Key)`，其中键可以通过 `TypedKey#key()` 获取。
+这将返回该资源键对应的底层实例，如果没有找到值，则返回 null。
 
-### Use case over resource argument
-The main use case for this argument type is the ability to store the key (the value returned to you by `TypedKey#key`). If you want to be able to store the exact user
-input and be able to retrieve the backed instance without much trouble, that is the way to do it.
+### 使用资源参数的用例
+这种参数类型的主要用例是能够存储键（`TypedKey#key` 返回给你的值）。
+如果你想能够存储用户的精确输入，并且能够轻松地检索到对应的底层实例，这就是实现方法。
 
-## Registry key previews
+## 注册表键预览
 
-The following `RegistryKeys` exist:
+以下 `RegistryKeys` 存在：
 
-| RegistryKeys Field  | Return Value        | Preview Video                               |
-|---------------------|---------------------|---------------------------------------------|
-| ATTRIBUTE           | Attribute           | [Attribute](#attribute)                     |
-| BANNER_PATTERN      | PatternType         | [Banner Pattern](#banner-pattern)           |
-| BIOME               | Biome               | [Biome](#biome)                             |
-| BLOCK               | BlockType           | [Block](#block)                             |
-| CAT_VARIANT         | Cat.Type            | [Cat Variant](#cat-variant)                 |
-| CHICKEN_VARIANT     | Chicken.Variant     | [Chicken Variant](#chicken-variant)         |
-| COW_VARIANT         | Cow.Variant         | [Cow Variant](#cow-variant)                 |
-| DAMAGE_TYPE         | DamageType          | [Damage Type](#damage-type)                 |
-| DATA_COMPONENT_TYPE | DataComponentType   | [Data Component Type](#data-component-type) |
-| DIALOG              | Dialog              | [Dialog](#dialog)                           |
-| ENCHANTMENT         | Enchantment         | [Enchantment](#enchantment)                 |
-| ENTITY_TYPE         | EntityType          | [Entity Type](#entity-type)                 |
-| FLUID               | Fluid               | [Fluid](#fluid)                             |
-| FROG_VARIANT        | Frog.Variant        | [Frog Variant](#frog-variant)               |
-| GAME_EVENT          | GameEvent           | [Game Event](#game-event)                   |
-| INSTRUMENT          | MusicInstrument     | [Instrument](#instrument)                   |
-| ITEM                | ItemType            | [Item](#item)                               |
-| JUKEBOX_SONG        | JukeboxSong         | [Jukebox Song](#jukebox-song)               |
-| MAP_DECORATION_TYPE | MapCursor.Type      | [Map Decoration Type](#map-decoration-type) |
-| MEMORY_MODULE_TYPE  | MemoryKey\<?>       | [Memory Module Type](#memory-module-type)   |
-| MENU                | MenuType            | [Menu](#menu)                               |
-| MOB_EFFECT          | PotionEffectType    | [Mob effect](#mob-effect)                   |
-| PAINTING_VARIANT    | Art                 | [Painting variant](#painting-variant)       |
-| PARTICLE_TYPE       | Particle            | [Particle](#particle)                       |
-| PIG_VARIANT         | Pig.Variant         | [Pig Variant](#pig-variant)                 |
-| POTION              | PotionType          | [Potion](#potion)                           |
-| SOUND_EVENT         | Sound               | [Sound](#sound)                             |
-| STRUCTURE           | Structure           | [Structure](#structure)                     |
-| STRUCTURE_TYPE      | StructureType       | [Structure Type](#structure-type)           |
-| TRIM_MATERIAL       | TrimMaterial        | [Trim Material](#trim-material)             |
-| TRIM_PATTERN        | TrimPattern         | [Trim Pattern](#trim-pattern)               |
-| VILLAGER_PROFESSION | Villager.Profession | [Villager Profession](#villager-profession) |
-| VILLAGER_TYPE       | Villager.Type       | [Villager Type](#villager-type)             |
-| WOLF_SOUND_VARIANT  | Wolf.SoundVariant   | [Wolf Sound Variant](#wolf-sound-variant)   |
-| WOLF_VARIANT        | Wolf.Variant        | [Wolf Variant](#wolf-variant)               |
+| 注册表键字段                | 返回值    | 预览视频                           |
+| --------------------- | ------ | ------------------------------ |
+| ATTRIBUTE             | 属性     | [属性](#attribute)               |
+| BANNER\_PATTERN       | 图案类型   | [旗帜图案](#banner-pattern)        |
+| BIOME                 | 生物群系   | [生物群系](#biome)                 |
+| BLOCK                 | 块类型    | [方块](#block)                   |
+| CAT\_VARIANT          | 猫的变种   | [猫的变种](#cat-variant)           |
+| CHICKEN\_VARIANT      | 鸡的变种   | [鸡的变种](#chicken-variant)       |
+| COW\_VARIANT          | 牛的变种   | [牛的变种](#cow-variant)           |
+| DAMAGE\_TYPE          | 损害类型   | [伤害类型](#damage-type)           |
+| DATA\_COMPONENT\_TYPE | 数据组件类型 | [数据组件类型](#data-component-type) |
+| DIALOG                | 对话框    | [对话框](#dialog)                 |
+| ENCHANTMENT           | 魔法附魔   | [附魔](#enchantment)             |
+| ENTITY\_TYPE          | 实体类型   | [实体类型](#entity-type)           |
+| FLUID                 | 流体     | [流体](#fluid)                   |
+| FROG\_VARIANT         | 青蛙的变种  | [青蛙的变种](#frog-variant)         |
+| GAME\_EVENT           | 游戏事件   | [游戏事件](#game-event)            |
+| INSTRUMENT            | 音乐乐器   | [乐器](#instrument)              |
+| ITEM                  | 物品类型   | [物品](#item)                    |
+| JUKEBOX\_SONG         | 点唱机歌曲  | [点唱机歌曲](#jukebox-song)         |
+| MAP\_DECORATION\_TYPE | 地图装饰类型 | [地图装饰类型](#map-decoration-type) |
+| MEMORY\_MODULE\_TYPE  | 记忆模块类型 | [记忆模块类型](#memory-module-type)  |
+| MENU                  | 菜单类型   | [菜单](#menu)                    |
+| MOB\_EFFECT           | 生物效果   | [生物效果](#mob-effect)            |
+| PAINTING\_VARIANT     | 画作变体   | [画作变体](#painting-variant)      |
+| PARTICLE\_TYPE        | 粒子类型   | [粒子](#particle)                |
+| PIG\_VARIANT          | 猪的变种   | [猪的变种](#pig-variant)           |
+| POTION                | 魔法药水   | [药水](#potion)                  |
+| SOUND\_EVENT          | 声音事件   | [声音](#sound)                   |
+| STRUCTURE             | 结构     | [结构](#structure)               |
+| STRUCTURE\_TYPE       | 结构类型   | [结构类型](#structure-type)        |
+| TRIM\_MATERIAL        | 修剪材料   | [修剪材料](#trim-material)         |
+| TRIM\_PATTERN         | 修剪图案   | [修剪图案](#trim-pattern)          |
+| VILLAGER\_PROFESSION  | 村民职业   | [村民职业](#villager-profession)   |
+| VILLAGER\_TYPE        | 村民类型   | [村民类型](#villager-type)         |
+| WOLF\_SOUND\_VARIANT  | 狼的声音变种 | [狼的声音变种](#wolf-sound-variant)  |
+| WOLF\_VARIANT         | 狼的变种   | [狼的变种](#wolf-variant)          |
 
-### Attribute
+### 属性
 <Video src={ResourceAttributes} />
 
-### Banner pattern
+### 旗帜图案
 <Video src={ResourceBannerPattern} />
 
-### Biome
+### 生物群系
 <Video src={ResourceBiome} />
 
-### Block
+### 方块
 <Video src={ResourceBlock} />
 
-### Cat variant
+### 猫的变种
 <Video src={ResourceCatVariant} />
 
-### Chicken variant
+### 鸡的变种
 <Video src={ResourceChickenVariant} />
 
-### Cow variant
+### 牛的变种
 <Video src={ResourceCowVariant} />
 
-### Damage type
+### 伤害类型
 <Video src={ResourceDamageType} />
 
-### Data component type
+### 数据组件类型
 <Video src={ResourceDataComponentType} />
 
-### Dialog
+### 对话框
 <Video src={ResourceDialog} />
 
-### Enchantment
+### 附魔
 <Video src={ResourceEnchantment} />
 
-### Entity type
+### 实体类型
 <Video src={ResourceEntityType} />
 
-### Fluid
+### 流体
 <Video src={ResourceFluid} />
 
-### Frog variant
+### 青蛙的变种
 <Video src={ResourceFrogVariant} />
 
-### Game event
+### 游戏事件
 <Video src={ResourceGameEvent} />
 
-### Instrument
+### 乐器
 <Video src={ResourceInstrument} />
 
-### Item
+### 物品
 <Video src={ResourceItem} />
 
-### Jukebox Song
+### 唱片机歌曲
 <Video src={ResourceJukeboxSong} />
 
-### Map decoration type
+### 地图装饰类型
 <Video src={ResourceMapDecorationType} />
 
-### Memory module type
+### 内存模块类型
 <Video src={ResourceMemoryModuleType} />
 
-### Menu
+### 菜单
 <Video src={ResourceMenu} />
 
-### Mob effect
+### 生物效果
 <Video src={ResourceMobEffect} />
 
-### Painting variant
+### 画作变种
 <Video src={ResourcePaintingVariant} />
 
-### Particle
+### 粒子
 <Video src={ResourceParticleType} />
 
-### Pig variant
+### 猪的变种
 <Video src={ResourcePigVariant} />
 
-### Potion
+### 药水
 <Video src={ResourcePotion} />
 
-### Sound
+### 声音
 <Video src={ResourceSoundEvent} />
 
-### Structure
+### 结构
 This argument kicks the client, so no preview for this one ¯\\\_(ツ)\_/¯
 
-### Structure type
+### 结构类型
 <Video src={ResourceStructureType} />
 
-### Trim material
+### 修饰材料
 <Video src={ResourceTrimMaterial} />
 
-### Trim pattern
+### 修饰图案
 <Video src={ResourceTrimPattern} />
 
-### Villager profession
+### 村民职业
 <Video src={ResourceVillagerProfession} />
 
-### Villager type
+### 村民类型
 <Video src={ResourceVillagerType} />
 
-### Wolf sound variant
+### 狼的声音变种
 <Video src={ResourceWolfSoundVariant} />
 
-### Wolf variant
+### 狼的变种
 <Video src={ResourceWolfVariant} />

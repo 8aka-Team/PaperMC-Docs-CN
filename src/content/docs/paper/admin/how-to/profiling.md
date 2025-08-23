@@ -1,53 +1,53 @@
 ---
-title: Profiling
-description: How to profile your Paper server.
+title: 性能分析
+description: 如何对你的 Paper 服务器进行性能分析
 slug: paper/profiling
 ---
 
-Profiling is a way to diagnose performance problems with your server.
-A profiler measures certain characteristics of a running server, e.g. how often a method is called
-and how much time it takes up in a single tick, how long and often the garbage collector runs and much more.
+性能分析是一种诊断服务器性能问题的方法。
+性能分析器会测量运行中的服务器的某些特征，
+例如一个方法被调用的频率以及它在单个刻中占用的时间，垃圾回收器运行的时长和频率，等等。
 
-:::caution
+:::caution[警告]
 
-_For profiling to be effective, the issue you are diagnosing must be actively occurring._
+_为了使性能分析有效，你正在诊断的问题必须正在发生。_
 
 :::
 
-If you need help with analyzing a performance issue, please bring a spark report to the
-[PaperMC Discord server](https://discord.gg/PaperMC) (#paper-help) for assistance.
+如果你需要帮助分析性能问题，请将 Spark 报告带到
+[PaperMC Discord 服务器](https://discord.gg/PaperMC) 的 #paper-help 频道寻求帮助。
 
 ## spark
 
-Starting with 1.21, Paper bundles the [spark](https://spark.lucko.me/) profiler, which is the preferred way
-to profile Paper.
+从 1.21 版本开始，Paper 集成了 [spark](https://spark.lucko.me/) 性能分析器，
+这是分析 Paper 性能的首选方式。
 
-To start profiling your server, run this command:
+要开始分析你的服务器性能，请运行以下命令：
 ```
 /spark profiler start --timeout 600
 ```
 
-After 10 minutes, this will return a URL to a profiler report, which you can analyze yourself or provide
-to a developer of a plugin or the Paper support chats.
+10分钟后，这将返回一个性能分析报告的URL，你可以自行分析，
+也可以提供给插件开发者或Paper支持聊天室。
 
-This is only a fraction of what spark can do, so if you want to learn about the different features of spark
-or learn to analyze reports yourself, check out spark's documentation [here](https://spark.lucko.me/docs/).
+这仅仅是 spark 能够做到的一小部分，因此如果你想了解 spark 的不同功能，
+或者学习如何自行分析报告，请查看 spark 的文档[这里](https://spark.lucko.me/docs/)。
 
-:::tip
+:::tip[提示]
 
-If you want to use a version of spark newer than the bundled one, simply place a standalone spark plugin JAR
-into the `plugins` directory and set the [`paper.preferSparkPlugin`](/paper/reference/system-properties#paperprefersparkplugin)
-system property to `true`.
+如果你想使用比集成版本更新的 spark 版本，
+只需将独立的 spark 插件 JAR 文件放入 `plugins` 目录，
+并将 [`paper.preferSparkPlugin`](/paper/reference/system-properties#paperprefersparkplugin) 系统属性设置为 `true`。
 
-If you want to use PlaceholderAPI [placeholders](https://spark.lucko.me/docs/misc/Placeholders)
-from the bundled spark version, you need to install the [spark expansion](https://api.extendedclip.com/expansions/spark/)
-from PAPI's eCloud (`/papi ecloud download spark` and `/papi reload`).
+如果你想使用集成版本的 spark 提供的 PlaceholderAPI[占位符](https://spark.lucko.me/docs/misc/Placeholders)，
+你需要从 PAPI 的 eCloud 安装
+[spark 扩展](https://api.extendedclip.com/expansions/spark/)（`/papi ecloud download spark` 和 `/papi reload`）。
 
 :::
 
 ## Timings
 
-Paper also bundles the [Timings v2](https://timings.aikar.co/) profiler, however Timings has been unmaintained
-for multiple years and its reports are difficult to read for beginners. It has been deprecated in favor of
-spark and turned off by default in 1.21, see [this discussion](https://github.com/PaperMC/Paper/discussions/10565)
-for more information.
+Paper 也集成了 [Timings v2](https://timings.aikar.co/) 性能分析器，
+但 Timings 已经多年未维护，其报告对于初学者来说难以阅读。
+它已经被废弃，取而代之的是 spark，并且在 1.21 版本中默认关闭，
+更多信息请查看 [此讨论](https://github.com/PaperMC/Paper/discussions/10565)。

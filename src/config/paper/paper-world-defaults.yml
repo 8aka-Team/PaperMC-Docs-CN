@@ -2,45 +2,42 @@ anticheat:
   anti-xray:
     enabled:
       default: "false"
-      description: Controls the on/off state for the Anti-Xray system
+      description: 是否开启反矿透引擎
     engine-mode:
       default: "1"
       description: >-
-        Sets the Anti-Xray engine mode. 1 replaces specified blocks
-        (hidden-blocks) with other "fake" blocks, stone (deepslate at y < 0),
-        netherrack, or end_stone based on the dimension. In contrast, 2 will
-        replace both hidden-blocks and replacement-blocks with randomly
-        generated hidden-blocks. Similarly to engine mode 2, mode 3 will replace
-        each chunk layer with a random block from the hidden-blocks list.
+        设置反矿透引擎工作模式。
+
+        - 模式 1 会将需要隐藏的方块 [hidden-blocks](/paper/reference/world-configuration/#anticheat_anti_xray_hidden_blocks) 内的方块替换为其他的“假”方块，如石头（在 y < 0 时为深石）、下界岩或末地石，具体取决于维度。
+
+        - 模式 2 会将需要隐藏的方块 [hidden-blocks](/paper/reference/world-configuration/#anticheat_anti_xray_hidden_blocks)
+          和替换方块 [replacement-blocks](/paper/reference/world-configuration/#anticheat_anti_xray_replacement_blocks) 都替换为随机生成的隐藏方块。
+
+        - 模式 3 在模式 2 的基础上会将每个区块层替换为隐藏方块列表中的随机方块，由于算法比较简单所以相较于模式 2 更加节省 CPU 资源。
+
+        - 对于性能的消耗，模式 2 > 3 > 1
     max-block-height:
       default: "64"
       description: >-
-        Sets the maximum height (y coordinate, starting from the bottom of the
-        world) to which anti-xray will operate. Only integer multiples of 16 are
-        accepted. All other values will be rounded down. The [Minecraft Wiki
-        page about Ore](https://minecraft.wiki/w/Ore) may be helpful in
-        determining the best value for you
+        设置反矿透工作的最大高度（y 坐标，从世界的底部开始计算）。
+
+        - 仅接受 16 的整数倍。其他所有值都将向下取整。[Minecraft Wiki 关于矿石的页面](https://minecraft.wiki/w/Ore)可能有助于您确定最佳值。
     update-radius:
       default: "2"
       description: >-
-        Radius for block updates which will be sent containing real block data
-        when the client interacts with a block. Only values 0, 1, and 2 are
-        accepted. Values smaller than 0 will be rounded up to 0, while values
-        larger than 2 will be rounded down to 2. 0 is only designed for testing
-        purposes. Do not use it in production
+        设置当客户端与方块交互时，将发送包含真实方块数据的方块更新的范围。
+
+        - 仅接受 0、1、2 这三个值。小于 0 的值将向上取整为 0，而大于 2 的值将向下取整为 2。0 仅用于测试目的，不应用于生产环境。
     lava-obscures:
       default: "false"
       description: >-
-        Whether to obfuscate blocks touching lava. Does not work well with
-        non-stone-like ore textures. This is because lava, while being mostly
-        opaque, does not cover blocks fully at the surface
+        是否混淆与熔岩接触的方块。此功能与非石头类矿石纹理配合使用效果不佳。这是因为熔岩虽然大多是不透明的，但在表面并不能完全覆盖方块。
     use-permission:
       default: "false"
       description: >-
-        Whether to allow players with the paper.antixray.bypass permission to
-        bypass anti-xray. Checking this permission is disabled by default as
-        legacy permission plugins may struggle with the number of checks made.
-        This should only be used with modern permission plugins
+        是否允许拥有 `paper.antixray.bypass` 权限的玩家绕过反矿透功能。
+
+        - 默认情况下，检查此权限是禁用的，因为旧版权限插件可能难以应对大量的检查。此功能仅应与现代权限插件一起使用。
     hidden-blocks:
       default: >-
         [copper_ore, deepslate_copper_ore, raw_copper_block, gold_ore,
@@ -50,806 +47,733 @@ anticheat:
         redstone_ore, deepslate_redstone_ore, clay, emerald_ore,
         deepslate_emerald_ore, ender_chest]
       description: >-
-        With engine-mode: 1, these blocks will be replaced by stone (deepslate
-        at y < 0), netherrack, or end_stone, based on the dimension. All types
-        of air are ignored on this list.
+        设置需要隐藏的方块。
 
-        With engine-mode: 2, these blocks will be randomly placed in the world,
-        replacing both hidden-blocks and replacement-blocks. Tile entities, such
-        as chests or spawners, are not allowed on this list. Individual blocks
-        may be added multiple times, increasing their chance of being placed.
+        - 在模式 1 中，这些方块将根据维度被替换为石头（在 y < 0 时为深石）、下界岩或末地石。此列表中忽略所有类型的空气方块。
 
-        engine-mode: 3 is very similar to 2, but these blocks will be randomly
-        placed where each vertical chunk layer will take the same block from the
-        list.
+        - 在模式 2 中，这些方块将随机放置在世界中，替换隐藏方块和替换方块。不允许在此列表中包含带有方块实体的方块，例如箱子或刷怪笼。可以多次添加单个方块，以增加其概率。
+
+        - 在模式 3 中，行为与模式 2 非常相似，但这些方块将随机放置，每个垂直区块层将从列表中选择相同的方块。
     replacement-blocks:
       default: "[stone, oak_planks, deepslate]"
       description: >-
-        With engine-mode: 1, replacement blocks are not used. Changing this list
-        will have no effect.
+        设置需要替换的方块。
 
-        With engine-mode: 2, both replacement-blocks and hidden-blocks are
-        randomly replaced by hidden-blocks. While tile entities are ignored in
-        the hidden-blocks list, they may be added to the replacement-blocks
-        list. All types of air blocks are ignored here.
+        - 在模式 1 中，替换方块不会被使用。更改此列表将没有任何效果。
 
-        With engine-mode: 3, the behavior is the same as engine-mode: 2, but the
-        replacement-blocks list is used to determine which blocks are used for
-        each vertical chunk layer.
+        - 在模式 2 中，替换方块和隐藏方块都会被随机替换为隐藏方块。虽然隐藏方块列表中忽略了带有方块实体的方块，但它们可以被添加到替换方块列表中。此列表中忽略所有类型的空气方块。
+
+        - 在模式 3 中，行为与模式 2 相同，但替换方块列表用于确定每个垂直区块层使用的方块。
 chunks:
   auto-save-interval:
     default: default
     description: >-
-      Configures the world saving interval in ticks. Overrides
-      ticks-per.autosave in bukkit.yml for this world. By default it will use
-      the global ticks-per.autosave in bukkit.yml
+      设置世界的保存间隔（以刻为单位）。
+
+      - 此设置会覆盖 `bukkit.yml` 中该世界的 [ticks-per.autosave](/paper/reference/bukkit-configuration/#ticks_per_autosave)。默认情况下，它将使用 `bukkit.yml` 中的全局 `ticks-per.autosave`。
   delay-chunk-unloads-by:
     vanilla: 0s
     default: 10s
     description: >-
-      Delays chunk unloads by the specified time. Formatted as a duration with a
-      single unit e.g. 10h or 25m. Supports d, h, m, and s.
+      设置延迟区块卸载的时间（原版为 0）。
+
+      - 格式为单一单位的持续时间，例如 10h 或 25m。支持 d（天）、h（小时）、m（分钟）和 s（秒）。
   entity-per-chunk-save-limit:
     experience_orb:
       default: "-1"
       description: >-
-        Limits the number of experience_orb's that will be saved/loaded per
-        chunk. A value of -1 disables the limit for a specific entity.
+        设置每个区块保存/加载的经验值球（experience_orb）的数量。
+
+        - 值为 -1 时表示对该特定实体禁用限制。
     <entity-type>:
       default: amount
       description: >-
-        Limits the number of any type of entity that will be saved/loaded per
-        chunk. A value of -1 disables the limit for a specific entity. **Any
-        entity may be added to the list**, beyond the enumerated defaults
+        设置每个区块保存/加载的任何类型实体的数量。
+
+        - 值为 -1 时表示对该特定实体禁用限制。**可以将任何实体添加到此列表**，而不仅仅是默认列出的实体。
   fixed-chunk-inhabited-time:
     default: "-1"
     description: >-
-      If 0 or greater, set the chunk inhabited time to a fixed number. Fixed in
-      this instance means static or unchanging. This is **not** fixing a bug.
-      The timer is increased when chunks are kept loaded because of player
-      activity
+      设置区块的固定活跃时间。
+
+      - 当该值设为 -1 时，区块活跃时间会随玩家活动动态增长，原版默认为 -1。
+
+      - 设为大于等于 0 的值时，区块活跃时间被固定，不再改变。这会影响游戏机制，例如局部难度等。
+
+      - 该设置还会对诸如 PotatoPeeler 这类通过活跃时间筛选区块的工具产生影响，使其无法准确识别玩家很少停留的区块。
+
+      - 在服务器因某些原因导致新旧区块存在差异时，合理设置固定值可能有助于解决一些相关问题，比如防止玩家利用区块差异寻找基地。
   max-auto-save-chunks-per-tick:
     vanilla: "200"
     default: "24"
     description: >-
-      The maximum number of chunks the auto-save system will save in a single
-      tick
+      设置自动保存系统在单次 Tick 中保存的最大区块数量。
   prevent-moving-into-unloaded-chunks:
     default: "false"
     description: >-
-      Sets whether the server will prevent players from moving into unloaded
-      chunks or not
+      是否阻止玩家进入未加载的区块。
   flush-regions-on-save:
     default: "false"
     description: >-
-      Sets whether the server will flush chunks to disk when they are saved.
-      This may have a performance impact
+      是否在保存区块时将其写入磁盘。这可能会对性能产生影响。
 collisions:
   allow-player-cramming-damage:
     vanilla: "true"
     default: "false"
     description: >-
-      Allows players to take damage from cramming when colliding with more
-      entities than set in the maxEntityCramming game rule
+      是否允许玩家在与超过 `maxEntityCramming` 游戏规则中设置数量的实体发生碰撞时受到挤压伤害。
   allow-vehicle-collisions:
     default: "true"
     description: >-
-      Whether vehicles should also be able to collide while only-players-collide
-      is enabled
+      是否在仅启用玩家碰撞时，车辆也应该能够发生碰撞。
   fix-climbing-bypassing-cramming-rule:
     default: "false"
     description: >-
-      Sets whether climbing should bypass the entity cramming
-      limit(maxEntityCramming game rule). If set to true, climbing entities will
-      also be counted towards the entity cramming limit so that they can take
-      suffocation damage
+      是否允许爬行的实体绕过实体挤压限制（`maxEntityCramming` 游戏规则）。
+
+      - 如果设置为 `true`，爬行的实体也会被计入实体挤压限制中，从而能够受到窒息伤害。
   max-entity-collisions:
     vanilla: "2147483647"
     default: "8"
     description: >-
-      Instructs the server to stop processing collisions after this value is
-      reached
+      设置服务器在达到此值后停止处理碰撞，原版为 2147483647。
   only-players-collide:
     default: "false"
-    description: Only calculate collisions if a player is one of the two entities colliding
+    description: 是否仅在玩家是两个碰撞实体之一时计算碰撞。
 command-blocks:
   permissions-level:
     default: "2"
-    description: "Default Vanilla permission level for command blocks."
+    description: "设置命令方块的默认原版权限等级。"
   force-follow-perm-level:
     default: "true"
-    description: "Require that command blocks meet both the Bukkit permission requirements
-      and the Vanilla permission level. Otherwise, only 1 of those is required."
+    description: "是否要求命令方块同时满足 Bukkit 权限要求和原版权限等级。否则，只需满足其中之一即可。"
 entities:
   armor-stands:
     do-collision-entity-lookups:
       default: "true"
-      description: Instructs armor stand entities to do entity collision checks
+      description: 是否在盔甲架实体进行实体碰撞检查。
     tick:
       default: "true"
       description: >-
-        Disable to prevent armor stands from ticking. Can improve performance
-        with many armor stands
+        是否禁用以防止盔甲架进行 Tick 更新。
+
+        - 在存在大量盔甲架时可以提高性能，但是一些利用盔甲架的特殊事件的插件可能会有一些小问题（虽然基本没有这种插件）。
   markers:
     tick:
       default: "true"
       description: >-
-        Disable to prevent markers from ticking. This may affect how they behave
-        as passengers of other entities
+        是否禁用以防止标记进行 Tick 更新。
+
+        - 这可能会影响它们作为其他实体乘客的行为。
   behavior:
     baby-zombie-movement-modifier:
       default: "0.5"
       description: >-
-        Modifies the speed that baby zombies move at, where 0.5 is 50% faster
-        than the mob base speed, and -0.4 would be 40% slower
+        设置小僵尸的移动速度，其中 `0.5` 表示比基础怪物速度快 50%，而 `-0.4` 表示比基础怪物速度慢 40%。
     disable-chest-cat-detection:
       default: "false"
-      description: Allows you to open chests even if they have a cat sitting on top of them
+      description: 是否允许即使猫坐在箱子上时也可以打开箱子。
     disable-creeper-lingering-effect:
       default: "false"
-      description: Disables creepers randomly leaving behind a lingering area effect cloud
+      description: 是否禁用苦力怕随机留下持续的区域效果云。
     disable-player-crits:
       default: "false"
       description: >-
-        Instructs the server to disable critical hits in PvP, treating them as
-        normal hits instead
+        是否禁用 PvP 中的暴击，将其视为普通攻击。
     allow-spider-world-border-climbing:
       default: "true"
       description: >-
-        Whether spiders should be able to climb on the world border, as if it
-        were a regular wall.
+        是否允许蜘蛛在世界边界上爬行，就像在普通墙壁上一样。
     door-breaking-difficulty:
       vindicator:
         default: "[NORMAL, HARD]"
         description: >-
-          A list of difficulties (PEACEFUL, EASY, NORMAL, HARD) at which vindicators will attempt to break doors.
+          设置卫道士破坏门的难度
+
+          - 列出的难度等级（PEACEFUL、EASY、NORMAL、HARD），在这些难度下，卫道士会尝试破坏门。
       <entity-type>:
         default: "[HARD]"
         description: >-
-          A list of difficulties (PEACEFUL, EASY, NORMAL, HARD) at which zombie-like entities
-          (husks, zombies, zombie villagers and zombified piglins) will attempt to break doors.
+          设置能够破坏门的难度
+
+          - 列出的难度等级（PEACEFUL、EASY、NORMAL、HARD），在这些难度下，类似僵尸的实体（尸壳、僵尸、僵尸村民和僵尸猪灵）会尝试破坏门。
     ender-dragons-death-always-places-dragon-egg:
       default: "false"
-      description: Controls whether ender dragons should always drop dragon eggs on death
+      description: 是否总是在末影龙死亡时掉落龙蛋。
     experience-merge-max-value:
       default: "-1"
       description: >-
-        Instructs the server to put a maximum value on experience orbs,
-        preventing them all from merging down into 1 single orb. A value of -1
-        instructs the server to use no max value, allowing them to merge down
-        into a single orb. This is especially noticeable when defeating boss
-        monsters
+        设置经验球的最大值，防止它们全部合并为一个经验球。
+
+        - 设置为 `-1` 服务器将不使用最大值，允许它们合并为一个经验球。在击败 Boss 怪物时，这一点尤为明显。
     mobs-can-always-pick-up-loot:
       zombies:
         default: "false"
         description: >-
-          Instructs the server to allow zombies to pick up loot. If set to
-          false, the probability that a zombie picks up items depends on the
-          world's difficulty (Vanilla behavior)
+          是否总是允许僵尸捡起战利品。
+
+          - 如果设置为 `false`，僵尸捡起物品的概率将取决于世界的难度（原版行为）。
       skeletons:
         default: "false"
         description: >-
-          Instructs the server to allow skeletons to pick up loot. If set to
-          false, the probability that a skeleton picks up items depends on the
-          world's difficulty (Vanilla behavior)
+          是否总是允许骷髅捡起战利品。
+
+          - 如果设置为 `false`，骷髅捡起物品的概率将取决于世界的难度（原版行为）。
     nerf-pigmen-from-nether-portals:
       default: "false"
-      description: "Removes AI from pigmen spawned via nether portals "
+      description: "是否移除通过下界传送门生成的猪灵的 AI。"
     only-merge-items-horizontally:
       vanilla: "true"
       default: "false"
       description: >-
-        Prevents merging items that are not on the same y level, preventing potential
-        visual artifacts.
+        是否防止不在同一 Y 轴水平的物品合并，从而避免潜在的视觉异常。
     parrots-are-unaffected-by-player-movement:
       default: "false"
       description: >-
-        Makes parrots "sticky" so they do not fall off a player's shoulder when
-        they move. Use crouch to shake them off
+        是否使鹦鹉变得“粘”人，这样在玩家移动时就不会从玩家的肩膀上掉下来。
+
+        - 即玩家移动也不会驱赶鹦鹉，但是潜行可以赶走它们。
     phantoms-do-not-spawn-on-creative-players:
       vanilla: "false"
       default: "true"
-      description: "Disables spawning of phantoms on players in creative mode "
+      description: "是否禁用在创造模式下对玩家生成幻翼。"
     phantoms-only-attack-insomniacs:
       vanilla: "false"
       default: "true"
-      description: "Prevents phantoms from attacking players who have slept "
+      description: "是否防止幻翼攻击已经睡觉的玩家。"
     player-insomnia-start-ticks:
       default: "72000"
       description: |
-        Number of ticks a player must stay awake before phantoms can start spawning.
-        Default (72000) is 3 Minecraft days, -1 disables phantom spawning.
+        设置玩家必须保持清醒的 Tick，在这之后幻翼才能开始生成。
+
+        - 默认值（72000）为 3 个我的世界天数，设置为 `-1` 将禁用幻翼生成。
     piglins-guard-chests:
       default: "true"
-      description: If piglins should attempt to guard chests when angered
+      description: 是否允许猪灵在愤怒时尝试守护箱子。
     pillager-patrols:
       disable:
         default: "false"
-        description: Disables Pillager patrols and associated AI
+        description: 是否禁用掠夺者的巡逻和相关 AI。
       spawn-chance:
         default: "0.2"
-        description: Modify the spawn changes for patrols
+        description: 设置修改巡逻队的生成概率。
       spawn-delay:
         ticks:
           default: "12000"
-          description: Delay in ticks between spawn chance
+          description: 设置生成概率之间的 Tick 延迟。
         per-player:
           default: "false"
-          description: Sets the delay to be independent for each player
+          description: 是否对每个玩家独立计算延迟。
       start:
         day:
           default: "5"
-          description: Days between raid spawns
+          description: 设置两次袭击生成之间的天数。
         per-player:
           default: "false"
-          description: Sets the start to be independent for each player
+          description: 是否对每个玩家独立计算开始事件。
     should-remove-dragon:
       default: "false"
-      description: Sets whether to remove the dragon if it exists without a portal
+      description: 是否移除没有传送门的末影龙。
     spawner-nerfed-mobs-should-jump:
       default: "false"
       description: >-
-        Determines if spawner nerfed mobs should attempt to float (jump) in
-        water
+        是否允许刷怪笼生成的没有 AI 的怪物在水中漂浮（跳跃）。
     zombie-villager-infection-chance:
       default: default
       description: >-
-        Sets the chance for villager conversion to zombie villager. Set to
-        "default" for default behavior based on game difficulty. Set to 0.0 to
-        always have villagers die when killed by zombies. Set to 100.0 to always
-        convert villagers to zombie villagers
+        设置村民被僵尸杀死时转化为僵尸村民的概率。
+
+        - 设置为 `default` 以使用基于游戏难度的默认行为。设置为 `0.0` 时，村民被僵尸杀死时总是死亡。设置为 `100.0` 时，村民被僵尸杀死时总是转化为僵尸村民。
     zombies-target-turtle-eggs:
       default: "true"
       description: >-
-        Sets whether zombies and zombified piglins should target turtle eggs.
-        Setting this to false may help with performance, as they won't search
-        for nearby eggs
+        是否允许僵尸和僵尸猪灵以海龟蛋为目标。
+
+        - 将此设置为 `false` 可能有助于提高性能，因为它们不会搜索附近的蛋。
     phantoms-spawn-attempt-max-seconds:
       default: "119"
-      description: Sets the maximum number of seconds between phantom spawn attempts
+      description: 设置幻翼尝试生成之间的最大秒数。
     phantoms-spawn-attempt-min-seconds:
       default: "60"
-      description: Sets the minimum number of seconds between phantom spawn attempts
+      description: 设置幻翼尝试生成之间的最小秒数。
     cooldown-failed-beehive-releases:
       default: "true"
       vanilla: "false"
-      description: Adds a cooldown to bees being released after a failed release, which can occur if the hive is blocked or it being night.
+      description: 是否为蜜蜂在释放失败后增加冷却时间，这可能发生在蜂巢被阻塞或处于夜晚时。
   entities-target-with-follow-range:
     default: "false"
-    description: "Sets whether the server should use follow range when targeting entities "
+    description: "是否使用目标实体的跟随范围进行目标定位"
   mob-effects:
     immune-to-wither-effect:
       default: "true"
-      description: If the specified entity should be immune to the wither effect
+      description: 是否允许实体对凋零效果免疫。
     spiders-immune-to-poison-effect:
       default: "true"
-      description: If spiders should be immune to poison
+      description: 是否允许蜘蛛对中毒免疫。
   sniffer:
     boosted-hatch-time:
       default: default
       description: >-
-        The boosted hatch time, in ticks, a sniffer egg requires to hatch.
-        Boosted hatching occurs when planted on specific blocks.
+        设置嗅探蛋在特定方块上孵化时的加速孵化时间，单位为 Tick。
     hatch-time:
       default: default
-      description: "The non-boosted hatch time, in ticks, a sniffer egg requires to hatch."
+      description: "嗅探蛋在非加速条件下孵化所需的时间，单位为 Tick。"
   spawning:
     all-chunks-are-slime-chunks:
       default: "false"
       description: >-
-        Instructs the server to treat all chunks like slime chunks, allowing
-        them to spawn in any chunk. This may actually decrease your chances of
-        running into a Slime as they now have a much larger potential spawn area
+        是否将所有区块视为史莱姆区块，允许它们在任何区块生成。
+
+        - 这实际上可能会降低你遇到史莱姆的几率，因为它们现在有了更大的潜在生成区域。
     alt-item-despawn-rate:
       enabled:
         default: "false"
-        description: Determines if items will have different despawn rates
+        description: 是否为每个物品使用不同的消失速率。
       items:
         cobblestone:
           default: "300"
-          description: Sets a custom despawn rate for cobblestone of 300 ticks
+          description: 设置圆石自定义消失速率，默认为 300 Tick。
         <item-type>:
           default: amount
           description: >-
-            Determines how long each respective item despawns in ticks. The item
-            ids are the same as those used in the /give command. They can be
-            viewed by enabling advanced item tooltips in-game by pressing **F3 +
-            H**; the item id will appear at the bottom of the tooltip that
-            appears when you hover over an item
+            设置每种物品分别在多少 Tick 后消失。
+
+            - 物品 ID 与 `/give` 命令中使用的相同。可以通过在游戏中按下 **F3 + H** 启用高级物品提示来查看它们；当你将鼠标悬停在物品上时，物品 ID 将出现在提示的底部。
     count-all-mobs-for-spawning:
       vanilla: "true"
       default: "false"
       description: >-
-        Determines whether spawner mobs and other misc mobs are counted towards
-        the global mob limit
+        是否将刷怪笼怪物和其他杂项怪物计入全局怪物限制。
     creative-arrow-despawn-rate:
       default: default
       description: >-
-        The rate, in ticks, at which arrows shot from players in creative mode
-        are despawned
+        设置玩家在创造模式下射出的箭的消失速率，单位为 Tick。
     ticks-per-spawn:
       ambient:
         default: "-1"
         description: |
-          Determines how many ticks there are between attempts to spawn ambient mobs (bats).
-          Default (-1) uses
-          [bukkit.yml spawn rate](/paper/reference/bukkit-configuration#ticks_per_ambient_spawns).
+          设置尝试生成环境生物（蝙蝠）之间相隔的 Tick。
+
+          - 默认值（-1）使用 [bukkit.yml 中的生成速率](/paper/reference/bukkit-configuration#ticks_per_ambient_spawns)。
       axolotls:
         default: "-1"
         description: |
-          Determines how many ticks there are between attempts to spawn axolotls.
-          Default (-1) uses
-          [bukkit.yml spawn rate](/paper/reference/bukkit-configuration#ticks_per_axolotl_spawns).
+          设置尝试生成美西螈之间相隔的 Tick。
+
+          - 默认值（-1）使用 [bukkit.yml 中的生成速率](/paper/reference/bukkit-configuration#ticks_per_axolotl_spawns)。
       creature:
         default: "-1"
         description: |
-          Determines how many ticks there are between attempts to spawn passive creatures (animals).
-          Default (-1) uses
-          [bukkit.yml spawn rate](/paper/reference/bukkit-configuration#ticks_per_animal_spawns).
+          设置尝试生成被动生物（动物）之间相隔的 Tick。
+
+          - 默认值（-1）使用 [bukkit.yml 中的生成速率](/paper/reference/bukkit-configuration#ticks_per_animal_spawns)。
       monster:
         default: "-1"
         description: |
-          Determines how many ticks there are between attempts to spawn hostile monsters.
-          Default (-1) uses
-          [bukkit.yml spawn rate](/paper/reference/bukkit-configuration#ticks_per_monster_spawns).
+          设置尝试生成敌对怪物之间相隔的 Tick。
+
+          - 默认值（-1）使用 [bukkit.yml 中的生成速率](/paper/reference/bukkit-configuration#ticks_per_monster_spawns)。
       underground_water_creature:
         default: "-1"
         description: |
-          Determines how many ticks there are between attempts to spawn underground water creatures (glow squid).
-          Default (-1) uses
-          [bukkit.yml spawn rate](/paper/reference/bukkit-configuration#ticks_per_water_underground_creature_spawns).
+          设置尝试生成地下水域生物（发光鱿鱼）之间相隔的 Tick。
+
+          - 默认值（-1）使用 [bukkit.yml 中的生成速率](/paper/reference/bukkit-configuration#ticks_per_water_underground_creature_spawns)。
       water_ambient:
         default: "-1"
         description: |
-          Determines how many ticks there are between attempts to spawn ambient water mobs (tropical fish).
-          Default (-1) uses
-          [bukkit.yml spawn rate](/paper/reference/bukkit-configuration#ticks_per_water_ambient_spawns).
+          设置尝试生成水域环境生物（热带鱼）之间相隔的 Tick。
+
+          - 默认值（-1）使用 [bukkit.yml 中的生成速率](/paper/reference/bukkit-configuration#ticks_per_water_ambient_spawns)。
       water_creature:
         default: "-1"
         description: |
-          Determines how many ticks there are between attempts to spawn water creatures (squid, dolphins).
-          Default (-1) uses
-          [bukkit.yml spawn rate](/paper/reference/bukkit-configuration#ticks_per_water_spawns).
+          设置尝试生成水域生物（鱿鱼、海豚）之间相隔的 Tick。
+
+          - 默认值（-1）使用 [bukkit.yml 中的生成速率](/paper/reference/bukkit-configuration#ticks_per_water_spawns)。
     despawn-range-shape:
       default: ELLIPSOID
       description: >-
-        The shape of the despawn range. Can be one of the following values:
+        设置消失范围的形状。可以设置为以下值之一：
 
-        - **ELLIPSOID**: The despawn range is an ellipsoid, with the horizontal
-        and vertical despawn ranges being separate. This is the default Minecraft
-        behavior.
+        - **ELLIPSOID**：消失范围是一个椭球体，水平和垂直消失范围是分开的。这是默认的我的世界行为。
 
-        - **CYLINDER**: The vertical despawn range is checked separately from
-        the horizontal despawn range, but the horizontal despawn range is a
-        circle.
+        - **CYLINDER**：垂直消失范围与水平消失范围分开检查，但水平消失范围是一个圆形。
     despawn-ranges:
       <mob_category>:
         hard:
           default: default
           description: >-
-            The horizontal and vertical number of blocks away from a player in which each monster
-            type (set individually) will be forcibly despawned.
+            设置每种怪物类型（分别设置）将被强制消失的水平和垂直方向上距离玩家的方块数量。
         soft:
           default: default
           description: >-
-            The horizontal and vertical number of blocks away from a player in which each monster
-            type (set individually) will be randomly selected to be despawned.
+            设置每种怪物类型（分别设置）将被随机选择消失的水平和垂直方向上距离玩家的方块数量。
       <mob_category>_:
         hard:
           horizontal:
             default: default
             description: >-
-              The horizontal number of blocks away from a player in which each entity type
-              (set individually) will be forcibly despawned.
+              实体设置每种实体类型（分别设置）将被强制消失的水平方向上距离玩家的方块数量。
           vertical:
             default: default
             description: >-
-              The vertical number of blocks away from a player in which each entity type
-              (set individually) will be forcibly despawned.
+              实体设置每种实体类型（分别设置）将被强制消失的垂直方向上距离玩家的方块数量。
         soft:
           horizontal:
             default: default
             description: >-
-              The horizontal number of blocks away from a player in which each entity type
-              (set individually) will be randomly selected to be despawned.
+              实体每种实体类型（分别设置）将被随机选择消失的水平方向上距离玩家的方块数量。
           vertical:
             default: default
             description: >-
-              The vertical number of blocks away from a player in which each entity type
-              (set individually) will be randomly selected to be despawned.
+              实体每种实体类型（分别设置）将被随机选择消失的垂直方向上距离玩家的方块数量。
     despawn-time:
       <entity-type>:
         default: "disabled"
         description: >-
-          A server-introduced despawn time after which the entity is forcefully despawned.
-          If disabled or not specified, the entity will simply despawn according to Vanilla rules.
+          设置实体的消失时间，超过此时间后实体将被强制消失。
+
+          - 如果禁用或未指定，则实体将根据原版规则消失。
     disable-mob-spawner-spawn-egg-transformation:
       default: "false"
       description: >-
-        Whether to block players from changing the type of mob spawners with a
-        spawn egg
+        是否阻止玩家使用刷怪蛋更改刷怪笼的类型。
     duplicate-uuid:
       mode:
         vanilla: "NOTHING"
         default: SAFE_REGEN
         description: >-
-          Specifies the method the server uses to resolve entities with
-          duplicate UUIDs. This can be one of the following values:
+          设置服务器用于解决具有重复 UUID 的实体的方法。可以设置为以下值之一：
 
-          - **SAFE_REGEN**: Regenerate a UUID for the entity, or delete it if
-          they are close.
+          - **SAFE_REGEN**：为实体重新生成一个 UUID，如果它们距离较近则删除它们。
 
-          - **DELETE**: Delete the entity.
+          - **DELETE**：删除实体。
 
-          - **NOTHING**: Does nothing, not printing logs.
+          - **NOTHING**：什么都不做，不打印日志。
 
-          - **WARN**: Does nothing, printing logs
+          - **WARN**：什么都不做，但打印日志。
       safe-regen-delete-range:
         default: "32"
         description: >-
-          If multiple entities with duplicate UUIDs are within this many blocks,
-          saferegen will delete all but 1 of them
+          设置具有重复 UUID 的多个实体在这些方块范围内，`saferegen` 将删除其中的大部分实体，仅保留一个。
     filter-bad-tile-entity-nbt-from-falling-blocks:
       vanilla: "false"
       default: "true"
       description: >-
-        Instructs the server to remove certain NBT data from falling blocks.
-        **Note**: Some adventure maps may require this to be turned off to
-        function correctly, but we do not recommend turning it off on a public
-        server
+        设置服务器从下落方块中移除某些 NBT 数据。
+
+        - **注意**：某些冒险地图可能需要关闭此功能才能正常运行，但我们不建议在公共服务器上关闭此功能。
     filtered-entity-tag-nbt-paths:
       vanilla: "[]"
       default: "[Pos, Motion, sleeping_pos]"
       description: >-
-        A list of NBT tags that will be removed from the "entity_data" component on items
-        which spawn entities. The format of these strings follows the same
-        format used to select NBT tags in Vanilla commands. If the spawning was
-        directly caused by a player and the player has the minecraft.nbt.place
-        permission, the filter list will be ignored. The defaults are set to
-        prevent entities from spawning or moving to a place other than the
-        location they were placed. For example, if Pos wasn't included, a spawn
-        egg could place an entity at any location. **Note**: Some adventure maps
-        may require this to be an empty list to function correctly, but we do
-        not recommend turning it off on a public server
+        设置将从生成实体的物品的 “entity_data” 组件中移除的 NBT 标签列表。
+
+        - 这些字符串的格式与原版命令中用于选择 NBT 标签的格式相同。如果生成是由玩家直接引起的，并且玩家拥有 `minecraft.nbt.place` 权限，则将忽略过滤列表。
+
+        - 默认值设置为防止实体在放置位置以外的地方生成或移动。例如，如果不包括 `Pos`，则生成蛋可以将实体放置在任何位置。
+
+        - **注意**：某些冒险地图可能需要将其设置为空列表才能正常运行，但我们不建议在公共服务器上关闭此功能。
     iron-golems-can-spawn-in-air:
       default: "false"
       description: >-
-        Sets whether iron golems can spawn in the air. Iron farms may break
-        depending on this setting
+        是否允许铁傀儡在空中生成。
+
+        - 铁傀儡农场可能会因这一设置而受到影响。
     monster-spawn-max-light-level:
       default: default
       description: >-
-        When set to "default", the Vanilla default will be used (=0). Set to 15
-        or greater to revert to pre-1.18 behavior
+        设置怪物生成的最大光照等级。
+
+        - 当设置为 “default” 时，将使用原版默认值（=0）。设置为 15 或更高以恢复 1.18 之前的旧行为。
     non-player-arrow-despawn-rate:
       default: default
       description: >-
-        The rate, in ticks, at which arrows shot from non-player entities are
-        despawned. The default value instructs the server to use the same
-        default arrow despawn rate from spigot.yml that is used for all arrows
+        设置非玩家实体射出的箭的消失速率，单位为 Tick。
+
+        - 默认值为使用与所有箭相同的默认箭消失速率，该速率在 [spigot.yml](/paper/reference/spigot-configuration/#world_settings_default_arrow_despawn_rate) 中设置。
     per-player-mob-spawns:
       vanilla: "false"
       default: "true"
       description: >-
-        Determines whether the mob limit (in bukkit.yml) is counted per player
-        or for the entire server. Enabling this setting results in roughly the
-        same number of mobs, but with a more even distribution that prevents one
-        player from using the entire mob cap and provides a more single-player
-        like experience
+        是否为每个玩家（true）还是对全局（false）应用刷怪限制。
+
+        - 启用此设置将使怪物数量大致相同，但分布更加均匀，防止一个玩家占用整个怪物上限，并提供更接近单人游戏的体验。
     scan-for-legacy-ender-dragon:
       default: "true"
       description: >-
-        Determines if the server attempts to start the ender dragon fight.
-        Setting this to false will make the ender dragon not spawn in the end,
-        even with a new world
+        是否扫描旧版末影龙，确定服务器是否尝试开始末影龙战斗。
+
+        - 将此设置为 `false` 将使末影龙在末地不会生成，即使在新世界中也是如此。
     skeleton-horse-thunder-spawn-chance:
       default: default
       description: >-
-        Sets the chance that a "Skeleton Trap" (4 skeleton horsemen) will spawn
-        in a thunderstorm. Takes a double between 0 and 1, where 0 is 0% chance
+        设置在雷暴天气中生成“骷髅陷阱”（4 名骷髅骑士）的几率。
+
+        - 取值范围为 0 到 1 之间的双精度浮点数，其中 0 表示 0% 的几率。
     slime-spawn-height:
       slime-chunk:
         maximum:
           default: "40"
-          description: Sets the maximum Y position for natural Slime spawn in Slime Chunks
+          description: 设置史莱姆区块中自然生成史莱姆的最大 Y 位置。
       surface-biome:
         minimum:
           default: "50"
           description: >-
-            Sets the minimum Y position for natural Slime spawn in Surface
-            Biomes
+            设置地表生物群系中自然生成史莱姆的最小 Y 位置。
         maximum:
           default: "70"
           description: >-
-            Sets the maximum Y position for natural Slime spawn in Surface
-            Biomes
+            设置地表生物群系中自然生成史莱姆的最大 Y 位置。
     spawn-limits:
       ambient:
         default: "-1"
         description: >-
-          The constant used to determine how many ambient mobs will be naturally
-          spawned per world. This is identical to the value set in
-          [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_ambient),
-          except that it can be configured per world.
+          设置每个世界自然生成的环境生物数量的常数。
 
-          A value of -1 will use the value in bukkit.yml
+          - 这与 [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_ambient) 中设置的值相同，只是可以针对每个世界进行配置。设置为 `-1` 将使用 `bukkit.yml` 中的值。
       axolotls:
         default: "-1"
         description: >-
-          The constant used to determine how many axolotls will be naturally
-          spawned per world. This is identical to the value set in
-          [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_axolotls),
-          except that it can be configured per world.
+          设置每个世界自然生成的美西螈数量的常数。
 
-          A value of -1 will use the value in bukkit.yml
+          - 这与 [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_axolotls) 中设置的值相同，只是可以针对每个世界进行配置。设置为 `-1` 将使用 `bukkit.yml` 中的值。
       creature:
         default: "-1"
         description: >-
-          The constant used to determine how many animals will be naturally
-          spawned per world. This is identical to the value set in
-          [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_animals),
-          except that it can be configured per world, and the name.
+          设置每个世界自然生成的动物数量的常数。
 
-          A value of -1 will use the value in bukkit.yml
+          - 这与 [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_animals) 中设置的值相同，只是可以针对每个世界进行配置，并且名称不同。设置为 `-1` 将使用 `bukkit.yml` 中的值。
       monster:
         default: "-1"
         description: >-
-          The constant used to determine how many monsters will be naturally
-          spawned per world. This is identical to the value set in
-          [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_monsters),
-          except that it can be configured per world.
+          设置每个世界自然生成的怪物数量的常数。
 
-          A value of -1 will use the value in bukkit.yml
+          - 这与 [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_monsters) 中设置的值相同，只是可以针对每个世界进行配置。设置为 `-1` 将使用 `bukkit.yml` 中的值。
       underground_water_creature:
         default: "-1"
         description: >-
-          The constant used to determine how many underground water creatures
-          will be naturally spawned per world. This is identical to the value
-          set in [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_water_underground_creature),
-          except that it can be configured per world.
+          设置每个世界自然生成的地下水域生物数量的常数。
 
-          A value of -1 will use the value in bukkit.yml
+          - 这与 [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_water_underground_creature) 中设置的值相同，只是可以针对每个世界进行配置。设置为 `-1` 将使用 `bukkit.yml` 中的值。
       water_ambient:
         default: "-1"
         description: >-
-          The constant used to determine how many water ambient mobs will be
-          naturally spawned per world. This is identical to the value set in
-          [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_water_ambient),
-          except that it can be configured per world.
+          设置每个世界自然生成的水域环境生物数量的常数。
 
-          A value of -1 will use the value in bukkit.yml
+          - 这与 [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_water_ambient) 中设置的值相同，只是可以针对每个世界进行配置。设置为 `-1` 将使用 `bukkit.yml` 中的值。
       water_creature:
         default: "-1"
         description: >-
-          The constant used to determine how many water animals will be
-          naturally spawned per world. This is identical to the value set in
-          [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_water_animals),
-          except that it can be configured per world.
+          设置每个世界自然生成的水域动物数量的常数。
 
-          A value of -1 will use the value in bukkit.yml
+          - 这与 [bukkit.yml](/paper/reference/bukkit-configuration#spawn_limits_water_animals) 中设置的值相同，只是可以针对每个世界进行配置。设置为 `-1` 将使用 `bukkit.yml` 中的值。
     wandering-trader:
       spawn-chance-failure-increment:
         default: "25"
         description: >-
-          How much the spawn chance will be increased on every failed wandering
-          trader spawn
+          设置每次流浪商人生成失败时，生成几率将增加的幅度。
       spawn-chance-max:
         default: "75"
-        description: The maximum chance that a wandering trader will be spawned
+        description: 设置流浪商人生成的最大几率。
       spawn-chance-min:
         default: "25"
-        description: The minimum chance that a wandering trader will be spawned
+        description: 设置流浪商人生成的最小几率。
       spawn-day-length:
         default: "24000"
-        description: Time between wandering trader spawn attempts in ticks
+        description: 设置流浪商人两次尝试生成之间的时间，单位为 Tick。
       spawn-minute-length:
         default: "1200"
-        description: The length of the wandering trader spawn minute in ticks
+        description: 设置流浪商人生成分钟的长度，单位为 Tick。
     wateranimal-spawn-height:
       maximum:
         default: default
         description: >-
-          The maximum height at which water animals will spawn. **Note**: The
-          default value defers to Minecraft's default setting, which as of 1.12
-          is the sea level of the world (usually Y: 64)
+          设置水域动物生成的最大高度。
+
+          - **注意**：默认值遵循我的世界的默认设置，截至 1.12 版本，通常是世界海平面（通常是 Y: 64）。
       minimum:
         default: default
         description: >-
-          The minimum height at which water animals will spawn. **Note**: The
-          default value defers to Minecraft's default setting, which as of 1.12
-          is the sea level of the world (usually Y: 64)
+          设置水域动物生成的最小高度。
+
+          - **注意**：默认值遵循我的世界的默认设置，截至 1.12 版本，通常是世界海平面（通常是 Y: 64）。
   tracking-range-y:
     enabled:
       default: "false"
       description: >-
-        Enables separate ranges for tracking ranges in the vertical (Y)
-        direction.
+        是否启用在垂直（Y）方向上跟踪范围的独立设置。
     animal:
       default: default
       description: >-
-        Controls how far vertically in blocks animals are tracked (sent to) the
-        player.
+        设置动物在垂直方向上被跟踪（发送给玩家）的距离，单位为方块。
     display:
       default: default
       description: >-
-        Controls how far vertically in blocks display entities are tracked (sent
-        to) the player.
+        设置显示实体在垂直方向上被跟踪（发送给玩家）的距离，单位为方块。.
     monster:
       default: default
       description: >-
-        Controls how far vertically in blocks monsters are tracked (sent to) the
-        player.
+        设置怪物在垂直方向上被跟踪（发送给玩家）的距离，单位为方块。
     player:
       default: default
       description: >-
-        Controls how far vertically in blocks players are tracked (sent to) the
-        player.
+        设置玩家在垂直方向上被跟踪（发送给玩家）的距离，单位为方块。
     misc:
       default: default
       description: >-
-        Controls how far vertically in blocks miscellaneous are tracked (sent
-        to) the player.
+        设置杂项实体在垂直方向上被跟踪（发送给玩家）的距离，单位为方块。
     other:
       default: default
       description: >-
-        Controls how far vertically in blocks other entities are tracked (sent
-        to) the player.
+        设置其他实体在垂直方向上被跟踪（发送给玩家）的距离，单位为方块。
 environment:
   disable-explosion-knockback:
     default: "false"
     description: >-
-      Instructs the server to completely block any knockback that occurs as a
-      result of an explosion
+      是否完全阻止由爆炸产生的任何击退效果。
   disable-ice-and-snow:
     default: "false"
     description: >-
-      Disables ice and snow formation. This also causes cauldrons to no longer
-      be filled by rain or snow
+      是否禁用冰雪的形成。
+
+      - 这也会导致炼药锅不再被雨水或雪填满。
   disable-thunder:
     default: "false"
-    description: Disables thunderstorms
+    description: 是否禁用雷暴天气。
   locate-structures-outside-world-border:
     default: "false"
     description: >-
-      If the server should be able to locate structures in chunks that are outside
-      the world border.
+      是否在世界边界外的区块中定位结构。
   frosted-ice:
     delay:
       max:
         default: "40"
-        description: Maximum RNG value to apply frosted-ice effects at
+        description: 设置应用冰霜效果的最大随机值。
       min:
         default: "20"
-        description: Minimum RNG value to apply frosted-ice effects at
+        description: 设置应用冰霜效果的最小随机值。
     enabled:
       default: "true"
-      description: Instructs the server to enable (and tick) frosted ice blocks
+      description: 是否启用（并更新）冰霜冰块。
   generate-flat-bedrock:
     default: "false"
-    description: Instructs the server to generate bedrock as a single flat layer
+    description: 是否以单层平面的形式生成基岩。
   nether-ceiling-void-damage-height:
     default: disabled
     description: >-
-      Sets the level above which players in the nether will take void damage.
-      This is a Vanilla-friendly way to restrict players from using the nether
-      ceiling as a buildable area. Setting to disabled disables this feature
+      设置玩家在下界中受到虚空伤害的高度。
+
+      - 这是一种与原版兼容的方式来限制玩家使用下界天花板作为可建造区域。设置为 `disabled` 将禁用此功能。
   optimize-explosions:
     default: "false"
     description: >-
-      Instructs the server to cache entity lookups during an explosion, rather
-      than recalculating throughout the process. This speeds up explosions
-      significantly
+      是否开启爆炸优化。
+
+      - 服务器在爆炸过程中缓存实体查找，而不是在整个过程中重新计算。可以显著加快爆炸的速度，但会导致伤害计算不准确。
   portal-create-radius:
     default: "16"
     description: >-
-      The maximum range the server will try to create a portal around when
-      generating a new portal
+      设置在生成新传送门时尝试在其周围创建传送门的最大范围。
   portal-search-radius:
     default: "128"
     description: >-
-      The maximum range the server will use to look for an existing nether
-      portal. If it can't find one in that range, it will generate a new one
+      设置查找现有下界传送门的最大范围。
+
+      - 如果在此范围内找不到，它将生成一个新的传送门。
   portal-search-vanilla-dimension-scaling:
     default: "true"
-    description: Whether to apply Vanilla dimension scaling to portal-search-radius
+    description: 是否对传送门搜索半径应用原版维度缩放。
   treasure-maps:
     enabled:
       default: "true"
       description: >-
-        If villagers should trade treasure maps and treasure maps from chests
-        should lead to a feature
+        是否允许村民交易宝藏地图，以及宝箱中的宝藏地图是否应该指向一个功能。
     find-already-discovered:
       loot-tables:
         default: default
         description: >-
-          Overrides the loot table-configured check for undiscovered structures.
-          default allows loot tables to individually determine if the map should
-          allow discovered locations in its search. All Vanilla loot tables
-          default to skipping discovered locations so changing this to false
-          would override that behavior and force them to search discovered
-          locations
+          设置覆盖战利品表配置的未发现结构检查。
+
+          - 默认情况下，允许战利品表单独决定地图是否应在搜索中允许已发现的位置。所有原版战利品表默认跳过已发现的位置，因此将此设置为 `false` 将覆盖此行为，并强制它们搜索已发现的位置。
       villager-trade:
         default: "false"
         description: >-
-          Instructs the server to target the first treasure location found for
-          maps obtained via trading with villagers
+          是否通过与村民交易获得的地图的目标设置为找到的第一个宝藏位置。
   void-damage-amount:
     default: 4.0
     description: >-
-      The amount of void damage dealt per void damage attempt.
-      May be set to `disabled` to completely disable void damage in the world.
+      设置每次虚空伤害尝试造成的伤害量。
+
+      - 可以设置为 `disabled` 以完全禁用世界中的虚空伤害。
   void-damage-min-build-height-offset:
     default: -64
     description: >-
-      The offset from a world's minimum build height at which entities should receive void
-      damage.
+      设置实体在世界最低建造高度的偏移量，超过此偏移量的实体将受到虚空伤害。
   water-over-lava-flow-speed:
     default: "5"
-    description: Sets the speed at which water flows while over lava
+    description: 设置水流在覆盖熔岩时的流速。
   fire-tick-delay:
     default: "30"
-    description: Sets the minimum delay between fire ticks
+    description: 设置火焰 Tick 更新之间的最小延迟。
   max-fluid-ticks:
     default: "65536"
     description: >-
-      The maximum number of fluid ticks that can be processed in a single tick.
-      This is a safety measure to prevent the server from hanging when there is
-      a large number of fluid updates.
+      设置单次 Tick 中可以处理的最大流体刻更新数量。
+
+      - 这是一种安全措施，用于防止服务器在存在大量流体更新时卡住。
   max-block-ticks:
     default: "65536"
     description: >-
-      The maximum number of block ticks that can be processed in a single tick.
-      This is a safety measure to prevent the server from hanging when there is
-      a large amount of block updates.
+      设置单次 Tick中可以处理的最大方块刻更新数量。
+
+      - 这是一种安全措施，用于防止服务器在存在大量方块更新时卡住。
 feature-seeds:
   generate-random-seeds-for-all:
     default: "false"
     description: >-
-      Enables autofilling random seeds for all available features you haven't
-      already set a seed to. Using this in a controlled environment is also a
-      good way of receiving a full list of features you can set seeds for
+      是否为所有尚未设置种子的可用功能启用自动填充随机种子。
+
+      - 在受控环境中使用此功能，也是获取可以设置种子的完整功能列表的好方法。
   <feature-namespace>:
     default: -1
     description: >-
-      Sets the population seed for the specified feature. If set to -1, the
-      Vanilla population seed stays unchanged and will not be overridden by the
-      autofill option
+      设置为指定功能设置种群种子。
+      - 如果设置为 `-1`，原版种群种子将保持不变，不会被自动填充选项覆盖。
 fishing-time-range:
   maximum:
     default: "600"
-    description: The maximum number of RNG ticks before catching a fish
+    description: 设置钓鱼所需的随机数生成器的最大 Tick。
   minimum:
     default: "100"
-    description: The minimum number of RNG ticks needed to catch a fish
+    description: 设置钓鱼所需的随机数生成器的最小 Tick。
 fixes:
   disable-unloaded-chunk-enderpearl-exploit:
     default: "false"
-    description: Prevent enderpearls from storing the thrower when in an unloaded chunk
+    description: 是否禁用末影珍珠在未加载区块中存储投掷者信息。
   falling-block-height-nerf:
     default: disabled
     description: >-
-      The height at which falling blocks will be removed from the server. A
-      value of disabled will disable this feature
+      设置下落中的方块被服务器移除的高度。
+
+      - 设置为 `disabled` 将禁用此功能。
   fix-items-merging-through-walls:
     default: "false"
     description: >-
-      Whether items should be prevented from merging through walls. Enabling
-      this will incur a performance degradation. This is only necessary when
-      merge-radius.item (spigot.yml) is large enough to merge items through
-      walls
+      是否防止物品通过墙壁合并。
+
+      - 启用此选项会导致性能下降。只有当 [merge-radius.item](/paper/reference/spigot-configuration/#world_settings_default_merge_radius_item) 足够大以至于物品可以通过墙壁合并时，才需要启用此选项。
   prevent-tnt-from-moving-in-water:
     default: "false"
     description: >-
-      Instructs the server to keep Primed TNT entities from moving in flowing
-      water
+      是否阻止已点燃的 TNT 在流动的水中移动。
   split-overstacked-loot:
     default: "true"
     description: >-
-      When set to false, loot tables will not attempt to split items with a
-      stack size higher than the maximum into items of smaller stack sizes. This
-      will prevent overstacked items from being lost or causing a chunk to
-      become uninhabitable (due to players getting constantly kicked because of
-      oversized packets) when a shulker box is broken in survival
+      是否拆分超大堆叠战利品。
+
+      - 这可以防止在生存模式中破坏潜影盒时，超大堆叠的物品丢失或导致区块无法居住（由于玩家因过大的数据包而不断被踢出）。
   tnt-entity-height-nerf:
     default: disabled
     description: >-
@@ -860,160 +784,144 @@ hopper:
     vanilla: "false"
     default: "true"
     description: >-
-      Instructs the server to apply a short cooldown when the hopper is full,
-      instead of constantly trying to pull new items
+      是否在漏斗满时应用一个短暂的冷却时间，避免不断尝试拉取新物品。
   disable-move-event:
     default: "false"
     description: >-
-      Completely disables the InventoryMoveItemEvent for hoppers. Dramatically
-      improves hopper performance but will break protection plugins and any
-      others that depend on this event
+      是否完全禁用漏斗的 `InventoryMoveItemEvent` 事件。
+
+      - 这将显著提高漏斗的性能，但会破坏依赖此事件的保护插件和其他插件。
   ignore-occluding-blocks:
     default: "false"
     description: >-
-      Determines if hoppers will ignore containers inside occluding blocks, like
-      a hopper minecart inside a sand block. Enabling this will improve
-      performance for hoppers checking where to insert items
+      是否允许漏斗忽略被遮挡方块内的容器，例如被沙块遮挡的漏斗矿车内的容器。
+
+      - 启用此选项可以提高漏斗检查插入物品位置的性能。
 lootables:
   auto-replenish:
     default: "false"
     description: >-
-      Instructs the server to automatically replenish lootable containers. This
-      feature is useful for long-term worlds in which players are not expected
-      to constantly explore to generate new chunks. Breaking such lootable containers
-      disables replenishing after their initial looting.
+      设置服务器自动补充可掠夺的容器。
+
+      - 此功能适用于玩家不想探索以生成新区块的长期世界。破坏这些可掠夺的容器会在其初次被掠夺后禁用补充。
   max-refills:
     default: "-1"
     description: >-
-      Sets the maximum number of times a lootable may be refilled. **Note**: The
-      default value will allow a lootable to refill an infinite number of times
+      设置可掠夺容器的最大补充次数。
+
+      - **注意**：默认值 -1 将允许可掠夺物品无限次补充。
   refresh-max:
     default: 2d
     description: >-
-      The maximum amount of time that can pass before a lootable is refilled.
-      Formatted as a duration with a single unit e.g. 10h or 25m. Supports d, h,
-      m, and s.
+      设置容器重新填充战利品最大需要经过多长时间。
+
+      - 格式为带有单一单位的持续时间，例如 `10h` 或 `25m`。支持 `d`（天）、`h`（小时）、`m`（分钟）和 `s`（秒）。
   refresh-min:
     default: 12h
     description: >-
-      The minimum amount of time that must pass before a lootable will be
-      eligible to be refilled. Formatted as a duration with a single unit e.g.
-      10h or 25m. Supports d, h, m, and s.
+      设置容器重新填充战利品最小需要经过多长时间。
+
+      - 格式为带有单一单位的持续时间，例如 `10h` 或 `25m`。支持 `d`（天）、`h`（小时）、`m`（分钟）和 `s`（秒）。
   reset-seed-on-fill:
     default: "true"
     description: >-
-      Resets the loot seed each time the lootable is refilled, effectively
-      randomizing the new loot items on each refill
+      是否在每次重新填充战利品时都随机决定重新填充的新物品种类。
   restrict-player-reloot:
     default: "true"
     description: >-
-      Prevents the same players from coming back and re-looting the same
-      containers over and over
+      是否防止同一玩家反复掠夺同一容器中的战利品。
   restrict-player-reloot-time:
     default: disabled
     description: >-
-      Per-player cooldown between reloots. Formatted as a duration with a single
-      unit e.g. 10h or 25m. Supports d, h, m, and s.
+      设置每个玩家重新掠夺的冷却时间。格式为带有单一单位的持续时间，例如 `10h` 或 `25m`。支持 `d`（天）、`h`（小时）、`m`（分钟）和 `s`（秒）。
   retain-unlooted-shulker-box-loot-table-on-non-player-break:
     default: "true"
     description: >-
-      Configures if breaking a shulker box via non-player means, e.g. a piston, should retain
-      the shulker box's loot table if the shulker box has not been looted yet. Setting this option
-      to `false` prevents players from moving shulker boxes with potentially refilling loot tables
-      to new locations by breaking them via the likes of pistons.
+      是否在通过非玩家方式（例如活塞）破坏尚未被掠夺过的潜影盒时保留其战利品表。
+
+      - 将此选项设置为 `false` 可以防止玩家通过活塞等破坏潜影盒，从而将可能重新填充战利品表的潜影盒移动到新位置。
 maps:
   item-frame-cursor-limit:
     vanilla: "2147483647"
     default: "128"
     description: >-
-      The number of cursors (markers) allowed per map. A large number of cursors
-      may be used to lag clients
+      设置每张地图允许的光标（标记）数量。
+
+      - 过多的光标可能会导致客户端卡顿，原版为 2147483647。
   item-frame-cursor-update-interval:
     default: "10"
     description: >-
-      The interval in ticks at which cursors on maps in item frames are updated.
-      Setting this to a number less than 1 will disable updates altogether
+      设置地图上的光标在物品框中更新的 Tick 间隔。
+
+      - 将此值设置为小于 1 的数字将完全禁用更新。
 max-growth-height:
   bamboo:
     max:
       default: "16"
-      description: Maximum height bamboo will naturally grow to
+      description: 设置竹子自然生长的最大高度。
     min:
       default: "11"
-      description: Minimum height bamboo will naturally grow to
+      description: 设置竹子自然生长的最小高度。
   cactus:
     default: "3"
-    description: Maximum height cactus blocks will naturally grow to
+    description: 设置仙人掌自然生长的最大高度。
   reeds:
     default: "3"
-    description: Maximum height sugar cane/reeds blocks will naturally grow to
+    description: 设置甘蔗自然生长的最大高度。
 misc:
   allow-remote-ender-dragon-respawning:
     default: "false"
     vanilla: "true"
     description: >-
-      Disables an optimization which verifies that end crystals placed in the end
-      are placed on the portal frame before any attempt is made at respawning
-      the ender dragon. Enabling this setting allows remote ender dragon
-      respawning to work again.
+      是否允许远程末影龙重生。
+
+      - 禁用一种优化，该优化会验证末影水晶是否放置在末地传送门框架上，然后才会尝试重新生成末影龙。启用此设置可以再次实现远程重新生成末影龙。
   disable-end-credits:
     default: "false"
     description: >-
-      Instructs the server to never send the end game credits when leaving the
-      End
+      设置玩家在离开末地时永远不发送终末之诗。
   disable-relative-projectile-velocity:
     default: "false"
     description: >-
-      Instructs the server to ignore shooter velocity when calculating the
-      velocity of a fired arrow
+      设置服务器在计算射出的箭的速度时忽略发射者的速度。
   disable-sprint-interruption-on-attack:
     default: "false"
     description: >-
-      Determines if the server will interrupt a sprinting player if they are
-      attacked. When set to true, you may be subject to a Vanilla bug where
-      sprinting is stopped and started when attacking players.
+      是否会因玩家受到攻击而中断其冲刺。
+
+      - 如果设置为 `true`，可能会出现原版的一个错误，即玩家在攻击其他玩家时冲刺会停止并重新开始。
   legacy-ender-pearl-behavior:
     default: "false"
     description: >-
-      Determines if the server uses legacy (pre-1.21.2) ender pearl behavior.
-      If enabled, ender pearls will no longer load chunks and will be saved with
-      the launching player instead of being saved as independent entities in the world.
+      是否使用旧版（1.21.2 之前）的末影珍珠行为。
+
+      - 如果启用，末影珍珠将不再加载区块，而是会与发射玩家一起保存，而不是作为世界中的独立实体保存。
   max-leash-distance:
     default: default
     description: >-
-      Configure the maximum distance of a leash. If the distance to the leashed
-      entity is greater, the leash will break.
+      设置拴绳的最大距离。
+
+      - 如果与被拴的实体之间的距离超过此值，拴绳将会断裂。
   redstone-implementation:
     default: VANILLA
     description: >-
-      Specifies the redstone implementation that the server uses. Alternative
-      implementations can greatly reduce the lag caused by redstone dust by
-      optimizing power calculations and reducing the number of block and shape
-      updates emitted. The following implementations are available:
+      设置服务器使用的红石实现方式。
 
-      - **VANILLA**: The Vanilla redstone implementation.
+      替代实现可以通过优化红石粉计算和减少发出的方块及形状更新数量，大幅降低红石粉造成的延迟。以下是可用的实现方式：
 
-      - **EIGENCRAFT**: The Eigencraft redstone implementation by theosib.
+      - **VANILLA**：原版红石实现。
 
-      - **ALTERNATE_CURRENT**: The Alternate Current redstone implementation by
-      Space Walker.
+      - **EIGENCRAFT**：由 theosib 提供的 Eigencraft 异步红石实现，对原版特性改动相对较小。
 
+      - **ALTERNATE_CURRENT**：由 Space Walker 提供的 Alternate Current 红石实现，对性能提升较大。
 
-      **Note:** Both the Eigencraft and Alternate Current implementations change
-      the behavior of redstone dust. You can read about how behavior is changed
-      in each implementation's respective documentation:
+        **注意**：Eigencraft 和 [Alternate Current](https://github.com/SpaceWalkerRS/alternate-current/blob/main/README.md) 实现都会改变红石粉的行为。您可以在每种实现的文档中了解行为的变化：
 
-      - Eigencraft: No official documentation available. However,
-      [theosib's comments](https://bugs.mojang.com/browse/MC-81098?focusedCommentId=420777#comment-420777)
-      on the Mojira bug tracker give an overview of the Eigencraft implementation.
-
-      - [Alternate Current](https://github.com/SpaceWalkerRS/alternate-current/blob/main/README.md)
+      - Eigencraft：没有官方文档。但是，[theosib 在 Mojang Bug 跟踪器上的评论](https://bugs.mojang.com/browse/MC-81098?focusedCommentId=420777#comment-420777)对 Eigencraft 实现有简要概述。
   alternate-current-update-order:
     default: HORIZONTAL_FIRST_OUTWARD
     description: >-
-      Controls the order in which Alternate Current updates wires and neighboring blocks.
-      Only has an effect when using the "ALTERNATE_CURRENT" redstone implementation.
-      This can be one of the following values:
+      设置 Alternate Current 更新红石粉及相邻方块的顺序。仅在使用 “ALTERNATE_CURRENT” 红石实现时有效。此选项可以设置为以下值之一：
 
       - **HORIZONTAL_FIRST_OUTWARD**
 
@@ -1025,113 +933,116 @@ misc:
   shield-blocking-delay:
     default: "5"
     description: >-
-      The number of ticks between a player activating their shield and it
-      actually blocking damage
+      设置玩家激活盾牌与盾牌实际开始阻挡伤害之间的 Tick 数。
+
+      - 一些小游戏服务器可以适当调整数值，建议不要低于 2。
   show-sign-click-command-failure-msgs-to-player:
     default: "false"
     description: >-
-      Whether commands executed by sign click should show failure messages to
-      players
+      是否向玩家显示由告示牌点击执行的命令的失败消息。
   update-pathfinding-on-block-update:
     default: "true"
     description: >-
-      Controls whether the pathfinding of mobs is updated when a block is
-      updated in the world. Disabling this option can improve the server
-      performance significantly, while there is almost no noticeable effect on
-      the game mechanics. This is recommended when there are lots of entities
-      loaded, and you have automated farms or redstone clocks
+      是否在方块更新时更新怪物寻路。
+
+      - 禁用此选项可以显著提高服务器性能，当加载了许多实体，并且你有自动化农场或红石时钟时，推荐禁用此选项。
+
+      - 这将导致怪物反应更加迟钝，因为他们只会被动地每5个tick（0.25秒）更新其路径。
 scoreboards:
   allow-non-player-entities-on-scoreboards:
     default: "true"
     description: >-
-      Instructs the server to always treat non-player entities as if they are
-      never on a team. Disabling this may slightly decrease the amount of time
-      the server spends calculating entity collisions
+      是否允许非玩家实体出现在记分板上。
+
+      - 禁用此选项可能会略微减少服务器计算实体碰撞所花费的时间。
   use-vanilla-world-scoreboard-name-coloring:
     vanilla: "true"
     default: "false"
     description: >-
-      Instructs the server to use the Vanilla scoreboard for player nickname
-      coloring. Useful when playing on adventure maps made for the Vanilla
-      server and client
+      是否使用原版记分板为玩家昵称上色。
+
+      - 在使用为原版服务器和客户端制作的冒险地图时非常有用，原版默认开启。
 spawn:
   allow-using-signs-inside-spawn-protection:
     default: "false"
-    description: Allows players to use signs while inside spawn protection
+    description: 是否允许玩家在出生点保护区域内使用告示牌。
 tick-rates:
   behavior:
     villager:
       validatenearbypoi:
         default: "-1"
         description: >-
-          Sets the tick rate of the validatenearbypoi behavior. of Villager
-          entities
+          设置村民实体的验证附近 POI 行为的 Tick 更新频率。
     <entity-type>:
       <behavior-name>:
         default: -1
         description: >-
-          Sets the behavior tick rate of an entity. -1 uses Vanilla. See timings
-          for the names. Might change between updates!
+          设置实体的行为 Tick 更新频率。
+
+          - 设置为 `-1` 时使用原版。请查看相关计时信息以了解名称。此设置可能在更新之间发生变化！
   container-update:
     default: "1"
     description: >-
-      The rate, in ticks, at which the server updates containers and inventories.
-      Higher values than 1 can cause item desync/ghosting or make block breaking
-      progress appear to reset randomly. It can also create visual artifacts mimicking
-      server lag to clients, despite this not being the case.
+      设置服务器更新容器和物品栏的 Tick 更新频率。
+
+      - 设置为大于 1 的值可能会导致物品不同步/幽灵物品，或者使方块破坏进度看起来随机重置。它还可能产生类似于服务器延迟的视觉效果，尽管实际上并非如此。
   grass-spread:
     default: "1"
     description: >-
-      Sets the delay, in ticks, at which the server attempts to spread grass.
-      Higher values will result in a slower spread
+      设置服务器尝试传播草的延迟，单位为 Tick。
+
+      - 较高的值会导致传播速度变慢，较低的值会占用更多的 CPU 资源。
   mob-spawner:
     default: "1"
     description: >-
-      How often mob spawners should tick to calculate available spawn areas and
-      spawn new entities into the world. A value of -1 will disable all spawners
+      设置刷怪笼计算可用生成区域并生成新实体到世界的 Tick 更新频率。
+
+      - 设置为 `-1` 将禁用所有刷怪笼，较低的值会占用更多的 CPU 资源。
   dry-farmland:
     default: "1"
     description: |
-      Controls how frequently dry farmland blocks are ticked.
-      Higher values slow down the rate at which farmland checks for moisture updates.
-      Default (1) uses Vanilla behavior, -1 disables dry farmland random ticks.
+      设置干燥的耕地区块的刻更新频率。
+
+      - 较高的值会减缓耕地检查湿度更新的速度。默认值（1）使用原版行为，设置为 `-1` 将禁用干燥耕地的随机 Tick 更新。
   wet-farmland:
     default: "1"
     description: |
-      Controls how frequently wet farmland blocks are ticked.
-      Higher values slow down the rate at which farmland checks for moisture updates.
-      Default (1) uses Vanilla behavior, -1 disables wet farmland random ticks.
+      控制湿润的耕地区块的刻更新频率。
+
+      - 较高的值会减缓耕地检查湿度更新的速度。默认值（1）使用原版行为，设置为 `-1` 将禁用湿润耕地的随机 Tick 更新。
   sensor:
     villager:
       secondarypoisensor:
         default: "40"
         description: >-
-          Sets the tick rate of the secondarypoisensor sensor of Villager
-          entities
+          设置村民实体的二级POI传感器的 Tick 更新频率。
     <entity-type>:
       <sensor-name>:
         default: -1
         description: >-
-          Sets the sensor tick rate of an entity. -1 uses Vanilla. See timings
-          for the names. Might change between updates!
+          设置实体的传感器 Tick 更新频率。
+
+          - 设置为 `-1` 时使用原版。请查看相关计时信息以了解名称。此设置可能在更新之间发生变化！
 unsupported-settings:
   inline-docs-warning:
     color: red
     message: >-
-      **Unsupported settings**
+      **不支持的设置**
 
 
-      The following settings are provided by Paper but are not officially
-      supported. Use them at your own risk and they may be removed at any time.
+      以下设置由 Paper 提供，但未得到官方支持。使用它们需自担风险，且随时可能被移除。
   disable-world-ticking-when-empty:
     vanilla: "true"
     default: "false"
     description: >-
-      Stops the ticking of the world when there are no players or force loaded chunks present in
-      the world.
+      是否在世界中没有玩家或强制加载的区块时，停止世界的 Tick 更新。
+
+      - 能够节省更多的 CPU 计算资源，但是会对一些需要特定事件的插件造成影响。
+      此选项覆盖 server-properties 中的 [pause-when-empty-seconds](/paper/reference/server-properties/#pause_when_empty_seconds)
   fix-invulnerable-end-crystal-exploit:
     vanilla: "false"
     default: "true"
     description: >-
-      If set to false, the creation of invulnerable end crystals will be
-      allowed. Fixes [MC-108513](https://bugs.mojang.com/browse/MC-108513)
+      是否允许创建无敌的末影水晶。
+
+      - 修复了 [MC-108513](https://bugs.mojang.com/browse/MC-108513) 中的《末影龙重生后末地水晶没有正确生成/消失》。

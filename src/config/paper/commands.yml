@@ -1,37 +1,35 @@
 command-block-overrides:
-  default: "[<command to override>]"
+  default: "[<要覆盖的命令>]"
   description: >
-    Which Vanilla commands should be prioritized over those provided by Bukkit
-    or plugins. Useful for compatibility with adventure maps built for Vanilla
-    command blocks.
+    哪些原版命令应该优先于 Bukkit 或插件提供的命令。
+    这对于与为原版命令方块制作的冒险地图的兼容性很有用。
 
-    Use the literal ''*'' to always use the Vanilla version in command blocks.
+    使用文字 ''*'' 来始终在命令方块中使用原版版本。
 
-    By default, no commands are overridden.
+    默认情况下，没有命令被覆盖。
 ignore-vanilla-permissions:
   default: "false"
-  description: Whether to use Vanilla permission levels when executing commands.
+  description: 是否在执行命令时使用原版权限等级。
 aliases:
-  <alias name>:
-    default: "[<commands to run>]"
+  <别名名称>:
+    default: "[<要运行的命令>]"
     description: >
-      A list of strings which are target commands. Alternatively, a string,
-      which is a single target command.
+      一个字符串列表，表示目标命令。
+      或者是一个字符串，表示单个目标命令。
 
-      A target command is a command that is run, when the alias is run.
+      目标命令是在运行别名时运行的命令。
 
-      Replacements:
+      替换:
 
-        * `$sender` is replaced with the command sender''s name (Added by Paper).
-        * `$<n>` is replaced by the n''th argument, 1-indexed.
-        * `$$<n>` is replaced by the n''th argument, 1-indexed, failing if the n''th argument is not present.
-        * `$<n>-` is replaced by the n''th argument and everything that follows, 1-indexed.
-        * `$$<n>-` is replaced by the n''th argument and everything that follows, 1-indexed, failing if the n''th argument is not present.
+        * `$sender` 被替换为命令发送者的名称（由 Paper 添加）。
+        * `$<n>` 被替换为第 n 个参数，从 1 开始索引。
+        * `$$<n>` 被替换为第 n 个参数，从 1 开始索引，如果第 n 个参数不存在则失败。
+        * `$<n>-` 被替换为第 n 个参数及其之后的所有内容，从 1 开始索引。
+        * `$$<n>-` 被替换为第 n 个参数及其之后的所有内容，从 1 开始索引，如果第 n 个参数不存在则失败。
 
 
-      Each alias registered cannot (easily) be overridden by a plugin.
+      每个注册的别名都不能（轻易地）被插件覆盖。
   icanhasbukkit:
     default: "[version $1-]"
     description: >-
-      A built-in alias. Set aliases to an empty list ([]) to persistently
-      remove.
+      每个注册的别名都不能（轻易地）被插件覆盖。

@@ -1,6 +1,6 @@
 ---
-title: Location
-description: BlockPosition, FinePosition and World argument documentation.
+title: 位置
+description: BlockPosition、FinePosition 和 World 参数的文档。
 slug: paper/dev/command-api/arguments/location
 ---
 
@@ -10,12 +10,12 @@ import WorldMp4 from "./assets/vanilla-arguments/world.mp4?url";
 
 import Video from "/src/components/Video.astro";
 
-## Block position argument
-The block position argument is used for retrieving the position of a block. It works the same way as the first argument of the `/setblock <position> <block>` Vanilla command.
-In order to retrieve the `BlockPosition` variable from the
-[`BlockPositionResolver`](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.BlockPositionResolver), we have to resolve it using the command source.
+## 方块位置参数
+方块位置参数用于检索方块的位置。
+它的作用方式与原版命令 `/setblock <position> <block>` 的第一个参数相同。
+为了从 [`BlockPositionResolver`](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.BlockPositionResolver) 中检索 `BlockPosition` 变量，我们需要使用命令源进行解析。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> blockPositionArgument() {
     return Commands.literal("blockpositionargument")
@@ -31,19 +31,19 @@ public static LiteralCommandNode<CommandSourceStack> blockPositionArgument() {
 }
 ```
 
-### In-game preview
+### 游戏内预览
 <Video src={BlockPositionMp4} />
 
 
-## Fine position argument
-The fine position argument works similarly to the block position argument, with the only difference being that it can accept decimal (precise) location input. The optional
-overload (`ArgumentTypes.finePosition(boolean centerIntegers)`), which defaults to false if not set, will center whole input, meaning 5 becomes 5.5 (5.0 would stay as 5.0 though),
-as that is the "middle" of a block. This only applies to X/Z. The y coordinate is untouched by this operation.
+## 精细位置参数
+精细位置参数与方块位置参数的作用方式类似，唯一的区别是它可以接受小数（精确）位置输入。
+可选的重载方法（`ArgumentTypes.finePosition(boolean centerIntegers)`）默认为 `false`，如果未设置，
+它将使整个输入居中，即 5 变为 5.5（5.0 仍然保持为 5.0），因为这是方块的“中心”。这仅适用于 X/Z。Y 坐标不受此操作影响。
 
-This argument returns a [`FinePositionResolver`](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.FinePositionResolver). You can resolve that by running `FinePositionResolver#resolve(CommandSourceStack)` to get the resulting
-[`FinePosition`](jd:paper:io.papermc.paper.math.FinePosition).
+这个参数返回一个 [`FinePositionResolver`](jd:paper:io.papermc.paper.command.brigadier.argument.resolvers.FinePositionResolver)。
+你可以通过运行 `FinePositionResolver#resolve(CommandSourceStack)` 来解析它，以获取最终的 [`FinePosition`](jd:paper:io.papermc.paper.math.FinePosition)。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> finePositionArgument() {
     return Commands.literal("fineposition")
@@ -52,7 +52,7 @@ public static LiteralCommandNode<CommandSourceStack> finePositionArgument() {
                 final FinePositionResolver resolver = ctx.getArgument("arg", FinePositionResolver.class);
                 final FinePosition finePosition = resolver.resolve(ctx.getSource());
 
-                ctx.getSource().getSender().sendRichMessage("Position: <red><x></red> <green><y></green> <blue><z></blue>",
+                ctx.getSource().getSender().sendRichMessage("位置: <red><x></red> <green><y></green> <blue><z></blue>",
                     Placeholder.unparsed("x", Double.toString(finePosition.x())),
                     Placeholder.unparsed("y", Double.toString(finePosition.y())),
                     Placeholder.unparsed("z", Double.toString(finePosition.z()))
@@ -63,15 +63,15 @@ public static LiteralCommandNode<CommandSourceStack> finePositionArgument() {
 }
 ```
 
-### In-game preview
+### 游戏内预览
 <Video src={FinePositionMp4} />
 
 
-## World argument
-This argument allows the user to select one of the currently loaded world. You can retrieve the result of that as a generic Bukkit
-[`World`](jd:paper:org.bukkit.World) object.
+## 世界参数
+这个参数允许用户选择一个当前已加载的世界。
+你可以将结果检索为通用的 Bukkit [`World`](jd:paper:org.bukkit.World) 对象。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> worldArgument() {
     return Commands.literal("teleport-to-world")
@@ -81,19 +81,19 @@ public static LiteralCommandNode<CommandSourceStack> worldArgument() {
 
                 if (ctx.getSource().getExecutor() instanceof Player player) {
                     player.teleport(world.getSpawnLocation(), PlayerTeleportEvent.TeleportCause.COMMAND);
-                    ctx.getSource().getSender().sendRichMessage("Successfully teleported <player> to <aqua><world></aqua>",
+                    ctx.getSource().getSender().sendRichMessage("成功将 <player> 传送至 <aqua><world></aqua>",
                         Placeholder.component("player", player.name()),
                         Placeholder.unparsed("world", world.getName())
                     );
                     return Command.SINGLE_SUCCESS;
                 }
 
-                ctx.getSource().getSender().sendRichMessage("<red>This command requires a player!");
+                ctx.getSource().getSender().sendRichMessage("<red>这个命令需要一个玩家！");
                 return Command.SINGLE_SUCCESS;
             })
         ).build();
 }
 ```
 
-### In-game preview
+### 游戏内预览
 <Video src={WorldMp4} />

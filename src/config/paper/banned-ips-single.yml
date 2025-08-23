@@ -1,29 +1,29 @@
 header:
-  message: This is a single entry in the root array found in banned-ips.json.
+  message: 这是在 `banned-ips.json` 文件的根数组中找到的一个条目。
 ip:
   description: |
-    The IP address representing the banned user.
+    代表被封禁用户的 IP 地址。
 
-    For IPv4 the expected format is "x.x.x.x",
+    对于 IPv4，预期的格式为 “x.x.x.x”。
 
-    For IPv6 the expected format follows [RFC5952 Section 4](https://datatracker.ietf.org/doc/html/rfc5952#section-4),
+    对于 IPv6，预期的格式遵循 [RFC5952 第 4 节](https://datatracker.ietf.org/doc/html/rfc5952#section-4)。
 
-    For anything else, "\<unknown>" may be present (but its use is discouraged).
-  default: "an IPv4 or IPv6 address"
+    对于其他情况，可能会出现 “\<未知>”（但不推荐使用）。
+  default: "一个 IPv4 或 IPv6 地址。"
 created:
   description: |
-    A timestamp of when the user was banned.
-    The expected format is "yyyy-MM-dd HH:mm:ss Z".
-  default: the ban creation time
+    用户被封禁的时间戳。
+    预期的格式为 “yyyy-MM-dd HH:mm:ss Z”。
+  default: 封禁创建时间
 source:
-  description: A string representing the source of the ban.
-  default: '"(Unknown)"'
+  description: 一个字符串，表示封禁的来源。
+  default: '"(未知)"'
 expires:
   description: |
-    A timestamp of when the ban expires, or "forever" if it does not expire.
+    封禁到期的时间戳，或者如果是永久封禁，则为 “永久”。
 
-    The expected format is "yyyy-MM-dd HH:mm:ss Z".
-  default: '"forever"'
+    预期的格式为 “yyyy-MM-dd HH:mm:ss Z”。
+  default: '"永久"'
 reason:
-  description: The reason for the ban.
-  default: '"Banned by an operator."'
+  description: 封禁的原因。
+  default: '"被管理员封禁。"'

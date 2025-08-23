@@ -37,7 +37,7 @@ const parse = async (url: string, { targets }: Options): Promise<string | null> 
   const match = /^jd:(.+?)(?::(.+?))?(?::(.+?))?$/.exec(url);
   if (!match) {
     if (url.startsWith("jd:")) {
-      error(new Error(`Failed to parse Javadoc link "${url}"`));
+      error(new Error(`无法解析 Javadoc 链接 "${url}"`));
     }
 
     return null; // not a Javadoc link
@@ -45,7 +45,7 @@ const parse = async (url: string, { targets }: Options): Promise<string | null> 
 
   const target = targets[match[1]];
   if (!target) {
-    error(new Error(`Unknown target for Javadoc link "${url}"`));
+    error(new Error(`Javadoc 链接的目标未知 "${url}"`));
   }
 
   const targetUrl = typeof target !== "string" ? target.url : target;
@@ -61,10 +61,10 @@ const parse = async (url: string, { targets }: Options): Promise<string | null> 
   const result = await deadOrAlive(parsed, {
     findUrls: false,
     followMetaHttpEquiv: false,
-    userAgent: "PaperMC/docs (https://docs.papermc.io)",
+    userAgent: "PaperMC/docs (https://paper.8aka.org)",
   });
   if (result.status !== "alive") {
-    error(new Error(`Received dead status for Javadoc link "${url}"`));
+    error(new Error(`收到关于 Javadoc 链接的失效状态 "${url}"`));
   }
 
   return parsed;

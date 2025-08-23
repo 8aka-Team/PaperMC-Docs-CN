@@ -1,15 +1,14 @@
 ---
-title: Migration guide
-description: How to migrate your proxy between different Velocity versions.
+title: 迁移指南
+description: 如何在不同版本的 Velocity 之间迁移代理
 slug: velocity/migration
 ---
 
-New to Velocity, or upgrading to a new version of Velocity? This page will briefly explore what you
-need to be aware of for a successful migration.
+你是 Velocity 的新手，还是正要升级到 Velocity 的新版本？
+本页面将简要介绍成功迁移需要注意的事项。
 
-## Migrating from Velocity 1.0.x to Velocity 1.1.0
+## 从 Velocity 1.0.x 迁移到 Velocity 1.1.0
 
-Moving from Velocity 1.0.x to Velocity 1.1.0 should be as simple as just replacing the Velocity JAR
-and restarting the proxy. You may want to back up your `velocity.toml` and then delete the current
-`velocity.toml` and let Velocity regenerate it to add the new settings that Velocity 1.1.0
-introduces.
+从 Velocity 1.0.x 迁移到 Velocity 1.1.0 应该只需替换 Velocity JAR 文件并重启代理即可。
+你可能需要备份你的 `velocity.toml` 文件，然后删除当前的 `velocity.toml` 文件，
+让 Velocity 重新生成它，以添加 Velocity 1.1.0 引入的新设置。

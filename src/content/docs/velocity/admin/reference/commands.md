@@ -1,87 +1,84 @@
 ---
-title: Built-in commands
-description: A list of the built-in commands with explanations.
+title: 内置命令
+description: 内置命令的列表及说明
 slug: velocity/built-in-commands
 ---
 
-Velocity includes a few commands in the core of the proxy by default. These commands were chosen
-based on how generally useful they are to most users.
+Velocity 默认在其代理核心中包含了一些命令。
+这些命令的选择是基于它们对大多数用户的一般实用性。
 
-Of course, you can always install plugins to add more commands if you want.
+当然，如果你愿意，你随时可以安装插件来增加更多命令。
 
 ## `/velocity`
 
-The `/velocity` command contains a number of subcommands to manage the proxy.
+`/velocity` 命令包含许多子命令，用于管理代理。
 
 ### `/velocity plugins`
 
-If the user has the `velocity.command.plugins` permission, they can view all the plugins currently
-active on the proxy using `/velocity plugins`, including the name, authors, and version.
+如果用户拥有 `velocity.command.plugins` 权限，
+他们可以使用 `/velocity plugins` 查看当前在代理上激活的所有插件，包括名称、作者和版本。
 
 ### `/velocity info`
 
-If the user has the `velocity.command.info` permission, they can view information about the Velocity instance,
-such as the version of Velocity running on the proxy.
+如果用户拥有 `velocity.command.info` 权限，
+他们可以查看有关 Velocity 实例的信息，例如在代理上运行的 Velocity 版本。
 
 ### `/velocity reload`
 
-If the user has the `velocity.command.reload` permission, the proxy will read and reconfigure itself
-from the `velocity.toml` on disk. If there are problems with parsing the file, no changes will be
-applied.
+如果用户拥有 `velocity.command.reload` 权限，代理将从磁盘上的 `velocity.toml` 文件中读取并重新配置自身。
+如果解析文件时出现问题，将不会应用任何更改。
 
 ### `/velocity dump`
 
-If the user has the `velocity.command.dump` permission, they can use this command to get an
-anonymized dump of details on the proxy. This can be sent to the PaperMC Discord to help us provide
-support.
+如果用户拥有 `velocity.command.dump` 权限，他们可以使用此命令获取代理的匿名化详细信息转储。
+这些信息可以发送到 PaperMC Discord，以便我们提供支持。
 
 ### `/velocity heap`
 
-:::caution
+:::caution[注意]
 
-This command generates a heap dump which contains detailed information about your Velocity instance
-which can be quite sensitive, be very careful to whom you share the generated heap dump.
+此命令生成一个堆转储，其中包含有关你的 Velocity 实例的详细信息，
+这些信息可能非常敏感，请谨慎选择与谁共享生成的堆转储。
 
 :::
 
-If the user has the `velocity.command.heap` permission, they will be able to generate a heap dump
-from the running Velocity instance, which will allow a detailed analysis of memory consumption.
+如果用户拥有 `velocity.command.heap` 权限，他们将能够从运行中的 Velocity 实例生成一个堆转储，
+这将允许对内存使用情况进行详细分析。
 
-The generated heap dump will be found in the `dumps` folder.
+生成的堆转储将位于 `dumps` 文件夹中。
 
 ## `/server`
 
-If the user has the `velocity.command.server` permission (by default, this is granted to all users),
-players can use this command to view and switch to another server.
+如果用户拥有 `velocity.command.server` 权限（默认情况下，此权限授予所有用户），
+玩家可以使用此命令查看并切换到另一台服务器。
 
-Executing just `/server` will send the user the name of the server they are currently on, along with
-options to move to other servers configured on the proxy.
+仅执行 `/server` 命令会向用户发送他们当前所在的服务器名称，
+以及代理上配置的其他服务器的切换选项。
 
-If a server name has been provided, Velocity will attempt to connect to the server.
+如果提供了服务器名称，Velocity 将尝试连接到该服务器。
 
 ## `/shutdown`
 
-:::note
+:::note[注意]
 
-This command can only be executed from console.
+此命令只能从控制台执行。
 
 :::
 
-When run, this will gracefully shut down the Velocity proxy.
-All players will be disconnected from the proxy, and plugins will have a chance to finish up before the proxy shuts down.
-An optional reason can be given, either as JSON or with [MiniMessage Format](https://docs.advntr.dev/minimessage/format.html).
+运行此命令将优雅地关闭 Velocity 代理。
+所有玩家将从代理中断开连接，并且在代理关闭之前，插件将有机会完成其操作。
+可以提供一个可选的原因，既可以使用 JSON 格式，也可以使用 [MiniMessage 格式](https://docs.advntr.dev/minimessage/format.html)。
 
-If the provided message starts with `"`, `[`, or `{`, then the message is attempted to be parsed as JSON.
-If this parsing fails, or the message starts with anything else, the message will be parsed as MiniMessage.
+如果提供的消息以 `"`、`[` 或 `{` 开头，则会尝试将其解析为 JSON。
+如果解析失败，或者消息以其他内容开头，则会将其解析为 MiniMessage。
 
 
 ## `/glist`
 
-If the user has the `velocity.command.glist` permission (by default, this is granted to nobody),
-players can use this command to view the number of players currently on the proxy and use
-`/glist all` to get a listing of players per server.
+如果用户拥有 `velocity.command.glist` 权限（默认情况下，此权限不授予任何人），
+玩家可以使用此命令查看当前在代理上的玩家数量，并使用 `/glist all` 获取按服务器划分的玩家列表。
 
 ## `/send`
 
-If the user has the `velocity.command.send` permission, they can send other players (or all
-players on the proxy) to another server.
+如果用户拥有 `velocity.command.send` 权限，
+他们可以将其他玩家（或代理上的所有玩家）发送到另一台服务器。

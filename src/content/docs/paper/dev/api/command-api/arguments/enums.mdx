@@ -1,6 +1,6 @@
 ---
-title: Enums
-description: Documentation for EntityAnchor, GameMode and similar enum value arguments.
+title: 枚举
+description: 关于 `EntityAnchor`、`GameMode` 以及类似枚举值参数的文档。
 slug: paper/dev/command-api/arguments/enums
 ---
 
@@ -13,12 +13,12 @@ import TemplateRotationMp4 from "./assets/vanilla-arguments/templaterotation.mp4
 
 import Video from "/src/components/Video.astro";
 
-## Entity anchor argument
-The entity anchor argument has two valid inputs: `feet` and `eyes`. The resulting [`LookAnchor`](jd:paper:io.papermc.paper.entity.LookAnchor) is mainly used for methods like
-[`Entity#lookAt(Position, LookAnchor)`](jd:paper:org.bukkit.entity.Entity#lookAt(io.papermc.paper.math.Position,io.papermc.paper.entity.LookAnchor)) or
-[`Player#lookAt(Entity, LookAnchor, LookAnchor)`](jd:paper:org.bukkit.entity.Player#lookAt(org.bukkit.entity.Entity,io.papermc.paper.entity.LookAnchor,io.papermc.paper.entity.LookAnchor)).
+## 实体锚点参数
+实体锚点参数有两个有效的输入：`feet` 和 `eyes`。返回的 [`LookAnchor`](jd:paper:io.papermc.paper.entity.LookAnchor)
+主要用于像 [`Entity#lookAt(Position, LookAnchor)`](jd:paper:org.bukkit.entity.Entity#lookAt(io.papermc.paper.math.Position,io.papermc.paper.entity.LookAnchor))
+或 [`Player#lookAt(Entity, LookAnchor, LookAnchor)`](jd:paper:org.bukkit.entity.Player#lookAt(org.bukkit.entity.Entity,io.papermc.paper.entity.LookAnchor,io.papermc.paper.entity.LookAnchor)) 这样的方法。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> entityAnchorArgument() {
     return Commands.literal("entityanchor")
@@ -35,15 +35,15 @@ public static LiteralCommandNode<CommandSourceStack> entityAnchorArgument() {
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={EntityAnchorMp4} />
 
 
-## GameMode argument
-The game mode argument works the same way as the first argument of the Vanilla `/gamemode <gamemode>` command. It accepts any of the 4 valid game modes, returning
-a [`GameMode`](jd:paper:org.bukkit.GameMode) enum to use in code.
+## 游戏模式参数
+游戏模式参数的工作方式与原版`/gamemode <gamemode>`命令的第一个参数相同。
+它接受任何4种有效的游戏模式，并返回一个 [`GameMode`](jd:paper:org.bukkit.GameMode) 枚举以在代码中使用。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> gameModeArgument() {
     return Commands.literal("gamemodearg")
@@ -53,29 +53,29 @@ public static LiteralCommandNode<CommandSourceStack> gameModeArgument() {
 
                 if (ctx.getSource().getExecutor() instanceof Player player) {
                     player.setGameMode(gamemode);
-                    player.sendRichMessage("Your gamemode has been set to <red><gamemode></red>!",
+                    player.sendRichMessage("你的游戏模式已设置为<red><gamemode></red>！",
                         Placeholder.component("gamemode", Component.translatable(gamemode))
                     );
                     return Command.SINGLE_SUCCESS;
                 }
 
-                ctx.getSource().getSender().sendPlainMessage("This command requires a player!");
+                ctx.getSource().getSender().sendPlainMessage("这个命令需要一个玩家！");
                 return Command.SINGLE_SUCCESS;
             }))
         .build();
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={GameModeMp4} />
 
 
-## HeightMap argument
-The [`HeightMap`](jd:paper:org.bukkit.HeightMap) argument consists of the following, valid inputs: `motion_blocking`, `motion_blocking_no_leaves`, `ocean_floor`, and `world_surface`. It is often
-used for declaring relative positioning for data packs or the `/execute positioned over <height_map>` command. E.g. `world_surface`
-would mean that the Y coordinate of the surface of the world on the set X/Z values should be used.
+## HeightMap 参数
+[`HeightMap`](jd:paper:org.bukkit.HeightMap) 参数包括以下有效的输入：`motion_blocking`、`motion_blocking_no_leaves`、`ocean_floor`和`world_surface`。
+它通常用于声明数据包或`/execute positioned over <height_map>`命令的相对位置。
+例如，`world_surface`意味着应该使用设置的X/Z值处的世界表面的Y坐标。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> heightMapArgument() {
     return Commands.literal("heightmap")
@@ -83,7 +83,7 @@ public static LiteralCommandNode<CommandSourceStack> heightMapArgument() {
             .executes(ctx -> {
                 final HeightMap heightMap = ctx.getArgument("arg", HeightMap.class);
 
-                ctx.getSource().getSender().sendRichMessage("You selected <gold><selection></gold>",
+                ctx.getSource().getSender().sendRichMessage("你选择了<gold><selection></gold>",
                     Placeholder.unparsed("selection", heightMap.name())
                 );
 
@@ -93,14 +93,14 @@ public static LiteralCommandNode<CommandSourceStack> heightMapArgument() {
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={HeightMapMp4} />
 
 
-## Scoreboard display slot argument
-This argument allows you to retrieve a [`DisplaySlot`](jd:paper:org.bukkit.scoreboard.DisplaySlot) enum value from the user.
+## 记分板显示槽参数
+这个参数允许你从用户那里检索一个 [`DisplaySlot`](jd:paper:org.bukkit.scoreboard.DisplaySlot) 枚举值。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> scoreboardDisplaySlotArgument() {
     return Commands.literal("scoreboarddisplayslot")
@@ -108,7 +108,7 @@ public static LiteralCommandNode<CommandSourceStack> scoreboardDisplaySlotArgume
             .executes(ctx -> {
                 final DisplaySlot slot = ctx.getArgument("slot", DisplaySlot.class);
 
-                ctx.getSource().getSender().sendPlainMessage("You selected: " + slot.getId());
+                ctx.getSource().getSender().sendPlainMessage("你选择了: " + slot.getId());
 
                 return Command.SINGLE_SUCCESS;
             })
@@ -116,15 +116,15 @@ public static LiteralCommandNode<CommandSourceStack> scoreboardDisplaySlotArgume
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={ScoreboardDisplaySlotMp4} />
 
 
-## Template mirror argument
-Here, the user has 3 valid input possibilities: `front_back`, `left_right`, and `none`. You can retrieve the result of
-the argument as a [`Mirror`](jd:paper:org.bukkit.block.structure.Mirror) enum value.
+## 模板镜像参数
+在这里，用户有3种有效的输入可能性：`front_back`、`left_right`和`none`。
+你可以将参数的结果检索为一个 [`Mirror`](jd:paper:org.bukkit.block.structure.Mirror) 枚举值。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> templateMirrorArgument() {
     return Commands.literal("templatemirror")
@@ -132,7 +132,7 @@ public static LiteralCommandNode<CommandSourceStack> templateMirrorArgument() {
             .executes(ctx -> {
                 final Mirror mirror = ctx.getArgument("mirror", Mirror.class);
 
-                ctx.getSource().getSender().sendPlainMessage("You selected: " + mirror.name());
+                ctx.getSource().getSender().sendPlainMessage("你选择了: " + mirror.name());
 
                 return Command.SINGLE_SUCCESS;
             })
@@ -140,15 +140,15 @@ public static LiteralCommandNode<CommandSourceStack> templateMirrorArgument() {
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={TemplateMirrorMp4} />
 
 
-## Template rotation argument
-For the template rotation argument, the user has 4 valid input possibilities: `180`, `clockwise_90`, `counterclockwise_90`, and `none`. You can retrieve the result
-of the argument as a [`StructureRotation`](jd:paper:org.bukkit.block.structure.StructureRotation) enum value.
+## 模板旋转参数
+对于模板旋转参数，用户有4种有效的输入可能性：`180`、`clockwise_90`、`counterclockwise_90` 和 `none`。
+你可以将参数的结果检索为一个 [`StructureRotation`](jd:paper:org.bukkit.block.structure.StructureRotation) 枚举值。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> templateRotationArgument() {
     return Commands.literal("templaterotation")
@@ -156,7 +156,7 @@ public static LiteralCommandNode<CommandSourceStack> templateRotationArgument() 
             .executes(ctx -> {
                 final StructureRotation rotation = ctx.getArgument("rotation", StructureRotation.class);
 
-                ctx.getSource().getSender().sendPlainMessage("You selected: " + rotation.name());
+                ctx.getSource().getSender().sendPlainMessage("你选择了: " + rotation.name());
 
                 return Command.SINGLE_SUCCESS;
             })
@@ -164,5 +164,5 @@ public static LiteralCommandNode<CommandSourceStack> templateRotationArgument() 
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={TemplateRotationMp4} />

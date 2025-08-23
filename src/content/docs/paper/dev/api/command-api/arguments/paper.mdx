@@ -1,6 +1,6 @@
 ---
-title: Paper-specific
-description: Documentation for arguments handling miscellaneous Paper API values.
+title: Paper 特定
+description: 关于处理各种 Paper API 值的参数的文档。
 slug: paper/dev/command-api/arguments/paper
 ---
 
@@ -13,12 +13,12 @@ import ObjectiveCriteriaMp4 from "./assets/vanilla-arguments/objectivecriteria.m
 
 import Video from "/src/components/Video.astro";
 
-The arguments in this section return objects frequently used in Paper API.
+本节中的参数返回经常在 Paper API 中使用的对象。
 
-## Block state argument
-The block state argument can be used for getting a block type and explicit, associated data.
+## 方块状态参数
+方块状态参数可用于获取方块类型及其明确的关联数据。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> blockStateArgument() {
     return Commands.literal("blockstateargument")
@@ -26,23 +26,23 @@ public static LiteralCommandNode<CommandSourceStack> blockStateArgument() {
             .executes(ctx -> {
                 final BlockState blockState = ctx.getArgument("arg", BlockState.class);
 
-                ctx.getSource().getSender().sendPlainMessage("You specified a " + blockState.getType() + "!");
+                ctx.getSource().getSender().sendPlainMessage("你指定了一个 " + blockState.getType() + "!");
                 return Command.SINGLE_SUCCESS;
             }))
         .build();
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={BlockStateMp4} />
 
 
-## ItemStack argument
-The item stack argument is the way to retrieve an [`ItemStack`](jd:paper:org.bukkit.inventory.ItemStack) following the same argument format as the Vanilla `/give <player> <item> [<amount>]`
-command as its second argument. The user may also define components to further customize the `ItemStack`. If you only require a [`Material`](jd:paper:org.bukkit.Material), you should instead
-check out the [registry arguments](/paper/dev/command-api/arguments/registry).
+## 物品堆参数
+物品堆参数是检索 [`ItemStack`](jd:paper:org.bukkit.inventory.ItemStack) 的方式，其格式与原版`/give <player> <item> [<amount>]`命令的第二个参数相同。
+用户还可以定义组件来进一步自定义`ItemStack`。如果你只需要 [`Material`](jd:paper:org.bukkit.Material)，
+你应该查看[注册表参数](/paper/dev/command-api/arguments/registry)。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> itemStackArgument() {
     return Commands.literal("itemstack")
@@ -52,29 +52,29 @@ public static LiteralCommandNode<CommandSourceStack> itemStackArgument() {
 
                 if (ctx.getSource().getExecutor() instanceof Player player) {
                     player.getInventory().addItem(itemStack);
-                    ctx.getSource().getSender().sendRichMessage("<green>Successfully gave <player> a <item>",
+                    ctx.getSource().getSender().sendRichMessage("<green>成功给`<player>`一个 <item>",
                         Placeholder.component("player", player.name()),
                         Placeholder.component("item", Component.translatable(itemStack))
                     );
                     return Command.SINGLE_SUCCESS;
                 }
 
-                ctx.getSource().getSender().sendRichMessage("<red>This argument requires a player!");
+                ctx.getSource().getSender().sendRichMessage("<red>这个参数需要一个玩家！");
                 return Command.SINGLE_SUCCESS;
             }))
         .build();
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={ItemStackMp4} />
 
 
-## NamespacedKey argument
-This argument allows the user to provide any artificial (namespaced) key. The return value of this argument is a
-[`NamespacedKey`](jd:paper:org.bukkit.NamespacedKey), which makes it useful when dealing with Bukkit API.
+## 命名空间键参数
+这个参数允许用户提供任何人工（命名空间）键。
+这个参数的返回值是一个 [`NamespacedKey`](jd:paper:org.bukkit.NamespacedKey)，这在处理 Bukkit API 时非常有用。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> namespacedKeyArgument() {
     return Commands.literal("namespacedkey")
@@ -82,7 +82,7 @@ public static LiteralCommandNode<CommandSourceStack> namespacedKeyArgument() {
             .executes(ctx -> {
                 final NamespacedKey key = ctx.getArgument("key", NamespacedKey.class);
 
-                ctx.getSource().getSender().sendRichMessage("You put in <aqua><key></aqua>!",
+                ctx.getSource().getSender().sendRichMessage("你输入了 <aqua><key></aqua>!",
                     Placeholder.unparsed("key", key.toString())
                 );
                 return Command.SINGLE_SUCCESS;
@@ -91,23 +91,23 @@ public static LiteralCommandNode<CommandSourceStack> namespacedKeyArgument() {
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={NamespacedKeyMp4} />
 
 
-## Time argument
-The time argument allows the user to define a time frame, similar to the Vanilla `/time <set|time> <time>` time argument. The user has 4 possible ways of inputting time:
-* Just as a number: This resolves to as usual ticks (`/timearg 1` --> 1 tick)
-* With a `t` suffix: This also resolves to ticks (`/timearg 1t` --> 1 tick)
-* With a `s` suffix: This resolves to seconds, meaning multiplying the first number by 20. (`/timearg 1s` --> 20 ticks)
-* With a `d` suffix. This resolves as in-game days, meaning multiplying the first number by 24000. (`/timearg 1d` --> 24000 ticks)
+## 时间参数
+时间参数允许用户定义一个时间范围，类似于原版`/time <set|time> <time>`的时间参数。用户有4种可能的方式来输入时间：
+* 只是一个数字：这将解析为通常的刻（`/timearg 1` --> 1刻）
+* 带有`t`后缀：这也将解析为刻（`/timearg 1t` --> 1刻）
+* 带有`s`后缀：这将解析为秒，意味着将第一个数字乘以20。（`/timearg 1s` --> 20刻）
+* 带有`d`后缀。这将解析为游戏中的天，意味着将第一个数字乘以24000。（`/timearg 1d` --> 24000刻）
 
-If you choose to use this argument, it is advised to explain to the users what these suffixes mean, as real time (`s` suffix) is mixed with in-game time (`t` and `d` suffix).
+如果你选择使用这个参数，建议向用户解释这些后缀的含义，因为真实时间（`s`后缀）与游戏时间（`t`和`d`后缀）混合在一起。
 
-The `ArgumentTypes.time()` method has one additional overload: `ArgumentTypes.time(int mintime)`. This allows to set the minimum required amount of ticks this argument has to resolve to.
-By default this value is set to 0.
+`ArgumentTypes.time()`方法有一个额外的重载版本：`ArgumentTypes.time(int mintime)`。
+这允许设置这个参数必须解析到的最小刻数。默认情况下，这个值设置为0。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> timeArgument() {
     return Commands.literal("timearg")
@@ -117,27 +117,27 @@ public static LiteralCommandNode<CommandSourceStack> timeArgument() {
 
                 if (ctx.getSource().getExecutor() instanceof Player player) {
                     player.getWorld().setFullTime(player.getWorld().getFullTime() + timeInTicks);
-                    player.sendRichMessage("Moved time forward by " + timeInTicks + " ticks!");
+                    player.sendRichMessage("将时间向前移动 " + timeInTicks + " ticks!");
                     return Command.SINGLE_SUCCESS;
                 }
 
-                ctx.getSource().getSender().sendPlainMessage("This argument requires a player!");
+                ctx.getSource().getSender().sendPlainMessage("这个参数需要一个玩家！");
                 return Command.SINGLE_SUCCESS;
             })
         ).build();
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={TimeMp4} />
 
 
-## UUID argument
-The UUID argument allows the user to input a valid UUID. You can retrieve that value as a `UUID` object, which is used in various places, like `Bukkit.getOfflinePlayer(UUID)`.
-This argument is not very user-friendly, which is why it is suggested to only use this as a moderation or debug argument. For user input regarding offline player
-retrieval, the [player profiles argument](/paper/dev/command-api/arguments/entity-player#player-profiles-argument) is preferred, as it allows by-name lookup.
+## UUID 参数
+UUID 参数允许用户输入一个有效的 UUID。你可以将该值检索为一个 `UUID` 对象，它在许多地方都有使用，例如 `Bukkit.getOfflinePlayer(UUID)`。
+这个参数不太用户友好，因此建议只将其用作管理或调试参数。
+对于涉及离线玩家检索的用户输入，建议使用[玩家资料参数](/paper/dev/command-api/arguments/entity-player#player-profiles-argument)，因为它允许按名称查找。
 
-### Example usage - Lookup command
+### 示例用法 - 查找命令
 ```java
 public static LiteralCommandNode<CommandSourceStack> uuidArgument() {
     return Commands.literal("uuid-lookup")
@@ -146,7 +146,7 @@ public static LiteralCommandNode<CommandSourceStack> uuidArgument() {
                 final UUID uuid = ctx.getArgument("uuid", UUID.class);
                 final OfflinePlayer result = Bukkit.getOfflinePlayer(uuid);
 
-                ctx.getSource().getSender().sendRichMessage("Has <aqua><uuid></aqua> played before: <result>",
+                ctx.getSource().getSender().sendRichMessage("`<aqua><uuid></aqua>`是否曾经玩过: <result>",
                     Placeholder.unparsed("uuid", uuid.toString()),
                     Placeholder.parsed("result", result.hasPlayedBefore() ? "<green>true</green>" : "<red>false</red>")
                 );
@@ -157,14 +157,14 @@ public static LiteralCommandNode<CommandSourceStack> uuidArgument() {
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={UuidMp4} />
 
 
-## Objective criteria argument
-You can retrieve the argument value as a `Criteria` enum value, which can be used with `Scoreboard` objects.
+## 目标准则参数
+你可以将参数值检索为一个 `Criteria` 枚举值，它可用于 `Scoreboard` 对象。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> objectiveCriteriaArgument() {
     return Commands.literal("objectivecriteria")
@@ -172,7 +172,7 @@ public static LiteralCommandNode<CommandSourceStack> objectiveCriteriaArgument()
             .executes(ctx -> {
                 final Criteria criteria = ctx.getArgument("criteria", Criteria.class);
 
-                ctx.getSource().getSender().sendRichMessage("Default render type for <criteria>: <rendertype>",
+                ctx.getSource().getSender().sendRichMessage("`<criteria>` 的默认渲染类型: <rendertype>",
                     Placeholder.unparsed("criteria", criteria.getName()),
                     Placeholder.unparsed("rendertype", criteria.getDefaultRenderType().name())
                 );
@@ -182,5 +182,5 @@ public static LiteralCommandNode<CommandSourceStack> objectiveCriteriaArgument()
 }
 ```
 
-### In-game preview
+### 游戏中预览
 <Video src={ObjectiveCriteriaMp4} />

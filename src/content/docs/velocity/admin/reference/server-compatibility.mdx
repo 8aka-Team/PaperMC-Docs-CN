@@ -1,96 +1,94 @@
 ---
-title: Server compatibility
-description: A guide to the server compatibility for Velocity.
+title: 服务器兼容性
+description: 关于 Velocity 的服务器兼容性的指南
 slug: velocity/server-compatibility
 ---
 
 import { LATEST_MC_RELEASE } from "/src/utils/versions";
 
-Velocity is compatible with many Minecraft server implementations. The expectation is that if the
-server acts like Vanilla, Velocity will work, and we make special provisions for modded setups where
-we can.
+Velocity 与许多 Minecraft 服务器实现兼容。
+如果服务器表现得像原版，Velocity 就会工作，
+并且我们尽可能为修改版服务器提供特殊支持。
 
-## Compatible game versions
+## 兼容的游戏版本
 
-As of this writing, Velocity is compatible with Minecraft 1.7.2 through {LATEST_MC_RELEASE}.
+截至本文撰写时，Velocity 兼容 Minecraft 1.7.2 至 {LATEST_MC_RELEASE}
 
-## Vanilla setups
+## 原版设置
 
-Velocity is best-tested with implementations derived from the Vanilla server by Mojang that do not
-add content to the game itself.
+Velocity 最好与 Mojang 的原版服务器衍生的实现配合使用，
+这些实现不会向游戏本身添加内容。
 
-### Vanilla servers
+### 原版服务器
 
-The Mojang Vanilla software is in a complicated position. It is useful as we often produce protocol
-updates using the Mojang server for testing, but in production setups, the lack of player info
-forwarding support can induce subtle client problems.
+Mojang 的原版软件处于一个复杂的境地。
+它很有用，因为我们经常使用 Mojang 服务器进行协议更新测试，
+但在生产环境中，缺乏玩家信息转发支持可能会引发一些细微的客户端问题。
 
-If you plan to run a Vanilla server, **the Velocity team strongly recommends that you use Fabric
-with the FabricProxy-Lite mod**. Fabric and FabricProxy-Lite do not by themselves change the Vanilla
-experience, and your server will remain compatible with Vanilla clients. If you are unable (or
-unwilling) to run Fabric, [VanillaCord](https://github.com/ME1312/VanillaCord) allows you to use
-legacy BungeeCord forwarding.
+如果你打算运行一个原版服务器，**Velocity 团队强烈推荐你使用 Fabric 并搭配 FabricProxy-Lite 模组**。
+Fabric 和 FabricProxy-Lite 本身不会改变原版的游戏体验，你的服务器仍将与原版客户端兼容。
+如果你无法（或不愿意）运行 Fabric，[VanillaCord](https://github.com/ME1312/VanillaCord) 可以让你使用传统的 BungeeCord 转发。
+
 
 ### Spigot
 
-Spigot is not well-tested with Velocity. However, it is based on Vanilla and as it is the base for
-Paper, it is relatively well-supported.
+Spigot 并未经过与 Velocity 的充分测试。
+然而，它基于原版，并且作为 Paper 的基础，它相对得到了较好的支持。
 
-Spigot does not support Velocity's modern forwarding, but does support legacy BungeeCord forwarding.
+Spigot 不支持 Velocity 的现代转发功能，但支持传统的 BungeeCord 转发。
 
 ### Paper
 
-The Velocity project recommends using Paper for running a public server. Velocity works with all
-versions of Paper from 1.7.10 to the latest version.
+Velocity 推荐使用 Paper 来运行一个公共服务器。
+Velocity 支持从 1.7.10 到最新版本的所有 Paper 版本。
 
-You can use Velocity's modern forwarding if you run Paper 1.13.2 or higher. If you use Paper 1.12.2
-or lower, you must use legacy BungeeCord-style forwarding.
+如果你运行的是 Paper 1.13.2 或更高版本，你可以使用 Velocity 的现代转发功能。
+如果你运行的是 Paper 1.12.2 或更低版本，你必须使用传统的 BungeeCord 的转发。
 
 ### SpongeVanilla
 
-SpongeVanilla is compatible with legacy BungeeCord-style and modern forwarding. Our Sponge support largely
-focuses on Forge compatibility, see below for more information.
+SpongeVanilla 与传统的 BungeeCord 风格转发和现代转发都兼容。
+我们的 Sponge 支持主要集中在与 Forge 的兼容性上，更多信息请参见下文。
 
-## Modded setups
+## 修改版设置
 
 ### Fabric
 
-Velocity works with Fabric out of the box, but you should add support for player info forwarding
-using a mod like [FabricProxy-Lite](https://modrinth.com/mod/fabricproxy-lite) (which supports
-Velocity modern forwarding).
+Velocity 与 Fabric 开箱即用，
+但你应该通过使用类似 [FabricProxy-Lite](https://modrinth.com/mod/fabricproxy-lite)（支持 Velocity 现代转发）的模组来添加对玩家信息转发的支持。
 
-In addition, if you intend to run mods that add new content on top of Vanilla, you should install
-[CrossStitch](https://modrinth.com/mod/crossstitch), which improves support for certain Minecraft
-features that are extended by mods, such as custom argument types. This mod is officially maintained
-by the Velocity project.
+此外，如果你打算在原版的基础上运行添加新内容的模组，
+你应该安装 [CrossStitch](https://modrinth.com/mod/crossstitch)，
+它改进了对某些被模组扩展的 Minecraft 功能的支持，例如自定义参数类型。
+这个模组由 Velocity 项目官方维护。
 
-### Minecraft Forge (1.13 and above)
+### Minecraft Forge (1.13 及以上)
 
-Velocity as of version 3.3.0 supports Forge servers of versions higher than 1.20.2.
-Support for intermediate versions between 1.13 and 1.20.1 is not planned, however,
-you can use the [Ambassador](https://modrinth.com/plugin/ambassador) plugin to support these versions.
+截至 3.3.0 版本，Velocity 支持 1.20.2 以上版本的 Forge 服务器。
+然而，对于 1.13 到 1.20.1 之间的中间版本，目前没有计划提供支持，
+不过你可以使用 [Ambassador](https://modrinth.com/plugin/ambassador) 插件来支持这些版本。
 
-To add modern forwarding support to Forge, you must install the [ProxyCompatibleForge](https://modrinth.com/mod/proxy-compatible-forge)
-or [SpongeForge](https://spongepowered.org/downloads/spongeforge) mod corresponding to your server version.
-*Note that SpongeForge is currently in an experimental phase of its Forge support for 1.20.4 versions*.
+要为 Forge 添加现代转发支持，你必须安装与服务器版本相对应的 [ProxyCompatibleForge](https://modrinth.com/mod/proxy-compatible-forge)
+或 [SpongeForge](https://spongepowered.org/downloads/spongeforge) 模组。
+*请注意，SpongeForge 目前处于对 1.20.4 版本的 Forge 支持的实验阶段*。
 
 ### Minecraft Forge (1.7.2-1.12.2)
 
-Minecraft Forge for Minecraft 1.7.2-1.12.2 is fully compatible with Velocity, as we make special
-provisions to synchronize client state with each server. However, we **strongly** recommend the use
-of SpongeForge or BungeeForge, as it allows you to use legacy BungeeCord player info forwarding and generally
-improves proxy support in general.
+Minecraft Forge 适用于 Minecraft 1.7.2-1.12.2，与 Velocity 完全兼容，
+因为我们特别安排了同步客户端状态与每个服务器。
+然而，我们**强烈**推荐使用 SpongeForge 或 BungeeForge，
+因为它允许你使用旧版 BungeeCord 玩家信息转发，并且总体上改善了代理支持。
 
-Velocity does not support Forge-Bukkit hybrids - they have caused several issues, and the design of
-the Bukkit API precludes any notion of sane mod support.
+Velocity 不支持 Forge-Bukkit 混合服务端——它们导致了许多问题，
+而且 Bukkit API 的设计排除了任何合理的模组支持的可能性。
 
-## Proxy-behind-proxy (BungeeCord, Velocity, ...)
+## 反代理 (BungeeCord, Velocity, ...)
 
-These setups are _completely unsupported_. You are best advised to avoid them, as they can cause
-lots of issues. Most proxy-behind-proxy setups are either illogical in the first place or can be
-handled more gracefully by better, more scalable and performant solutions.
+这些设置是**完全不被支持的**。
+你最好避免使用它们，因为它们可能会引发许多问题。
+大多数反代理的设置，要么从一开始就毫无逻辑，要么可以通过更好、更可扩展且性能更高的解决方案更优雅地处理。
 
-## Other implementations
+## 其他实现
 
-This is, naturally, not an exhaustive list. Alternative implementations of the Minecraft protocol
-may or may not work. We encourage you to experiment and to contribute back with your results.
+这当然不是一个详尽的列表。其他实现 Minecraft 协议的替代方案可能会也可能不会起作用。
+我们鼓励你进行尝试，并将你的结果反馈回来。

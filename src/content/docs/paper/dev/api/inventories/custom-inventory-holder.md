@@ -1,29 +1,29 @@
 ---
-title: Custom InventoryHolders
-description: How to use a custom InventoryHolder to identify custom inventories.
+title: 自定义物品栏持有者
+description: 如何使用自定义的 `InventoryHolder` 来识别自定义的物品栏。
 slug: paper/dev/custom-inventory-holder
 ---
 
-`InventoryHolder`s are a way to identify your plugin's inventories in events.
+`InventoryHolder` 是一种在事件中标识插件的物品栏的方法。
 
-## Why use an `InventoryHolder`?
+## 为什么要使用 `InventoryHolder`？
 
-`InventoryHolder`s simplify the steps you need to do to make sure an inventory was created by your plugin.
+`InventoryHolder` 简化了确保物品栏是由你的插件创建的步骤。
 
-Using inventory names for identification is unreliable, as other plugins, or even players, can create inventories with names the exact same as yours.
-With components, you also need to make sure the name is exactly the same or serialize it to other formats.
+使用物品栏名称进行识别是不可靠的，因为其他插件甚至玩家都可以创建与你的名称完全相同的物品栏。
+对于组件，你还需要确保名称完全相同，或者将其序列化为其他格式。
 
-Custom `InventoryHolder`s have no such downsides and by using them you're guaranteed to have methods available to handle your inventory.
+自定义 `InventoryHolder` 没有这样的缺点，通过使用它们，你可以确保有方法来处理你的物品栏。
 
-## Creating a custom holder
+## 创建自定义持有者
 
-The first step is to implement the [`InventoryHolder`](jd:paper:org.bukkit.inventory.InventoryHolder) interface.
-We can do this the following way: create a new class that will create our [`Inventory`](jd:paper:org.bukkit.inventory.Inventory) in the constructor.
+第一步是实现[`InventoryHolder`](jd:paper:org.bukkit.inventory.InventoryHolder)接口。
+我们可以这样操作：创建一个新类，在构造函数中创建我们的[`Inventory`](jd:paper:org.bukkit.inventory.Inventory)。
 
-:::note
+:::note[注意]
 
-The constructor takes your main plugin class as an argument in order to create the `Inventory`.
-If you wish, you can use the static method [`Bukkit#createInventory(InventoryHolder, int)`](jd:paper:org.bukkit.Bukkit#createInventory(org.bukkit.inventory.InventoryHolder,int)) instead and remove the argument.
+构造函数以主插件类作为参数来创建`Inventory`。
+如果你愿意，可以使用静态方法[`Bukkit#createInventory(InventoryHolder, int)`](jd:paper:org.bukkit.Bukkit#createInventory(org.bukkit.inventory.InventoryHolder,int))，并移除参数。
 
 :::
 
@@ -33,7 +33,7 @@ public class MyInventory implements InventoryHolder {
     private final Inventory inventory;
 
     public MyInventory(MyPlugin plugin) {
-        // Create an Inventory with 9 slots, `this` here is our InventoryHolder.
+        // 创建一个有 9 个槽位的物品栏，这里的 `this` 是我们的 `InventoryHolder`。
         this.inventory = plugin.getServer().createInventory(this, 9);
     }
 
@@ -45,74 +45,74 @@ public class MyInventory implements InventoryHolder {
 }
 ```
 
-## Opening the inventory
+## 打开物品栏
 
-To open the inventory, first we have to instantiate our `MyInventory` class and then open the inventory for the player.
-You can do that wherever you need.
+要打开物品栏，首先我们需要实例化我们的`MyInventory`类，然后为玩家打开物品栏。
+你可以在需要的地方进行操作。
 
-:::note
+:::note[注意]
 
-We pass an instance of our plugin's main class as it's required by the constructor. If you've used the static method and removed the constructor
-argument you don't have to pass it here.
+我们传递了插件主类的一个实例，因为构造函数需要它。
+如果你使用了静态方法并移除了构造函数参数，那么你就不需要在这里传递它。
 
 :::
 
 ```java
-Player player; // Assume we have a Player instance.
-               // This can be a command, another event or anywhere else you have a Player.
+Player player; // 假设我们有一个玩家实例。
+               // 这可以是一个命令、另一个事件，或者任何你有玩家的地方。
 
 MyInventory myInventory = new MyInventory(myPlugin);
 player.openInventory(myInventory.getInventory());
 ```
 
-## Listening to an event
+## 监听事件
 
-Once we have the inventory open, we can listen to any inventory events we like and check if
-[`Inventory#getHolder()`](jd:paper:org.bukkit.inventory.Inventory#getHolder()) returns an instance of our `MyInventory`.
+一旦我们打开了物品栏，我们就可以监听任何我们喜欢的物品栏事件，
+并检查 [`Inventory#getHolder()`](jd:paper:org.bukkit.inventory.Inventory#getHolder()) 是否返回了我们 `MyInventory` 的一个实例。
 
 ```java
 @EventHandler
 public void onInventoryClick(InventoryClickEvent event) {
     Inventory inventory = event.getInventory();
-    // Check if the holder is our MyInventory,
-    // if yes, use instanceof pattern matching to store it in a variable immediately.
+    // 检查持有者是否是我们的 `MyInventory`。
+    // 如果是，使用 `instanceof` 模式匹配立即将其存储到一个变量中。
     if (!(inventory.getHolder(false) instanceof MyInventory myInventory)) {
-        // It's not our inventory, ignore it.
+        // 这不是我们的物品栏，忽略它。
         return;
     }
 
-    // Do what we need in the event.
+    // 在事件中执行我们需要的操作。
 }
 ```
 
-## Storing data on the holder
+## 在持有者上存储数据
 
-You can store extra data for your inventories on the `InventoryHolder` by adding fields and methods to your class.
+你可以通过在类中添加字段和方法，将额外的数据存储在 `InventoryHolder` 上，用于你的物品栏。
 
-Let's make an inventory that counts the amount of times we clicked a stone inside it.
-First, let's modify our `MyInventory` class a little:
+让我们创建一个物品栏，用来统计我们在其中点击石头的次数。
+首先，我们稍微修改一下我们的 `MyInventory` 类。
 
 ```java title="MyInventory.java"
 public class MyInventory implements InventoryHolder {
 
     private final Inventory inventory;
 
-    private int clicks = 0; // Store the amount of clicks.
+    private int clicks = 0; // 存储点击次数。
 
     public MyInventory(MyPlugin plugin) {
         this.inventory = plugin.getServer().createInventory(this, 9);
 
-        // Set the stone that we're going to be clicking.
+        // 设置我们将要点击的石头。
         this.inventory.setItem(0, ItemStack.of(Material.STONE));
     }
 
-    // A method we will call in the listener whenever the player clicks the stone.
+    // 一个方法，我们将在监听器中调用它，每当玩家点击石头时。
     public void addClick() {
         this.clicks++;
         this.updateCounter();
     }
 
-    // A method that will update the counter item.
+    // 一个方法，用于更新计数器物品。
     private void updateCounter() {
         this.inventory.setItem(8, ItemStack.of(Material.BEDROCK, this.clicks));
     }
@@ -125,15 +125,14 @@ public class MyInventory implements InventoryHolder {
 }
 ```
 
-Now, we can modify our listener to check if the player clicked the stone, and if so, add a click.
+现在，我们可以修改我们的监听器，以检查玩家是否点击了石头，如果是，则增加一次点击。
 
 ```java
 @EventHandler
 public void onInventoryClick(InventoryClickEvent event) {
-    // We're getting the clicked inventory to avoid situations where the player
-    // already has a stone in their inventory and clicks that one.
+    // 我们获取被点击的物品栏，以避免玩家已经在他们的物品栏中有一个石头，并点击了那个石头的情况。
     Inventory inventory = event.getClickedInventory();
-    // Add a null check in case the player clicked outside the window.
+    // 添加一个空值检查，以防玩家点击了窗口外的区域。
     if (inventory == null || !(inventory.getHolder(false) instanceof MyInventory myInventory)) {
         return;
     }
@@ -141,18 +140,17 @@ public void onInventoryClick(InventoryClickEvent event) {
     event.setCancelled(true);
 
     ItemStack clicked = event.getCurrentItem();
-    // Check if the player clicked the stone.
+    // 检查玩家是否点击了石头。
     if (clicked != null && clicked.getType() == Material.STONE) {
-        // Use the method we have on MyInventory to increment the field
-        // and update the counter.
+        // 使用我们在 `MyInventory` 中定义的方法来增加字段并更新计数器。
         myInventory.addClick();
     }
 }
 ```
 
-:::note
+:::note[注意]
 
-You can store the created `MyInventory` instance, e.g. on a `Map<UUID, MyInventory>` for per-player use, or as a field to share the inventory between
-all players, and use it to persist the counter even when opening the inventory for the next time.
+你可以将创建的 `MyInventory` 实例存储起来，例如存储在一个 `Map<UUID, MyInventory>` 中用于每个玩家的独立使用，
+或者作为一个字段来让所有玩家共享物品栏，这样即使在下一次打开物品栏时，也可以持久化计数器。
 
 :::

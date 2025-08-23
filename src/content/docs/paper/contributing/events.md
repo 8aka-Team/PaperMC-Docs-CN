@@ -1,45 +1,45 @@
 ---
-title: Events
-description: A guide on how to add new events to Paper.
+title: 事件
+description: 一篇关于如何向 Paper 添加新事件的指南
 slug: paper/contributing/events
 ---
 
-There are several requirements for events in the Paper API.
+Paper API 中的事件有几项要求
 
-:::note
+:::note[注意]
 
-Note that while not all existing events may follow these
-guidelines, all new and modified events should adhere to them.
+请注意，虽然并非所有现有事件都遵循这些指南，
+但所有新事件和修改后的事件都应遵守它们。
 
 :::
 
-All new events should go in the package (sub-package of) `io.papermc.paper.event`.
+所有新事件都应位于 `io.papermc.paper.event` 包（或其子包）中。
 
-### Constructors
+### 构造函数
 
-All new constructors added should be annotated with
-[`@ApiStatus.Internal`](https://javadoc.io/doc/org.jetbrains/annotations/latest/org/jetbrains/annotations/ApiStatus.Internal.html)
-to signify that they are not considered API and can change at any time without warning.
+所有新增的构造函数都应标注为
+[`@ApiStatus.Internal`](https://javadoc.io/doc/org.jetbrains/annotations/latest/org/jetbrains/annotations/ApiStatus.Internal.html)，
+以表明它们不属于 API，并且可以在没有任何警告的情况下随时更改。
 
-Constructors that are being replaced, if they aren't being removed, should be marked with
-[`@Deprecated`](jd:java:java.lang.Deprecated) and [`@DoNotUse`](jd:paper:io.papermc.paper.annotation.DoNotUse).
+如果要替换的构造函数并未被移除，
+应标记为[`@Deprecated`](jd:java:java.lang.Deprecated) 和 [`@DoNotUse`](jd:paper:io.papermc.paper.annotation.DoNotUse)。
 
-### Mutability
-Certain API types are "mutable" which can lead to unexpected behavior within events. Mutable types like
-[`Location`](jd:paper:org.bukkit.Location) and [`Vector`](jd:paper:org.bukkit.util.Vector)
-should therefore be cloned when returned from a "getter" in an event.
+### 可变性
+某些 API 类型是“可变的”，这可能导致事件中的意外行为。
+因此，像 [`Location`](jd:paper:org.bukkit.Location) 和 [`Vector`](jd:paper:org.bukkit.util.Vector)
+这样的可变类型在从事件的“getter”方法返回时应该进行克隆。
 
 ### `HandlerList`
-For an event class or any subclass of it to be listened to, a [`HandlerList`](jd:paper:org.bukkit.event.HandlerList)
-field must be present with an instance and static method to retrieve it.
-See the docs for [`Event`](jd:paper:org.bukkit.event.Event) for specifics.
-This field should be static and final and named `HANDLER_LIST`.
+为了让事件类或其任何子类能够被监听，必须存在一个 [`HandlerList`](jd:paper:org.bukkit.event.HandlerList) 字段，
+并且有一个静态方法可以获取其实例。
+具体细节请参阅 [`Event`](jd:paper:org.bukkit.event.Event) 的文档。
+这个字段应该是静态的、最终的，并且命名为 `HANDLER_LIST`。
 
-Also consider not putting a `HandlerList` on every event, just a "common parent" event so that a plugin can listen to the
-parent event and capture any child events but also listen to the child event separately.
+同时考虑不要在每个事件上都放置一个 `HandlerList`，而是在一个“共同父级”事件上放置，
+这样插件就可以监听父级事件并捕获任何子事件，同时也可以单独监听子事件。
 
-### Miscellaneous
+### 其他
 
-* New parameters or method returns of type [`ItemStack`](jd:paper:org.bukkit.inventory.ItemStack)
-should not be [`@Nullable`](https://javadoc.io/doc/org.jspecify/jspecify/latest/org/jspecify/annotations/Nullable.html)
-in most case and instead accept an empty itemStack.
+大多数情况下，类型为  [`ItemStack`](jd:paper:org.bukkit.inventory.ItemStack) 的新参数或方法返回值不应该使用
+[`@Nullable`](https://javadoc.io/doc/org.jspecify/jspecify/latest/org/jspecify/annotations/Nullable.html) 注解，
+而应该接受一个空的 ItemStack。

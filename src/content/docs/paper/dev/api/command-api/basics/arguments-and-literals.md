@@ -1,122 +1,122 @@
 ---
-title: Arguments and literals
-description: An extensive guide to command arguments and literals.
+title: 参数和文字
+description: 关于命令参数和文字的详细指南。
 slug: paper/dev/command-api/basics/arguments-and-literals
 ---
 
-:::note
+:::note[注意]
 
-In the [command tree docs](/paper/dev/command-api/basics/command-tree) we have looked at the structure of Brigadier commands and how to build up a command tree.
-If you haven't finished reading that yet, we strongly recommend doing that before reading about arguments and literals.
+在[命令树文档](/paper/dev/command-api/basics/command-tree)中，我们研究了Brigadier命令的结构以及如何构建命令树。
+如果你还没有读完那部分内容，我们强烈建议你在阅读关于参数和文字的内容之前先读完它。
 
 :::
 
-## Introduction
+## 介绍
 
-Each `.then(...)` method of an `ArgumentBuilder<CommandSourceStack, ?>` takes in another `ArgumentBuilder<CommandSourceStack, ?>` object. This abstract ArgumentBuilder
-has two implementations: `RequiredArgumentBuilder` and `LiteralArgumentBuilder`. When using Brigadier with Paper, we create these objects by running either `Commands.literal(String)`
-for the `LiteralArgumentBuilder` or `Commands.argument(String, ArgumentType<T>)` for the `RequiredArgumentBuilder`.
+`ArgumentBuilder<CommandSourceStack, ?>` 的每个 `.then(...)` 方法都接受另一个 `ArgumentBuilder<CommandSourceStack, ?>` 对象。
+这个抽象的 `ArgumentBuilder` 有两个实现：`RequiredArgumentBuilder` 和 `LiteralArgumentBuilder`。
+当使用 Paper 与 Brigadier 时，我们通过运行 `Commands.literal(String)` 来创建 `LiteralArgumentBuilder` 对象，或者通过运行 `Commands.argument(String, ArgumentType<T>)` 来创建 `RequiredArgumentBuilder` 对象。
 
-As an explanation to what the difference is, you can picture it like this:
-* An argument is a variable input by the user. It is semi-unpredictable, but will always return a valid entry of the object that it is backing.
-* A literal is a non-variable input by the user. It is mainly used as a way to define predictable input, since each literal is a new branch on our command tree.
+为了说明它们的区别，你可以这样想象：
+* 参数是用户输入的变量。它是半不可预测的，但总会返回它所支持的对象的有效条目。
+* 文字是用户输入的非变量。它主要用于定义可预测的输入，因为每个文字都是我们命令树上的一个新分支。
 
-## Literals
-In code, literals generally cannot be accessed. Yet, due to the nature of our command tree, we can always know on what literal branch we currently are:
+## 文字
+在代码中，文字通常无法被访问。然而，由于我们命令树的特性，我们总是可以知道我们当前所在的文字分支：
 ```java
 Commands.literal("plant")
     .then(Commands.literal("tree")
         .executes(ctx -> {
-            /* Here we are on /plant tree */
+            /* 这里我们处于`/plant tree` */
         })
     )
     .then(Commands.literal("grass")
         .executes(ctx -> {
-             /* Here we are on /plant grass */
+             /* 这里我们处于`/plant grass` */
         }));
 ```
 
-:::tip
+:::tip[提示]
 
-You may notice the usage of the `executes` method. This method declares logic to our branches. If a branch has no `executes` method defined, it will not be executable.
-For more information about execution logic, [click here](/paper/dev/command-api/basics/executors).
+你可能会注意到`executes`方法的使用。这个方法为我们的分支声明逻辑。如果一个分支没有定义`executes`方法，它将不可执行。
+关于执行逻辑的更多信息，请点击[这里](/paper/dev/command-api/basics/executors)。
 
 :::
 
-## Arguments
-Arguments are slightly more complex. They also define a new branch in a tree, but they are not directly predictable. Each argument is created using `Commands.argument(String, ArgumentType<T>)`.
-That method returns a `RequiredArgumentBuilder`. The T type parameter declares the return type of the argument, which you can then use inside your `executes` method. That means that
-if you put in an `ArgumentType<Integer>`, you can retrieve the value of that argument as an integer, requiring no manual parsing! There are a few build-in, primitive argument types
-that we can use for arguments:
+## 参数
+参数稍微复杂一些。它们也在树中定义了一个新分支，但它们不是直接可预测的。
+每个参数都是通过 `Commands.argument(String, ArgumentType<T>)` 创建的。
+该方法返回一个 `RequiredArgumentBuilder`。`T` 类型参数声明了参数的返回类型，你可以在你的 `executes` 方法中使用它。
+这意味着如果你传入一个 `ArgumentType<Integer>`，你可以将该参数的值检索为整数，无需手动解析！有一些内置的原始参数类型可以用于参数：
 
-|               Name                | Return value  |   Possible Input    |                                           Description                                            |
-|-----------------------------------|---------------|---------------------|--------------------------------------------------------------------------------------------------|
-| BoolArgumentType.bool()           | Boolean       | true/false          | Only allows a boolean value                                                                      |
-| IntegerArgumentType.integer()     | Integer       | 253, -123, 0        | Any valid integer                                                                                |
-| LongArgumentType.longArg()        | Long          | 25418263123783      | Any valid long                                                                                   |
-| FloatArgumentType.floatArg()      | Float         | 253.2, -25.0        | Any valid float                                                                                  |
-| DoubleArgumentType.doubleArg()    | Double        | 4123.242, -1.1      | Any valid double                                                                                 |
-| StringArgumentType.word()         | String        | letters-and+1234567 | A single word. May only contain letters and numbers and these characters: `+`, `-`, `_`, and `.` |
-| StringArgumentType.string()       | String        | "with spaces"       | A single word, or, if quoted, any valid string with spaces                                       |
-| StringArgumentType.greedyString() | String        | unquoted spaces     | The literal written input. May contain any characters. Has to be the last argument               |
+| 名称                                | 返回值     | 可能的输入               | 描述                                      |
+|-----------------------------------|---------|---------------------|-----------------------------------------|
+| BoolArgumentType.bool()           | Boolean | true/false          | 只允许布尔值                                  |
+| IntegerArgumentType.integer()     | Integer | 253, -123, 0        | 任何有效的整数                                 |
+| LongArgumentType.longArg()        | Long    | 25418263123783      | 任何有效的长整数                                |
+| FloatArgumentType.floatArg()      | Float   | 253.2, -25.0        | 任何有效的浮点数                                |
+| DoubleArgumentType.doubleArg()    | Double  | 4123.242, -1.1      | 任何有效的双精度浮点数                             |
+| StringArgumentType.word()         | String  | letters-and+1234567 | 单个单词。只允许包含字母、数字以及以下字符：`+`、`-`、`_` 和 `.` |
+| StringArgumentType.string()       | String  | "with spaces"       | 单个单词，或者如果用引号括起来，则可以是任何包含空格的有效字符串        |
+| StringArgumentType.greedyString() | String  | unquoted spaces     | 字面输入的文本。可以包含任何字符。必须是最后一个参数              |
 
-### Boolean argument type and argument parsing
-A boolean argument is used for retrieving, well, a boolean. An example usage for that might be a `/serverflight` command which allows for enabling and disabling server flight
-with `/serverflight true` and `/serverflight false`:
+### 布尔参数类型和参数解析
+布尔参数用于检索布尔值。
+一个示例用法可能是 `/serverflight` 命令，它允许通过 `/serverflight true` 和 `/serverflight false` 启用和禁用服务器飞行：
 
 ```java title="ServerFlightCommand.java"
 Commands.literal("serverflight")
     .then(Commands.argument("allow", BoolArgumentType.bool())
         .executes(ctx -> {
             boolean allowed = ctx.getArgument("allow", boolean.class);
-            /* Toggle server flying */
+            /* 切换服务器飞行 */
         })
     );
 ```
 
-Here, you can see how one would access an argument in-code. The first parameter for the `Commands.argument(String, ArgumentType)` method takes in the node name. This is not required
-by literals, as their name is the same as their value. But here we need a way to access the argument. The parameter of the executes-lambda has a method called
-`T getArgument(String, Class<T>)`. The first parameter is the name of the method we want to retrieve. The second parameter is the return value of the argument. As we are using
-a boolean argument, we put in `boolean.class` and retrieve the argument value as such.
+在这里，你可以看到如何在代码中访问参数。`Commands.argument(String, ArgumentType)`方法的第一个参数接受节点名称。
+文字不需要这个参数，因为它们的名称与它们的值相同。但在这里我们需要一种方法来访问参数。
+`executes` lambda 的参数有一个名为`T getArgument(String, Class<T>)`的方法。第一个参数是我们想要检索的方法的名称。
+第二个参数是参数的返回值。由于我们使用的是布尔参数，我们传入`boolean.class`并以这种方式检索参数值。
 
-### Number arguments
-All of the number arguments (like `IntegerArgumentType.integer()`) have three overloads:
+### 数字参数
+所有数字参数（如 `IntegerArgumentType.integer()`）都有三个重载版本：
 
-|                     Overload                      |                        Description                        |
-|---------------------------------------------------|-----------------------------------------------------------|
-| `IntegerArgumentType.integer()`                   | Any value between Integer.MIN_VALUE and Integer.MAX_VALUE |
-| `IntegerArgumentType.integer(int min)`            | Any value between min and Integer.MAX_VALUE               |
-| `IntegerArgumentType.integer(int min, int max)`   | Any value between min and max                             |
+| 重载版本                                            | 描述                                            |
+|-------------------------------------------------|-----------------------------------------------|
+| `IntegerArgumentType.integer()`                 | 任何值在`Integer.MIN_VALUE`和`Integer.MAX_VALUE`之间 |
+| `IntegerArgumentType.integer(int min)`          | 任何值在`min`和`Integer.MAX_VALUE`之间               |
+| `IntegerArgumentType.integer(int min, int max)` | 任何值在`min`和`max`之间                             |
 
-This is particularly useful for filtering out too high or too low input. As an example, we can define a `/flyspeed` command. As the
-[`Player#setFlySpeed(float value)`](jd:paper:org.bukkit.entity.Player#setFlySpeed(float)) method only
-accepts floats between -1 and 1, where -1 is an inverse direction, it would make sense to limit the values between 0 and 1 for in-bounds, non-negative speed values.
-This can be achieved with the following command tree:
+这特别适用于过滤过高或过低的输入。
+以定义 `/flyspeed` 命令为例。
+由于 `Player#setFlySpeed(float value)` 方法只接受 -1 到 1 之间的浮点数，其中 -1 表示反方向，
+因此将值限制在 0 到 1 之间以获得非负的有效速度是有意义的。可以通过以下命令树实现：
 
 ```java title="FlightSpeedCommand.java"
 Commands.literal("flyspeed")
     .then(Commands.argument("speed", FloatArgumentType.floatArg(0, 1.0f))
         .executes(ctx -> {
             float speed = ctx.getArgument("speed", float.class);
-            /* Set player's flight speed */
+            /* 设置玩家的飞行速度 */
             return Command.SINGLE_SUCCESS;
         })
     );
 ```
 
-:::tip
+:::tip[提示]
 
-Some arguments can have special ways of being retrieved. Most notably, all of the Brigadier-provided arguments (the ones mentioned on this page)
-have a resolver to get their own argument value. For the float argument, this would look like this:
+有些参数可以有特殊的检索方式。
+最值得注意的是，所有 Brigadier 提供的参数（本页提到的那些）都有一个解析器来获取它们自己的参数值。对于浮点数参数，它看起来像这样：
 
 ```java
 float speed = FloatArgumentType.getFloat(ctx, "speed");
 ```
 
-It generally does not matter whether you use `ctx.getArgument` or `FloatArgumentType.getFloat`, since it goes through the same logic, but in future documentation,
-primitive values might be retrieved using their own parsers.
+通常使用 `ctx.getArgument` 或 `FloatArgumentType.getFloat` 并不重要，
+因为它们经过相同的逻辑，但在未来的文档中，原始值可能会使用它们自己的解析器来检索。
 
-These parsers for Brigadier-native arguments exist. All of these take in `(CommandContext<?> context, String name)` as method parameters:
+这些 Brigadier 原生参数的解析器确实存在。所有这些都接受 `(CommandContext<?> context, String name)` 作为方法参数：
 - `BoolArgumentType.getBool`
 - `IntegerArgumentType.getInteger`
 - `LongArgumentType.getLong`
@@ -126,28 +126,28 @@ These parsers for Brigadier-native arguments exist. All of these take in `(Comma
 
 :::
 
-Now, if we input a valid float between 0 and 1, the command would execute correctly:
+现在，如果我们输入一个 0 到 1 之间的有效浮点数，命令将正确执行：
 ![](./assets/valid-float.png)
 
-But if we input a too small or too big float, it would throw an error **on the client**:
+但是，如果我们输入一个太小或太大的浮点数，它会在**客户端**抛出错误：
 ![](./assets/small-float.png)
 ![](./assets/big-float.png)
 
-This is the main advantage of native arguments: The client itself performs simple error checking on the arguments, which makes user experience whilst running a command
-way better, as they can see invalid input without sending the command to the server.
+这是原生参数的主要优势：客户端本身对参数进行简单的错误检查，
+这使得运行命令时的用户体验更好，因为他们可以在不将命令发送到服务器的情况下看到无效的输入。
 
-### String arguments
-There is three string arguments: `word`, `string`, and `greedyString`.
+### 字符串参数
+有三种字符串参数：`word`、`string` 和 `greedyString`。
 
-The `word` string argument is the simplest one of these. It only accepts a single word consisting of alphanumerical characters and these special characters: `+`, `-`, `_`, and `.`.
+`word`字符串参数是最简单的。它只接受一个由字母数字字符和以下特殊字符组成的单个单词：`+`、`-`、`_`和`.`。
 * ✅ `.this_is_valid_input.`
 * ❌ `this is invalid input`
 * ❌ `"also_invalid"`
 * ✅ `-10_numbers_are_valid`
 * ❌ `@_@`
 
-The `string` argument is slightly more complicated. If unquoted, it follows the same rules as the `word` argument. Only alphanumerical characters and the mentioned special characters.
-But if you put your string into quotes, you can enter any combination of unicode characters you want to. Quotes `"` can be escaped using a backslash `\`.
+`string` 参数稍微复杂一些。如果未加引号，它遵循与 `word` 参数相同的规则。只允许字母数字字符和提到的特殊字符。
+但如果你将字符串用引号括起来，你可以输入任何你想要的 Unicode 字符组合。引号 `"` 可以使用反斜杠 `\` 转义。
 * ✅ `this_is-valid-input`
 * ✅ `"\"quotes\""`
 * ❌ `this is invalid input`
@@ -155,22 +155,22 @@ But if you put your string into quotes, you can enter any combination of unicode
 * ✅ `"also_valid"`
 * ✅ `"紙の神"`
 
-The `greedyString` argument is the only argument which does not perform any parsing. Due to its "greedy" nature, it does not allow any arguments after its declaration. That also means, that
-any input is completely valid and it requires no quotes. In fact, quotes are counted as literal characters.
+`greedyString` 参数是唯一不进行任何解析的参数。由于它的“贪婪”特性，它不允许在其声明之后有任何参数。
+这也意味着任何输入都是完全有效的，它不需要引号。实际上，引号被视为文字字符。
 * ✅ `this_is_valid_input`
 * ✅ `this is valid as well input`
 * ✅ `"this is valid input again"`
 * ✅ `also_valid`
 * ✅ `紙の神`
 
-Here you can see the arguments in action:
+在这里你可以看到参数的实际应用：
 ![](./assets/string-arguments.gif)
 
-## Further reference
-### Minecraft arguments
-Apart from these built-in Brigadier arguments, countless custom arguments are defined by Paper as well. These can be accessed in a static context with the `ArgumentTypes` class. You
-can read more about these [here](/paper/dev/command-api/arguments/minecraft).
+## 进一步参考
+### Minecraft 参数
+除了这些内置的 Brigadier 参数外，Paper 还定义了无数自定义参数。这些可以通过 `ArgumentTypes` 类在静态上下文中访问。
+你可以在这里[这里](/paper/dev/command-api/arguments/minecraft)了解更多关于这些内容的信息。
 
-### Custom arguments
-Sometimes you want to define your own, custom arguments. For that you can implement the `CustomArgumentType<T, N>` interface.
-You can read more about these [here](/paper/dev/command-api/basics/custom-arguments).
+### 自定义参数
+有时你可能想定义自己的自定义参数。为此，你可以实现 `CustomArgumentType<T, N>` 接口。
+你可以在这里[这里](/paper/dev/command-api/basics/custom-arguments)了解更多关于这些内容的信息。

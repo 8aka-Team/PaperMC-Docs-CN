@@ -1,119 +1,108 @@
-# Contributing to PaperMC Docs
+# 为 PaperMC 中文翻译文档做贡献
 
-Thank you for considering contributing to the PaperMC Docs repository! We appreciate your help in making our documentation better.
-To ensure a smooth and collaborative contribution process, please follow the guidelines below.
+感谢您考虑为 PaperMC 中文翻译文档仓库做贡献！我们感谢您帮助我们改进文档。
+为确保贡献过程顺畅且富有协作性，请遵循以下指南。
 
-## Table of contents
+## 目录
 
-1. [Introduction](#introduction)
-2. [How to add a page](#adding-a-page)
-3. [Submitting contributions](#submitting-contributions)
-4. [Style guidelines](#style-guidelines)
-5. [Version tags](#version-tags)
-6. [Automatic constant replacement](#automatic-constant-replacement)
-7. [Linking to Javadocs](#linking-to-javadocs)
-8. [Code of Conduct](#code-of-conduct)
+1. [介绍](#介绍)
+2. [添加页面](#添加页面)
+3. [提交贡献](#提交贡献)
+4. [样式指南](#样式指南)
+5. [版本标签](#版本标签)
+6. [常量替换](#常量替换)
+7. [链接到 Javadocs](#链接到-Javadoc)
+8. [行为准则](#行为准则)
 
-## Introduction
+## 介绍
 
-The PaperMC Docs repository contains the documentation for the PaperMC project, which is used to provide essential
-information, instructions, and guidelines to our users, developers, and contributors. Your contributions play a
-significant role in improving and maintaining the quality of our documentation.
+PaperMC 文档仓库包含了 PaperMC 项目的文档，这些文档为我们的用户、开发者和贡献者提供必要的信息、指导和规范。您对文档的贡献对于提升和维护文档质量有着重要的作用。
 
-We use [Starlight](https://starlight.astro.build/) to build and deploy the documentation website.
-Starlight has [extensive documentation](https://starlight.astro.build/guides/authoring-content/) detailing what is possible with it.
+我们使用 [Starlight](https://starlight.astro.build/) 构建和部署文档网站。
+Starlight 提供了 [丰富的文档](https://starlight.astro.build/guides/authoring-content/)，详细介绍了其功能和使用方法。
 
-The bulk of Paper's documentation is written with Markdown, which is a simple markup language that is easy to learn.
-Take a look at some of the existing documentation to get a feel for how it is written.
+PaperMC 的大部分文档是用 Markdown 编写的，Markdown 是一种简单易学的标记语言。您可以查看一些现有的文档，以了解其编写方式。
 
-### Adding a page
+### 添加页面
 
-To add a new page to the documentation, create a new Markdown file in the appropriate folder. For example, if you want to add
-a new page to the Paper Admin docs, create a new Markdown file in the `src/content/docs/paper/admin/` folder. The file name should be in
-lowercase and use hyphens to separate words. For example, `my-new-page.md`.
+要向文档中添加新页面，请在相应的文件夹中创建一个新的 Markdown 文件。
 
-The page should start with a slug and title. For example:
+例如，如果您想向 Paper Admin 文档添加一个新页面，请在 `src/content/docs/paper/admin/` 文件夹中创建一个新的 Markdown 文件。
+文件名应使用小写字母，并用连字符分隔单词，例如 `my-new-page.md`
+
+页面应以 slug 和标题开头。例如：
 
 ```markdown
 ---
-title: Paper plugins
+title: Paper 插件
 slug: paper/reference/paper-plugins
 ---
 
-This documentation page serves to explain all the new semantics and possible confusions that Paper plugins may introduce.
+本页面旨在解释 Paper 插件可能引入的所有新语义以及可能产生的困惑。
 ```
 
-This will place the page at the `/paper/reference/paper-plugins` URL on the website. The slug should be unique and follow the
-folder structure of the documentation. The title is the name of the page that will be displayed on the website and in the sidebar.
+这将使页面位于网站的 `/paper/reference/paper-plugins` URL 上。
+Slug 应该是唯一的，并且遵循文档的文件夹结构。标题是将在网站和侧边栏中显示的页面名称。
 
-You must also add the page to the sidebar. In this instance we will go to the `astro.config.ts` file and
-add the file to the `items` tag for that section. You must use the slug for that file, for example `paper/reference/paper-plugins`.
-Take a look at the existing sidebar elements to get a feel for how it is structured.
+您还需要将页面添加到侧边栏中。在这种情况下，我们将进入 `astro.config.ts` 文件，并将文件添加到该部分的 `items` 标签中。
+您必须使用该文件的 slug，例如 `paper/reference/paper-plugins`。查看现有的侧边栏元素，以了解其结构方式。
 
-## Submitting contributions
+## 提交贡献
 
-If you wish to contribute to the PaperMC Docs, please follow these steps:
+如果您希望为 PaperMC 文档做出贡献，请按照以下步骤操作：
 
-1. Fork the repository to your GitHub account.
+1. 将仓库 fork 到您的 GitHub 账户。
 
-2. Create a new branch from the `main` branch.
+2. 从 `main` 分支创建一个新的分支。
 
-3. Make your changes or add new documentation following the style guidelines mentioned below.
+3. 根据下面提到的样式指南进行更改或添加新的文档。
 
-4. Commit your changes and push them to your fork.
+4. 提交您的更改并将它们推送到您的 fork。
 
-5. Submit a pull request (PR) to the `main` branch of the Docs repository.
-   Cloudflare Pages will automatically deploy a preview of your changes to the PR. The link to the preview will be available in a PR comment.
+5. 向文档仓库的 `main` 分支提交拉取请求（PR）。Cloudflare Pages 将自动为您的 PR 部署更改的预览。预览的链接将出现在 PR 的评论中。
 
-6. Your PR will be reviewed, and feedback may be provided if necessary.
+6. 您的 PR 将被审查，如有必要，可能会提供反馈。
 
-7. Once your contribution meets the guidelines and requirements, it will be merged into the main repository.
+7. 一旦您的贡献符合指南和要求，它将被合并到主仓库中。
 
-## Style guidelines
+## 样式指南
 
-To maintain consistency and readability across the documentation, please adhere to the following style guidelines:
+为了保持文档的一致性和可读性，请遵守以下样式指南：
 
-1. **American English**: All documentation should be written in American English. Please use American spellings, grammar, and punctuation.
-   Take a look at [this guide](https://www.oxfordinternationalenglish.com/differences-in-british-and-american-spelling/) which outlines
-   the differences between American and British English.
+1. **美式英语**：所有文档应使用美式英语撰写。请使用美式拼写、语法和标点符号。可以参考 [这份指南](https://www.oxfordinternationalenglish.com/differences-in-british-and-american-spelling/)，了解美式英语和英式英语的区别。
 
-2. **Embrace sentence case**: Use sentence case instead of Title Case, if it makes sense. Sentence case along with active voice creates a more natural, conversational tone.
+2. **使用句子大小写**：如果合适，请使用句子大小写而不是标题大小写。句子大小写结合主动语态可以营造更自然、更口语化的语气。
 
-3. **Markdown format**: Documentation should be written in Markdown format (.md or .mdx) for easy rendering on the website.
-   If you don't use any MDX features, use a plain Markdown file (.md) instead to improve portability of your markup.
+3. **Markdown 格式**：文档应以 Markdown 格式（.md 或 .mdx）撰写，以便在网站上轻松渲染。如果不使用任何 MDX 功能，请使用纯 Markdown 文件（.md），以提高标记的可移植性。
 
-4. **Heading structure**: Use the `title` front matter property for the main title, `h2` (##) for section headings, and follow this pattern for subsequent subheadings.
+4. **标题结构**：使用 `title` 前置事项属性作为主标题，使用 `h2`（##）作为节标题，并按照此模式为后续子标题进行设置。
 
-5. **Code blocks**: When including code snippets or terminal commands, use fenced code blocks with the appropriate syntax highlighting.
+5. **代码块**：包含代码片段或终端命令时，请使用带有适当语法高亮的围栏代码块。
 
-6. **Admonitions**: Use admonitions to highlight important information. For example, use `:::note` for general notes, `:::tip` for tips,
-   `:::caution` for warnings, and `:::danger` for critical warnings.
+6. **提示框**：使用提示框突出显示重要信息。例如，使用 `:::note` 表示一般说明，`:::tip` 表示提示，`:::caution` 表示警告，`:::danger` 表示严重警告。
 
-7. **Links and references**: When referencing external sources or linking to other pages, use descriptive anchor text and provide full URLs.
+7. **链接和引用**：引用外部资源或链接到其他页面时，请使用描述性锚点文本并提供完整的 URL。
 
-8. **Images and videos**: Include images if necessary to illustrate concepts, ensure the images are clear and relevant to the content, and store them in the repository rather than external CDNs (i.e. imgur). Including a video is also possible; however, it should be short and adequately compressed. If the video does not need interaction, e.g. pausing, using an animated image (GIF, WebP, ...) is preferred, as it grabs attention better (auto-play) and can be further optimized by the build tooling.
+8. **图片和视频**：如有必要，可插入图片以阐释概念，确保图片清晰且与内容相关，并将其存储在仓库中，而不是外部 CDN（例如 Imgur）。也可以插入视频，但应确保视频简短且经过适当压缩。如果视频不需要交互（例如暂停），则建议使用动画图像（GIF、WebP 等），因为自动播放更能吸引注意力，并且可以通过构建工具进一步优化。
 
-9. **Format code**: After you've made changes, don't forget to run the formatting script with `pnpm run format`.
+9. **格式化代码**：在完成更改后，别忘了运行格式化脚本 `pnpm run format`。
 
-10. **Keep it concise**: Write clear and concise sentences. Avoid unnecessary jargon and explanations.
+10. **保持简洁**：撰写清晰简洁的句子，避免不必要的行话和解释。
 
-11. **Be inclusive**: Be mindful of all readers and contributors. Use language that is inclusive and welcoming to everyone.
+11. **包容性**：考虑所有读者和贡献者，使用包容且欢迎所有人的语言。
 
-12. **Capitalize Vanilla**: When referring to the base game, use "Vanilla" with a capital "V".
+12. **大写“Vanilla”**：提到基础游戏时，请使用大写的“Vanilla”。
 
-## Version tags
+## 版本标签
 
-All of our documentation which is potentially relevant to a specific version of the software should be tagged with the
-`version` front matter value. This allows the user to see which version of the software the documentation was written for.
+所有可能与软件特定版本相关的文档都应标记有 `version` 前置事项值。这使用户能够看到文档是针对哪个版本的软件编写的。
 
-It is important to keep this up to date, as it allows users to see if the documentation is still relevant to the version,
-however it is not required for all documentation. For example, a page about the history of the project would not need a
-`version` value.
+保持这一信息的更新非常重要，因为它能让用户判断文档是否仍适用于当前版本，但这并不是所有文档的必要要求。例如，关于项目历史的页面就不需要 `version`
 
 ```markdown
 ---
-title: My awesome page
-description: My awesome page about my awesome topic for 1.20.
+title: 我的超棒页面
+description: 我的超棒页面，介绍 1.20 版本的超棒主题。
 slug: paper/my-awesome-page
 version: "1.20"
 ---
@@ -121,11 +110,11 @@ version: "1.20"
 .....
 ```
 
-## Automatic constant replacement
+## 常量替换
 
-There are quite a few constants you may want to use in your pages, such as the latest Paper/Velocity/Minecraft version.
+在页面中，您可能会用到许多常量，例如最新的 Paper、Velocity 或 Minecraft 版本号。
 
-These constants can be imported and used in MDX, like so:
+这些常量可以在 MDX 中导入和使用，如下所示：
 
 ```mdxjs
 import {
@@ -145,8 +134,8 @@ Latest Waterfall version is {LATEST_WATERFALL_RELEASE}.
 Latest `paperweight-userdev` version is {LATEST_USERDEV_RELEASE}.
 ```
 
-If you want to perform these replacements in code blocks, you need to use a special `replace` meta property.
-It works in plain .md files too, and you don't need to import anything:
+如果您希望在代码块中执行这些替换，您需要使用特殊的 `replace` 元属性。
+它也可以在普通的 `.md` 文件中使用，您无需导入任何内容：
 
 ````markdown
 ```yaml replace
@@ -160,32 +149,31 @@ loader: io.papermc.testplugin.TestPluginLoader
 ```
 ````
 
-For inline code blocks, i.e. `my code block` (`` `my code block` `` in Markdown), you do not need to use a property - replacements are done for all inline code blocks.
+对于行内代码块，例如 `my code block`（在 Markdown 中为 `` `my code block` ``），您无需使用属性，因为所有行内代码块都会自动进行替换。
 
 ```markdown
 - `api-version: '\{LATEST_PAPER_RELEASE}'`
 ```
 
-## Linking to Javadocs
+## 链接到 Javadoc
 
-Many Javadoc sites support a `latest` tag, such as javadoc.io or similar, in which case, just use that in a plain Markdown link.
-However, you may also want to reference the Javadocs of the latest version of Paper, Velocity or a centrally defined version of Java, which do not support a `latest` tag.
+许多 Javadoc 网站支持 `latest` 标签，例如 javadoc.io 或类似网站，这种情况下，只需在普通 Markdown 链接中使用它即可。
+然而，您可能还想引用 Paper、Velocity 或 Java 的最新版本的 Javadoc，这些版本并不支持 `latest` 标签。
 
-For that, you can use the `jd:project_name[:module_name][:class_or_member_reference]` Markdown link shortcut:
+为此，您可以使用 `jd:project_name[:module_name][:class_or_member_reference]` Markdown 链接快捷方式：
 
 ```md
-[my `Event` link](jd:paper:org.bukkit.event.Event)
+[我的`活动`链接](jd:paper:org.bukkit.event.Event)
 [`ProxyInitializeEvent`](jd:velocity:com.velocitypowered.api.event.proxy.ProxyInitializeEvent)
 [`repeat(long, TimeUnit)`](jd:velocity:com.velocitypowered.api.scheduler.Scheduler$TaskBuilder#repeat(long,java.util.concurrent.TimeUnit))
-[java.base's List](jd:java:java.util.List)
-[java.sql's Connection](jd:java:java.sql:java.sql.Connection)
+[java.base 中的 `List`](jd:java:java.util.List)
+[java.sql 中的 `Connection`](jd:java:java.sql:java.sql.Connection)
 ```
 
-## Code of Conduct
+## 行为准则
 
-Contributors are expected to follow the [Community Guidelines](https://papermc.io/community/guidelines) of the PaperMC organization in all
-interactions related to this repository.
+贡献者应在与本仓库相关的所有互动中遵守 PaperMC 组织的 [社区指南](https://papermc.io/community/guidelines)。
 
-Thank you for contributing to the PaperMC Docs! Your dedication helps improve the documentation for the entire
-community. If you have any questions or need further assistance, feel free to reach out to us on the PaperMC Discord server
-or create an issue on the repository.
+感谢您为 PaperMC 文档做出贡献！您的奉献有助于改善整个社区的文档。
+如果您有任何问题或需要进一步的帮助，
+请随时在 PaperMC Discord 服务器上联系我们，或在仓库中创建问题。

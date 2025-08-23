@@ -7,44 +7,112 @@
   ];
 
   const flags: Option[] = [
-    { id: "none", label: "None", value: "" },
+    { id: "none", label: "不使用 Flags", value: "" },
     {
-      id: "aikar",
-      label: "Aikar's",
+      id: "aikar_G1GC",
+      label: "Aikar's（G1GC）(通用推荐)",
       value: [
-        "-XX:+AlwaysPreTouch",
-        "-XX:+DisableExplicitGC",
-        "-XX:+ParallelRefProcEnabled",
-        "-XX:+PerfDisableSharedMem",
+        // 全局/实验开关
         "-XX:+UnlockExperimentalVMOptions",
+        "-XX:+AlwaysPreTouch",
+        "-XX:+UseLargePages",
+        "-XX:+PerfDisableSharedMem",
+        "-XX:+DisableExplicitGC",
+        "-XX:+ExplicitGCInvokesConcurrent",
+        "-XX:+ParallelRefProcEnabled",
+        // GC 内存回收
         "-XX:+UseG1GC",
+        // G1 通用参数
+        "-XX:MaxGCPauseMillis=200",
+        "-XX:InitiatingHeapOccupancyPercent=15",
+        // G1 区域与分代参数
         "-XX:G1HeapRegionSize=8M",
-        "-XX:G1HeapWastePercent=5",
+        "-XX:G1NewSizePercent=30",
         "-XX:G1MaxNewSizePercent=40",
+        "-XX:G1ReservePercent=20",
+        "-XX:G1HeapWastePercent=5",
         "-XX:G1MixedGCCountTarget=4",
         "-XX:G1MixedGCLiveThresholdPercent=90",
-        "-XX:G1NewSizePercent=30",
         "-XX:G1RSetUpdatingPauseTimePercent=5",
-        "-XX:G1ReservePercent=20",
-        "-XX:InitiatingHeapOccupancyPercent=15",
-        "-XX:MaxGCPauseMillis=200",
+        // 晋升与幸存区
         "-XX:MaxTenuringThreshold=1",
         "-XX:SurvivorRatio=32",
+        // 系统属性
         "-Dusing.aikars.flags=https://mcflags.emc.gs",
         "-Daikars.new.flags=true",
+        "-Dfile.encoding=UTF-8",
         "" /* space */,
       ].join(" "),
     },
     {
-      id: "velocity",
-      label: "Velocity",
+      id: "aikar_ZGC",
+      label: "Aikar's（JDK17+ZGC）(适合多核心)",
       value: [
-        "-XX:+AlwaysPreTouch",
-        "-XX:+ParallelRefProcEnabled",
+        //来源：https://github.com/Q2297045667/ZGC-For-Minecraft
+        //参考：https://blog.binklac.com/e6ad4dc21152/
+        // GC 内存回收
+        "-XX:+UseZGC",
         "-XX:+UnlockExperimentalVMOptions",
+        // 内存与大页
+        "-XX:+UseLargePages",
+        "-XX:+AlwaysPreTouch",
+        // ZGC 行为细调
+        "-XX:-ZUncommit",
+        "-XX:ZCollectionInterval=30",
+        "-XX:ZAllocationSpikeTolerance=5",
+        "-XX:+ZProactive",
+        "-XX:+ExplicitGCInvokesConcurrent",
+        // 通用 JVM 并行/调优
+        "-XX:+PerfDisableSharedMem",
+        "-XX:+UseStringDeduplication",
+        "-XX:+UseCompressedOops",
+        "-XX:+ParallelRefProcEnabled",
+        // 系统属性
+        "-Dfile.encoding=UTF-8",
+        "" /* space */,
+      ].join(" "),
+    },
+    {
+      id: "velocity_G1GC",
+      label: "Velocity（G1GC）(通用推荐)",
+      value: [
+        // GC 内存回收
         "-XX:+UseG1GC",
+        "-XX:+UnlockExperimentalVMOptions",
+        // 内存与大页
+        "-XX:+UseLargePages",
+        "-XX:+AlwaysPreTouch",
+        // 通用 JVM 并行/调优
+        "-XX:+ParallelRefProcEnabled",
+        // G1 区域与分代参数
         "-XX:G1HeapRegionSize=4M",
         "-XX:MaxInlineLevel=15",
+        // 系统属性
+        "-Dfile.encoding=UTF-8",
+        "" /* space */,
+      ].join(" "),
+    },
+    {
+      id: "velocity_ZST",
+      label: "velocity（Zing25+ZST）",
+      value: [
+        // GC 内存回收
+        "-XX:+UseZST",
+        "-XX:+AlwaysPreTouch",
+        // 内存与大页
+        "-XX:+UseTransparentHugePages",
+        // JIT 相关
+        "-XX:+UseMultiTiering",
+        "-XX:FalconOptimizationLevel=3",
+        "-XX:+UseReadyNow",
+        "-XX:ProfileLog=profiles/velocity.rn",
+        "-XX:+FalconUseCompileStashing",
+        "-XX:+FalconLoadObjectCache",
+        "-XX:+FalconAOTCache",
+        // 字符串优化
+        "-XX:+CompactStrings",
+        // 系统属性
+        "-Dfile.encoding=UTF-8",
         "" /* space */,
       ].join(" "),
     },
@@ -114,7 +182,7 @@
 
 <div class="not-content generator">
   <div class="memory-input">
-    <p><span class="label">Memory:</span> {memory}GB</p>
+    <p><span class="label">内存:</span> {memory}GB</p>
     <input type="range" min={0.5} max={24} step={0.5} bind:value={memory} />
     <p class="gauge">
       {#each { length: 5 } as _, i}
@@ -125,11 +193,11 @@
 
   <div class="inputs">
     <div class="input">
-      <p class="label">File name:</p>
+      <p class="label">文件名:</p>
       <input type="text" placeholder="server.jar" bind:value={filename} />
     </div>
     <div class="input">
-      <p class="label">Platform:</p>
+      <p class="label">平台:</p>
       <select bind:value={platformId}>
         {#each platforms as option (option.id)}
           <option value={option.id}>{option.label ?? option.id}</option>
@@ -150,12 +218,12 @@
     {#if flag.id !== "velocity"}
       <div class="checkbox">
         <input type="checkbox" bind:checked={gui} />
-        <span class="label">GUI</span>
+        <span class="label">开启 GUI</span>
       </div>
     {/if}
     <div class="checkbox">
       <input type="checkbox" bind:checked={autoRestart} />
-      <span class="label">Auto-restart</span>
+      <span class="label">自动重启</span>
     </div>
   </div>
 
@@ -163,9 +231,9 @@
 
   <div class="actions">
     <button class:copied onclick={copyToClipboard}>
-      {copied ? "Copied!" : "Copy"}
+      {copied ? "已复制！" : "复制"}
     </button>
-    <button onclick={download}>Download</button>
+    <button onclick={download}>下载</button>
   </div>
 </div>
 

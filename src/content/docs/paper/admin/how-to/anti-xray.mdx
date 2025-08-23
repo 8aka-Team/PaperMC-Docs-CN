@@ -1,101 +1,100 @@
 ---
-title: Configuring Anti-Xray
-description: Paper ships an obfuscation-based Anti-Xray system by default. Learn how to configure it here.
+title: 配置反矿透
+description: Paper 默认提供了一个基于混淆的反矿透（Anti-Xray）系统。你可以在这里了解如何进行配置
 slug: paper/anti-xray
 ---
 
-> Originally written and maintained by [stonar96](https://github.com/stonar96).
+> 最初由 [stonar96](https://github.com/stonar96) 编写并维护。
 
-Paper includes an obfuscation-based Anti-Xray with three modes, configurable on a per world basis.
+Paper 包含一个基于混淆的反矿透功能，具有三种模式，可以根据每个世界分别进行配置。
 
-:::note[Per World Configuration]
+:::note[按世界配置]
 
-If you aren't already familiar with per world configuration, please take a moment to familiarize
-yourself with the [Configuration Guide](/paper/reference/configuration).
+如果你还不熟悉按世界配置，
+请花一点时间熟悉 [配置指南](/paper/reference/configuration)。
 
 :::
 
-This guide is a step-by-step walk-through for configuring Anti-Xray. For reference documentation,
-refer to the Anti-Xray section of the
-[Per-World Configuration Reference](/paper/reference/world-configuration#anticheat_anti_xray).
+本指南是配置反矿透功能的逐步操作说明。
+如需参考文档，请参阅 [按世界配置参考](/paper/reference/world-configuration#anticheat_anti_xray)
+中的反矿透部分。
 
-Anti-Xray has three different modes. `engine-mode: 1` replaces specified blocks (`hidden-blocks`) with
-other "fake" blocks, `stone` (`deepslate` at y < 0), `netherrack`, or `end_stone` based on the
-dimension. In contrast, `engine-mode: 2` will replace both `hidden-blocks` and `replacement-blocks`
-with randomly generated `hidden-blocks`. `engine-mode: 3` works similarly to `engine-mode: 2`, but instead of
-randomizing every block, it randomizes the block for each layer of a chunk.
+反矿透功能有三种不同的模式。`engine-mode: 1` 会将指定的方块（`hidden-blocks`）
+替换为其他“假”方块，具体为: 在主世界中替换为 `stone`（在 Y < 0 的位置替换为 `deepslate`）、在下界替换为 `netherrack`，在末地替换为 `end_stone`，
+具体取决于所在维度。相比之下，`engine-mode: 2` 会将 `hidden-blocks` 和 `replacement-blocks`
+替换为随机生成的 `hidden-blocks`。`engine-mode: 3` 的工作方式与 `engine-mode: 2`
+类似，但不是随机化每个方块，而是随机化每个区块的每一层的方块。
 
-The following images[^1] show how each mode will look for a player using Xray with the recommended
-configuration in both the overworld and nether.
+以下图片[^1]展示了在主世界和下界中，
+使用反矿透功能的玩家在推荐配置下，每种模式的显示效果。
 
 [^1]:
-    Image design by `Oberfail`, initially posted in the
+    图片设计由 `Oberfail` 制作，最初发布在
     [PaperMC Discord](https://discord.gg/papermc).
 
 {/*
 
 Seed: -7943468717341609647
 
-# Overworld:
+# 主世界:
 /tp @p -581.976 67.85076 -4924.106 47 36
 
-# Nether:
+# 下界:
 /tp @p 789.437 117.38012 -319.064 -137.4 28
 */}
 
-![Overworld Anti-Xray Comparison](assets/anti-xray-overworld.png)
-![Nether Anti-Xray Comparison](assets/anti-xray-nether.png)
+![主世界反矿透配置](assets/anti-xray-overworld.png)
+![下界反矿透配置](assets/anti-xray-nether.png)
 
-Especially on the client side, `engine-mode: 1` is much less computationally intensive, while
-`engine-mode: 2` may better prevent Xray. With `engine-mode: 1`, only ores that are entirely covered
-by solid blocks will be hidden. Ores exposed to air in caves or water from a lake will not be
-hidden. With `engine-mode: 2`, fake ores obstruct the view of real blocks. If `air` is added to
-`hidden-blocks`, `engine-mode: 2` will effectively hide all ores, even those exposed to air. `engine-mode: 3` can reduce network load when joining by a factor of ~2 and helps with chunk packet compression.
+特别是在客户端，`engine-mode: 1` 的计算强度要低得多，而 `engine-mode: 2` 可能更能防止 X 光透视。
+使用 `engine-mode: 1` 时，只有完全被固体方块覆盖的矿石才会被隐藏。
+在洞穴中暴露于空气或湖水中暴露于水的矿石不会被隐藏。使用 `engine-mode: 2` 时，假矿石会阻碍玩家看到真正的方块。
+如果将 `air` 添加到 `hidden-blocks` 中，`engine-mode: 2` 将有效地隐藏所有矿石，包括那些暴露于空气的矿石。
+`engine-mode: 3` 可以将加入游戏时的网络负载减少约 2 倍，并有助于区块数据包的压缩。
 
-:::caution[Anti-Xray Bypasses]
+:::caution[反矿透的绕过方法]
 
-**Range Extension**: While Anti-Xray alone will prevent the majority of users from Xraying on your
-server, it is not by any means infallible. Because of how Anti-Xray is (and has to be) implemented,
-it is possible to, on a default server, extend the range of real ores you can see by a not
-insignificant amount. This can be mitigated by any competent anti-cheat plugin; however, this is not
-included out of the box.
+**范围扩展**: 尽管反矿透功能本身可以阻止大多数用户在你的服务器上使用 X 光透视，
+但这绝不是万无一失的。
+由于反矿透功能的实现方式（以及必须采用的方式），在默认服务器上，
+玩家可以通过一些手段显著扩展他们能看到的真实矿石的范围。
+这种情况可以通过任何一款优秀的反作弊插件来缓解，但这并不包含在默认服务端功能中。
 
-**Seed Reversing**: Another attack vector is the deterministic nature of Minecraft's world
-generation. If the client is able to obtain the world seed, it is able to know the real location of
-every generated ore, completely bypassing Anti-Xray. This can be partially worked around by making
-it harder for the client to reverse the world seed with the
-[`feature-seeds` configuration](/paper/reference/world-configuration#feature_seeds), in conjunction
-with the structure seed options in `spigot.yml`. Note that this is not a complete solution, and it
-may still be possible for a client to obtain the server's world seed. Using a different seed for
-each world may also be beneficial.
+**种子逆向工程**: 另一个攻击向量是 Minecraft 世界生成的确定性。
+如果客户端能够获取世界种子，它就能够知道每个生成的矿石的真实位置，从而完全绕过防 X 光透视功能。
+可以通过使客户端更难逆向世界种子来部分解决这个问题，
+方法是结合 `spigot.yml` 中的结构种子选项，
+使用 [`feature-seeds` 配置](/paper/reference/world-configuration#feature_seeds)。
+请注意，这并不是一个完整的解决方案，客户端仍然有可能获取服务器的世界种子。
+为每个世界使用不同的种子也可能有所帮助。
 
-**Ores Exposed to Air**: In `engine-mode: 1`, `engine-mode: 2` and `engine-mode: 3`, it is possible for a client
-to view ores that are exposed to air. This can be mitigated in `engine-mode: 2` and `engine-mode: 3` by adding `air` to
-the `hidden-blocks` list. However, doing this may cause client performance issues (FPS drops) for
-some players.
+**暴露于空气的矿石**：在 `engine-mode: 1`、`engine-mode: 2` 和 `engine-mode: 3` 中，
+客户端有可能看到暴露于空气的矿石。可以通过将 `air` 添加到
+`hidden-blocks` 列表中，在 `engine-mode: 2` 和 `engine-mode: 3` 中缓解这种情况。
+然而，这样做可能会导致一些玩家的客户端性能问题（FPS 下降）。
 
 :::
 
-## Recommended configuration
+## 推荐配置
 
-The recommended configuration for `engine-mode: 1`, `engine-mode: 2` and `engine-mode: 3` is as follows:
+对于 `engine-mode: 1`、`engine-mode: 2` 和 `engine-mode: 3` 的推荐配置如下：
 
-:::tip[Spacing]
+:::tip[间距]
 
-YAML cares about whitespace! The example configuration below is already formatted correctly. Ensure
-formatting and indentation remains unchanged by using the "copy" button in the top right of each
-example. Especially ensure that no tabulators are accidentally inserted. Check your editor's options
-for using spaces instead of tabulators for indentation. If your configuration file already contains
-other important changes, it is recommended to make a backup before editing it.
+YAML 对空格很敏感！下面的示例配置已经正确格式化。
+请使用每个示例右上角的“复制”按钮，确保格式和缩进保持不变。
+特别是要确保没有意外插入制表符。
+检查你的编辑器选项，以确保使用空格而不是制表符进行缩进。
+如果你的配置文件已经包含其他重要的更改，建议在编辑之前进行备份。
 
 :::
 
 ### `engine-mode: 1`
 
 <details>
-  <summary>Default World Configuration</summary>
+  <summary>默认世界配置</summary>
 
-Replace the existing `anticheat.anti-xray` block in `paper-world-defaults.yml` with the following:
+  将 `paper-world-defaults.yml` 中现有的 `anticheat.anti-xray` 部分替换为以下内容：
 
 ```yaml title="paper-world-defaults.yml"
 anticheat:
@@ -103,7 +102,7 @@ anticheat:
     enabled: true
     engine-mode: 1
     hidden-blocks:
-    # There's no chance to hide dungeon chests as they are entirely surrounded by air, but buried treasures will be hidden.
+    # 没有办法隐藏地牢内的宝箱，因为它们完全被空气包围，但埋藏的宝藏将会被隐藏。
     - chest
     - coal_ore
     - deepslate_coal_ore
@@ -124,11 +123,11 @@ anticheat:
     - redstone_ore
     - deepslate_redstone_ore
     lava-obscures: false
-    # As of 1.18 some ores are generated much higher.
-    # Please adjust the max-block-height setting at your own discretion.
-    # https://minecraft.wiki/w/Ore might be helpful.
+    # 截至 1.18 版本，部分矿石的生成高度大幅提升。
+    # 请根据需要自行调整 `max-block-height` 设置。
+    # [Minecraft Wiki 中关于矿石的页面](https://minecraft.wiki/w/Ore) 可能会有所帮助。
     max-block-height: 64
-    # The replacement-blocks list is not used in engine-mode: 1. Changing this will have no effect.
+    # 在 `engine-mode: 1` 中不使用 `replacement-blocks` 列表。更改此设置将没有任何效果。
     replacement-blocks: []
     update-radius: 2
     use-permission: false
@@ -137,10 +136,10 @@ anticheat:
 </details>
 
 <details>
-  <summary>Nether Configuration</summary>
+  <summary>下界配置</summary>
 
-Copy and paste into your `paper-world.yml` within your nether world folder. See the
-[Configuration Guide](/paper/reference/configuration) for more information.
+将以下内容复制并粘贴到你的下界世界文件夹中的 `paper-world.yml` 文件中。
+更多详细信息请参阅 [配置指南](/paper/reference/configuration)。
 
 ```yml title="world_nether/paper-world.yml"
 anticheat:
@@ -153,7 +152,7 @@ anticheat:
     - nether_quartz_ore
     lava-obscures: false
     max-block-height: 128
-    # The replacement-blocks list is not used in engine-mode: 1. Changing this will have no effect.
+    # 在 `engine-mode: 1` 中，`replacement-blocks` 列表不会被使用。更改此设置不会产生任何效果。
     replacement-blocks: []
     update-radius: 2
     use-permission: false
@@ -162,10 +161,10 @@ anticheat:
 </details>
 
 <details>
-  <summary>End Configuration</summary>
+  <summary>末地配置</summary>
 
-Copy and paste into your `paper-world.yml` within your end world folder. See the
-[Configuration Guide](/paper/reference/configuration) for more information.
+将以下内容复制并粘贴到你的末地世界文件夹中的 `paper-world.yml` 文件中。
+更多详细信息请参阅 [配置指南](/paper/reference/configuration)。
 
 ```yml title="world_the_end/paper-world.yml"
 anticheat:
@@ -178,9 +177,9 @@ anticheat:
 ### `engine-mode: 2`
 
 <details>
-  <summary>Default World Configuration</summary>
+  <summary>默认世界配置</summary>
 
-Replace the existing `anticheat.anti-xray` block in `paper-world-defaults.yml` with the following:
+将 `paper-world-defaults.yml` 中现有的 `anticheat.anti-xray` 部分替换为以下内容：
 
 ```yaml title="paper-world-defaults.yml"
 anticheat:
@@ -188,8 +187,8 @@ anticheat:
     enabled: true
     engine-mode: 2
     hidden-blocks:
-    # You can add air here such that many holes are generated.
-    # This works well against cave finders but may cause client FPS drops for all players.
+    # 你可以在这里添加 `air`，从而生成许多空洞。
+    # 这可以有效防止洞穴探测器，但可能会导致所有玩家的客户端 FPS 下降。
     - air
     - copper_ore
     - deepslate_copper_ore
@@ -206,13 +205,13 @@ anticheat:
     - redstone_ore
     - deepslate_redstone_ore
     lava-obscures: false
-    # As of 1.18 some ores are generated much higher.
-    # Please adjust the max-block-height setting at your own discretion.
-    # https://minecraft.wiki/w/Ore might be helpful.
+    # 截至 1.18 版本，部分矿石的生成高度大幅提升。
+    # 请根据需要自行调整 `max-block-height` 设置。
+    # [Minecraft Wiki 中关于矿石的页面](https://minecraft.wiki/w/Ore) 可能会有所帮助。
     max-block-height: 64
     replacement-blocks:
-    # Chest is a tile entity and can't be added to hidden-blocks in engine-mode: 2.
-    # But adding chest here will hide buried treasures, if max-block-height is increased.
+    # 胸膛是一个方块实体，不能在 `engine-mode: 2` 中添加到 `hidden-blocks` 中。
+    # 但是在这里添加胸膛会隐藏埋藏的宝藏，如果增加了 `max-block-height`。
     - chest
     - amethyst_block
     - andesite
@@ -238,10 +237,10 @@ anticheat:
 </details>
 
 <details>
-  <summary>Nether Configuration</summary>
+  <summary>下界配置</summary>
 
-Copy and paste into your `paper-world.yml` within your nether world folder. See the
-[Configuration Guide](/paper/reference/configuration) for more information.
+  将以下内容复制并粘贴到你的下界世界文件夹中的 `paper-world.yml` 文件中。
+  更多详细信息请参阅 [配置指南](/paper/reference/configuration)。
 
 ```yml title="world_nether/paper-world.yml"
 anticheat:
@@ -249,7 +248,7 @@ anticheat:
     enabled: true
     engine-mode: 2
     hidden-blocks:
-    # See note about air and possible client performance issues above.
+    # 请参阅上面关于空气方块和可能的客户端性能问题的说明。
     - air
     - ancient_debris
     - bone_block
@@ -276,10 +275,10 @@ anticheat:
 </details>
 
 <details>
-  <summary>End Configuration</summary>
+  <summary>末地配置</summary>
 
-Copy and paste into your `paper-world.yml` within your end world folder. See the
-[Configuration Guide](/paper/reference/configuration) for more information.
+将以下内容复制并粘贴到你的末地世界文件夹中的 `paper-world.yml` 文件中。
+更多详细信息请参阅 [配置指南](/paper/reference/configuration)。
 
 ```yml title="world_the_end/paper-world.yml"
 anticheat:
@@ -292,9 +291,9 @@ anticheat:
 ### `engine-mode: 3`
 
 <details>
-  <summary>Default World Configuration</summary>
+  <summary>默认世界配置</summary>
 
-Replace the existing `anticheat.anti-xray` block in `paper-world-defaults.yml` with the following:
+将 `paper-world-defaults.yml` 中现有的 `anticheat.anti-xray` 部分替换为以下内容：
 
 ```yaml title="paper-world-defaults.yml"
 anticheat:
@@ -302,8 +301,8 @@ anticheat:
     enabled: true
     engine-mode: 3
     hidden-blocks:
-    # You can add air here such that many holes are generated.
-    # This works well against cave finders but may cause client FPS drops for all players.
+    # 你可以在这里添加 `air`，从而生成许多空洞。
+    # 这可以有效防止洞穴探测器，但可能会导致所有玩家的客户端 FPS 下降。
     - air
     - copper_ore
     - deepslate_copper_ore
@@ -320,13 +319,13 @@ anticheat:
     - redstone_ore
     - deepslate_redstone_ore
     lava-obscures: false
-    # As of 1.18 some ores are generated much higher.
-    # Please adjust the max-block-height setting at your own discretion.
-    # https://minecraft.wiki/w/Ore might be helpful.
+    # 截至 1.18 版本，部分矿石的生成高度大幅提升。
+    # 请根据需要自行调整 `max-block-height` 设置。
+    # [Minecraft Wiki 中关于矿石的页面](https://minecraft.wiki/w/Ore) 可能会有所帮助。
     max-block-height: 64
     replacement-blocks:
-    # Chest is a tile entity and can't be added to hidden-blocks in engine-mode: 2.
-    # But adding chest here will hide buried treasures, if max-block-height is increased.
+    # 箱子是一个方块实体，不能在 `engine-mode: 2` 中添加到 `hidden-blocks` 中。
+    # 但如果增加 `max-block-height` 将箱子添加到这里会隐藏埋藏的宝藏。
     - chest
     - amethyst_block
     - andesite
@@ -352,10 +351,10 @@ anticheat:
 </details>
 
 <details>
-  <summary>Nether Configuration</summary>
+  <summary>下界配置</summary>
 
-Copy and paste into your `paper-world.yml` within your nether world folder. See the
-[Configuration Guide](/paper/reference/configuration) for more information.
+将以下内容复制并粘贴到你的末地世界文件夹中的 `paper-world.yml` 文件中。
+更多详细信息请参阅 [配置指南](/paper/reference/configuration)。
 
 ```yml title="world_nether/paper-world.yml"
 anticheat:
@@ -363,7 +362,7 @@ anticheat:
     enabled: true
     engine-mode: 3
     hidden-blocks:
-    # See note about air and possible client performance issues above.
+    # 请参阅上面有关空气和可能的客户端性能问题的说明。
     - air
     - ancient_debris
     - bone_block
@@ -389,10 +388,10 @@ anticheat:
 </details>
 
 <details>
-  <summary>End Configuration</summary>
+  <summary>末地配置</summary>
 
-Copy and paste into your `paper-world.yml` within your end world folder. See the
-[Configuration Guide](/paper/reference/configuration) for more information.
+将以下内容复制并粘贴到你的末地世界文件夹中的 `paper-world.yml` 文件中。
+更多详细信息请参阅 [配置指南](/paper/reference/configuration)。
 
 ```yml title="world_the_end/paper-world.yml"
 anticheat:
@@ -402,68 +401,67 @@ anticheat:
 
 </details>
 
-## FAQ, common pitfalls and support
+## 常见问题解答、常见陷阱及支持
 
 <details>
-  <summary>I can still see (some) ores / use X-ray</summary>
+  <summary>在使用反矿透时我仍然可以看到（一些）矿石</summary>
 
-As described above, there are several reasons why you might still see (some) ores even though you
-have enabled Anti-Xray:
+正如上文所述，尽管你已经启用了反矿透功能，
+但你仍然可以看到（一些）矿石，原因可能有以下几点：
 
-* The ores are above the configured `max-block-height` value.
-* Anti-Xray cannot hide ores exposed to air or other transparent blocks (in caves for example). In
-  principle this is also the case for `engine-mode: 2` and `engine-mode: 3`, however, usually the fake ores obstruct the
-  view of real blocks. Hiding those exposed ores too requires additional plugins.
-* The `use-permission` option is enabled and you have the Anti-Xray bypass permission (`paper.antixray.bypass`) or you have
-  operator status.
-* The block type is missing in the configured block lists. This can be the result of using an
-  outdated configuration file.
+* 矿石位于配置的 `max-block-height` 值以上。
+* 防X光透视功能无法隐藏暴露在空气中或其他透明方块（例如洞穴中的）的矿石。
+  原则上，对于 `engine-mode: 2` 和 `engine-mode: 3` 也是如此，然而，通常假矿石会阻挡真实方块的视线。
+  要隐藏那些暴露的矿石还需要额外的插件。
+* `use-permission` 选项已启用，且你拥有防X光透视功能的绕过权限 (`paper.antixray.bypass`)，
+  或者你拥有管理员权限。
+* 配置的方块列表中缺少该方块类型。
+  这可能是由于使用了过时的配置文件导致的。
 
 </details>
 
 <details>
-  <summary>I have added fake blocks but X-ray doesn't show them</summary>
+  <summary>我添加了假方块，但X光透视并没有显示它们</summary>
 
-If you use `engine-mode: 2` or `engine-mode: 3` and you have added fake blocks to the `hidden-blocks` list but you can't
-see them in-game using X-ray, this can have the following reasons:
+如果你使用的是 `engine-mode: 2` 或 `engine-mode: 3`，并且你已经将假方块添加到了 `hidden-blocks` 列表中，
+但你在游戏中使用X光透视时看不到它们，这可能有以下原因：
 
-* The added block types are tile entities. Anti-Xray can hide (replace) tile entities (such as
-  chests), provided that they are not exposed to air or other transparent blocks. However, Anti-Xray
-  can't place tile entities as fake blocks into the chunk.
-* The block is disabled in your client's X-ray mod or not shown by your X-ray resource pack.
-
-</details>
-
-<details>
-  <summary>It doesn't work below y = 0 or in certain other places.</summary>
-
-* Your configuration file is probably outdated and missing important blocks in the
-  `replacement-blocks` list, such as `deepslate` or biome-specific blocks, such as `basalt`. You
-  might also want to check if the `hidden-blocks` list includes all important ores and their
-  `deepslate` variants.
-* If it doesn't work above a certain y-level, check your `max-block-height` setting.
+* 添加的方块类型是方块实体。在使用反矿透时我仍然可以看到（一些）矿石。
+  防X光透视功能可以隐藏（替换）方块实体（例如箱子），前提是它们没有暴露在空气中或其他透明方块中。
+  然而，防X光透视功能无法将方块实体作为假方块放置到区块中。
+* 该方块在你的客户端的 X 光透视模组中被禁用了，或者你的 X 光透视资源包没有显示它。
 
 </details>
 
 <details>
-  <summary>It still doesn't work, further troubleshooting</summary>
+  <summary>它在 y=0 以下或某些其他地方不起作用</summary>
 
-* Make sure to always restart your server after making changes to the Anti-Xray configuration.
-  Changes won't be applied automatically.
-* Do not use the `/reload` command. To apply Anti-Xray configuration changes a restart is required.
-* After restarting the server, verify that the configuration is applied correctly by inspecting the
-  config sections with timings or spark.
+* 你的配置文件可能过时了，在 `replacement-blocks` 列表中缺少一些重要的方块，
+  比如 `deepslate` 或者特定生物群系的方块，比如 `deepslate`。
+  你也可以检查一下 `hidden-blocks` 列表是否包含了所有重要的矿石及其 `deepslate` 变种。
+* 如果在某个 y 值以上不起作用，请检查你的 `max-block-height` 设置。
 
 </details>
 
 <details>
-  <summary>How and where do I ask for support if it still doesn't work?</summary>
+  <summary>它仍然不起作用，需要进一步排查故障</summary>
 
-If the above bullet points don't solve your problem or if you have further questions about
-Anti-Xray, please don't hesitate to ask us on the [PaperMC Discord](https://discord.gg/papermc)
-using the #paper-help channel. Please try to provide as much detail as possible about your problem.
-"It doesn't work" isn't very helpful when asking for support. Describe what you want to achieve,
-what you have tried, what you expect and what you observe. Ideally include a timings or spark link
-and a picture what you observe in-game.
+* 在对反矿透功能的配置进行更改后，一定要重启服务器。
+  更改不会自动生效。
+* 不要使用`/reload`命令。
+  要应用反矿透功能的配置更改，需要重启服务器。
+* 在重启服务器后，通过使用 timings 或 spark 检查配置部分，确认配置已正确应用。
+
+</details>
+
+<details>
+  <summary>如果仍然不起作用，我该如何以及在哪里寻求支持？</summary>
+
+如果上述方法未能解决你的问题，或者你对反矿透功能还有其他疑问，
+请随时在 [PaperMC Discord](https://discord.gg/papermc)
+的 #paper-help 频道向我们提问。
+请尽可能详细地描述你的问题，因为仅说“它不起作用”对于寻求支持来说帮助不大。
+请描述你想要实现的目标、你已经尝试过的方法、你的预期结果以及你实际观察到的情况。
+如果可能的话，最好提供一个 timings 或 spark 链接，以及你在游戏中观察到的情况的截图。
 
 </details>

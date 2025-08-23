@@ -1,125 +1,125 @@
 ---
-title: How plugins work
-description: How plugins work in Paper.
+title: 插件原理
+description: Paper 中插件的工作方式
 slug: paper/dev/how-do-plugins-work
 ---
 
-Plugins are a way to extend the functionality of a Minecraft server. They are written in JVM-based languages such as
-Java, Kotlin, Groovy or Scala. Plugins are loaded from the `plugins` folder in the server directory. Plugins will be
-loaded from a `.jar` file.  Each plugin has a main class that is specified in the plugin's `plugin.yml` file. This
-class must extend JavaPlugin, and is the entry point for the plugin and is where the plugin's lifecycle methods are
-defined.
+插件是扩展 Minecraft 服务器功能的一种方式。
+它们使用基于 JVM 的语言编写，例如 Java、Kotlin、Groovy 或 Scala。插件从服务器目录中的 `plugins` 文件夹加载。
+插件将从一个 `.jar` 文件加载。
+每个插件都有一个主类，该类在插件的 `plugin.yml` 文件中指定。
+这个类必须继承自 `JavaPlugin`，并且是插件的入口点，也是定义插件生命周期方法的地方。
 
-:::caution
+:::caution[警告]
 
-We do not recommend writing code inside your main class's constructor as there are no guarantees about what
-API is available at that point. Instead, you should use the `onLoad` method to initialize your plugin. Also,
-do not call your plugin's constructor directly. This will cause issues with your plugin.
-
-:::
-
-## Plugin lifecycle
-
-Plugins are loaded and unloaded at runtime. When a plugin is loaded, it is initialized and enabled. When a plugin is
-unloaded, it is disabled and finalized.
-
-### Initialization
-
-When a plugin is loaded, it is initialized. This means that the plugin is loaded into memory and its `onLoad`
-method is called. This method is used to initialize the plugin and set up any resources that it needs. Most of the
-Bukkit API is not available at this point, so it is not safe to interact with it.
-
-### Enabling
-
-When a plugin is enabled, its `onEnable` method is called. This method is used to set up any resources that the plugin
-needs to run. This method is called when the plugin is initialized but before the server has started ticking, so it is
-safe to register event listeners and other resources that the plugin needs to run, however often not safe to interact
-with a lot of APIs.
-
-This is when you can also open database connections, start threads, and other things that are not safe to do in the
-`onLoad` method.
-
-### Disabling
-
-When a plugin is disabled, its `onDisable` method is called. This method is used to clean up any resources that the
-plugin has allocated. This method is called before all plugins are unloaded, and is meant for any cleanup that needs to
-be done before the plugin is unloaded. This may include saving data to disk or closing connections to databases.
-
-## Event listeners
-
-Events are a way for plugins to listen to things that happen in the server and run code when they are fired. For
-example, [`PlayerJoinEvent`](jd:paper:org.bukkit.event.player.PlayerJoinEvent) is fired when a player
-joins the server. This is a more performant way to run code when something happens, as opposed to constantly checking.
-See our [event listener page](/paper/dev/event-listeners) for more.
-
-Some events are cancellable. This means that when the event is fired, it can be cancelled which negates or stops the
-effect of the event. For example, [`PlayerMoveEvent`](jd:paper:org.bukkit.event.player.PlayerMoveEvent)
-is cancellable. This means that when it is cancelled, the player will not move. This is useful for things like anti-cheat,
-where you want to cancel the event if the player is moving too fast.
-
-It is important to think about how "hot" an event is when writing event listeners. A "hot" event is an event that is fired
-very often. For example, `PlayerMoveEvent` is fired every time a player moves. This means that if you have a lot of
-expensive code in your event listener, it will be run every time a player moves. This can cause a lot of lag. It is
-important to keep event listeners as lightweight as possible. One possible way is to quickly check if the event should
-be handled, and if not, return. For example, if you only want to handle the event if the player is moving from one block
-to another, you can check if the player's location has changed blocks. If it hasn't, you can return from the listener.
-
-## Commands
-
-Commands are a way for players, the console, RCON and command blocks to run code on the server. Commands are registered
-by plugins and can be run by command senders. For example, the `/help` command is registered by the server and can be
-run by players. Commands can be run by players by typing them in the chat or by running them from a command block.
-
-Commands can have arguments. For example, the `/give` command takes an argument for the player to give the item to and
-an argument for the item to give. Arguments are separated by spaces. For example, the command `/give Notch diamond` will
-give the player named Notch a diamond. Note here that the arguments are `["Notch", "diamond"]`.
-
-### Permissions
-
-Permissions are a way to control who can run commands and who can listen to events. Permissions
-are registered by plugins and can be checked by other plugins. Permissions can be granted to players and groups.
-Permissions can have a hierarchical nature, if defined so by the plugin in their `plugin.yml`. For example, a
-plugin can define `example.command.help` as a sub-permission of `example.command`. This means that if a player
-has the `example.command` permission, they will also have the `example.command.help` permission.
-
-:::note
-
-Permission plugins can allow the usage of wildcard permissions using the `*` character to grant any permission
-or sub-permission available, allowing hierarchical permissions even if not set by the plugin itself. For example,
-granting `example.command.*` through a permission plugin with wildcard support will grant access to all permissions
-starting with `example.command.` itself.
-
-It is **not** recommended to use wildcard permissions, especially `*` (All permissions), as it can be a huge
-security risk, as well as potentially causing unwanted side effects to a player. Use with caution.
+我们不推荐在主类的构造函数中编写代码，因为此时无法保证哪些 API 是可用的。
+相反，你应该使用 `onLoad` 方法来初始化你的插件。
+此外，不要直接调用你的插件的构造函数。这将导致插件出现问题。
 
 :::
 
-## Configuration
+## 插件生命周期
 
-Plugins can have configuration files. These files are used to store data that the plugin needs to run. For example, a
-plugin that adds a new block to the game might have a configuration file that stores the block's ID. Configuration files
-should be stored in the plugin's data folder, within the `plugins` folder. The server offers a YAML configuration API
-that can be used to read and write configuration files. See [here](/paper/dev/plugin-configurations) for more information.
+插件在运行时加载和卸载。当插件被加载时，它被初始化并启用。
+当插件被卸载时，它被禁用并完成。
 
-## Scheduling tasks
+### 初始化
 
-Plugins can schedule tasks to run at a later time. This is useful for things like running code after a certain amount
-of time has passed. For example, a plugin might want to run code after 5 seconds. This can be done by scheduling a task
-to run after 100 ticks - one second is 20 ticks during normal operation. It is important to note that tasks might be
-delayed if the server is lagging. For example, if the server is only running at 10 ticks per second, a task that is
-scheduled to run after 100 ticks will take 10 seconds.
+当插件被加载时，它被初始化。这意味着插件被加载到内存中，并且它的 `onLoad` 方法被调用。
+这个方法用于初始化插件并设置它需要的任何资源。
+此时大部分 Bukkit API 是不可用的，因此与它交互是不安全的。
 
-In Java, typically you could use [`Thread#sleep()`](jd:java:java.lang.Thread#sleep(long)) to delay
-the execution of code. However, if the code is running on the main thread, this will cause the server to pause for the
-delay. Instead, you should use the `Scheduler` API to schedule tasks to run later.
-Learn more about the `Scheduler` API [here](/paper/dev/scheduler).
+### 启用
 
-## Components
+当插件被启用时，会调用它的 `onEnable` 方法。
+这个方法用于设置插件运行所需的任何资源。
+这个方法在插件初始化后但在服务器开始计时之前被调用，因此注册事件监听器和其他插件运行所需资源是安全的，
+但通常不建议与很多 API 进行交互。
 
-Since Minecraft 1.7 and the introduction of "components", plugins can now send messages to players that contain
-rich text. This means that plugins can send messages that contain things like colors, bold text, and clickable links.
-Colors were always possible, but only through the use of legacy color codes.
+这也是你可以打开数据库连接、
+启动线程以及执行其他在 `onLoad` 方法中不安全的操作的时候。
 
-Paper implements a library called `Adventure` that makes it easy to create and send messages to players. Learn more
-about the `Adventure` API [here](https://docs.advntr.dev/) from their docs or our docs
-[here](/paper/dev/component-api/introduction).
+### 禁用
+
+当插件被禁用时，它的 `onDisable` 方法被调用。 这个方法用于清理插件分配的任何资源。
+这个方法在所有插件被卸载之前被调用，用于在插件被卸载之前需要完成的任何清理工作。
+这可能包括将数据保存到磁盘或关闭与数据库的连接。
+
+## 事件监听器
+
+事件是插件监听服务器中发生的事情并在它们被触发时运行代码的一种方式。
+例如，当玩家加入服务器时会触发 [`PlayerJoinEvent`](jd:paper:org.bukkit.event.player.PlayerJoinEvent) 。
+这是一种更高效的运行代码的方式，而不是不断地进行检查。
+更多信息请参阅我们的 [事件监听器页面](/paper/dev/event-listeners)。
+
+有些事件是可以取消的。这意味着当事件被触发时，它可以被取消，从而否定或停止事件的效果。
+例如， [`PlayerMoveEvent`](jd:paper:org.bukkit.event.player.PlayerMoveEvent) 是可以取消的。
+这意味着当它被取消时，玩家不会移动。
+这对于反作弊等事情很有用，例如如果玩家移动得太快，你可以取消该事件。
+
+在编写事件监听器时，考虑事件的触发频率很重要。
+“热”事件是指频繁触发的事件。例如，`PlayerMoveEvent` 每次玩家移动时都会触发。
+这意味着如果你的事件监听器中有大量复杂的代码，它将在每次玩家移动时运行。
+这可能会导致大量延迟。 保持事件监听器尽可能轻量级是很重要的。
+一种可能的方法是快速检查事件是否应该被处理，如果不应该，则直接返回。
+例如，如果你只想在玩家从一个方块移动到另一个方块时处理事件，你可以检查玩家的位置是否改变了方块。如果没有，你可以从监听器中返回。
+
+## 命令
+
+命令是玩家、控制台、RCON 和命令方块在服务器上运行代码的一种方式。命令由插件注册，并可由命令发送者运行。
+例如，`/help` 命令由服务器注册，并可由玩家运行。
+玩家可以通过在聊天中输入命令或从命令方块运行来执行命令。
+
+命令可以有参数。例如，`/give` 命令接受一个参数，指定要给予物品的玩家，以及一个参数，指定要给予的物品。参数由空格分隔。
+例如，命令 `/give Notch diamond` 将给予名为 Notch 的玩家一个钻石。
+注意这里的参数是 `["Notch", "diamond"]`。
+
+### 权限
+
+权限是一种控制谁可以运行命令以及谁可以监听事件的方式。
+权限由插件注册，并可由其他插件检查。
+权限可以授予玩家和组。如果插件在其 `plugin.yml` 中定义，权限可以具有层次结构。
+例如，一个插件可以将 `example.command.help` 定义为 `example.command` 的子权限。
+这意味着如果玩家具有 `example.command` 权限，他们也将具有 `example.command.help` 权限。
+
+:::note[注意]
+
+权限插件可以使用 `*` 字符来允许使用通配符权限，
+以授予任何可用的权限或子权限，即使插件本身没有设置，也可以实现层次化权限。
+例如，通过支持通配符的权限插件授予 `example.command.*`，
+将允许访问所有以 `example.command.` 开头的权限。
+
+不推荐使用通配符权限，尤其是 `*`（所有权限），因为这可能会带来巨大的安全风险，并且可能会对玩家产生意外的副作用。
+使用时需谨慎。
+
+:::
+
+## 配置
+
+插件可以有配置文件。这些文件用于存储插件运行所需的数据。例如，添加新方块到游戏的插件可能会有一个配置文件，用于存储方块的 ID。
+配置文件应存储在插件的数据文件夹中，位于 `plugins` 文件夹内。
+服务器提供了一个 YAML 配置 API，可用于读取和写入配置文件。
+更多信息请参阅 [这里](/paper/dev/plugin-configurations)。
+
+## 安排任务
+
+插件可以安排任务在稍后运行。这对于在特定时间后运行代码非常有用。
+例如，一个插件可能希望在 5 秒后运行代码。
+这可以通过安排一个任务在 100 个刻之后运行来实现——在正常运行时，1 秒等于 20 个刻。
+需要注意的是，如果服务器出现延迟，任务可能会被推迟。
+例如，如果服务器每秒只运行 10 个刻，那么一个安排在 100 个刻后运行的任务将需要 10 秒。
+
+在 Java 中，通常你可以使用 [`Thread#sleep()`](jd:java:java.lang.Thread#sleep(long)) 来延迟代码的执行。
+然而，如果代码在主线程上运行，这将导致服务器在延迟期间暂停。
+相反，你应该使用 `Scheduler` API 来安排任务稍后运行。
+更多关于 `Scheduler` API 的信息可以在[这里](/paper/dev/scheduler)找到。
+
+## 组件（Adventure）
+
+自 Minecraft 1.7 引入“组件”以来，插件现在可以向玩家发送包含富文本的消息。
+这意味着插件可以发送包含颜色、粗体文本和可点击链接等内容的消息。
+颜色一直是可能的，但只能通过使用旧版颜色代码。
+
+Paper 实现了一个名为 `Adventure` 的库，它使得向玩家发送消息变得简单。
+你可以从它们的文档 [这里](https://docs.advntr.dev/)
+或我们的文档 [这里](/paper/dev/component-api/introduction) 了解更多信息。

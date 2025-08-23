@@ -1,45 +1,45 @@
 ---
-title: Paper plugins
-description: A guide to the ins and outs of Paper plugins.
+title: Paper 插件
+description: 一篇关于 Paper 插件的详细指南。
 slug: paper/reference/paper-plugins
 ---
 
-This documentation page serves to explain all the new semantics and possible confusions that Paper plugins may introduce.
+本文档页面旨在解释 Paper 插件可能引入的所有新语义和可能存在的混淆之处。
 
-:::note
+:::note[注意]
 
-Developers can get more information on Paper plugins [here](/paper/dev/getting-started/paper-plugins).
+开发者可以在 [这里](/paper/dev/getting-started/paper-plugins) 获取更多关于 Paper 插件的信息。
 
 :::
 
-## What are they?
+## 它们是什么？
 
-Paper plugins are plugins which are loaded by Paper's new plugin loading framework. Paper plugins are used by developers to
-take advantage of modern systems Mojang provides, for example, datapacks.
+Paper 插件是由 Paper 的新插件加载框架加载的插件。
+开发者使用 Paper 插件是为了利用 Mojang 提供的现代系统，例如数据包。
 
-![Plugin List](./assets/plugin-list.png)
+![Plugin 列表](./assets/plugin-list.png)
 
-## What is the difference?
+## 它们有什么区别？
 
-When enabled, Paper plugins are **identical** to Bukkit plugins. This allows plugins to still fully communicate and support each other, meaning that even if a
-plugin is a Bukkit or Paper plugin, they are both able to depend on each other just fine.
+启用后，Paper 插件与 Bukkit 插件**完全相同**。
+这使得插件之间仍然可以完全通信并支持彼此，也就是说，无论是 Bukkit 插件还是 Paper 插件，它们都可以很好地相互依赖。
 
-Paper plugins only support being loaded by Paper's Plugin Loader and may use new API unavailable to Bukkit plugins.
+Paper 插件仅支持由 Paper 的插件加载器加载，并且可以使用对 Bukkit 插件不可用的新 API。
 
-### How do I add Paper plugins?
+### 如何添加 Paper 插件？
 
-Paper plugins are added the same as Bukkit plugins, therefore, you can follow [this guide](/paper/adding-plugins).
+添加 Paper 插件的方式与添加 Bukkit 插件相同，因此您可以参考 [此指南](/paper/adding-plugins)。
 
-### Cyclic plugin loading
+### 循环插件加载
 
-With the introduction of Paper plugins, Paper introduces a new plugin loader that fixes some odd issues.
-However, as a result, this now causes [cyclic loading](/paper/dev/getting-started/paper-plugins#cyclic-plugin-loading) between plugins to no longer be supported.
+随着 Paper 插件的引入，Paper 引入了一个新的插件加载器，解决了某些奇怪的问题。
+然而，作为结果，这导致插件之间的 [循环加载](/paper/dev/getting-started/paper-plugins#cyclic-plugin-loading) 不再被支持。
 
-If Paper detects a loop, your server will be shut down with an error.
+如果 Paper 检测到一个循环，你的服务器将因错误而关闭。
 
-:::danger[Legacy]
+:::danger[遗留]
 
-If your server **requires** this circular loading, you can enable this by adding the [`-Dpaper.useLegacyPluginLoading=true`](/paper/reference/system-properties#paperuselegacypluginloading) startup flag.
-Please note that this may not be supported in the future.
+如果您的服务器**需要**这种循环加载，您可以通过添加 [`-Dpaper.useLegacyPluginLoading=true`](/paper/reference/system-properties#paperuselegacypluginloading) 启动标志来启用它。
+请注意，这在未来可能不会被支持。
 
 :::

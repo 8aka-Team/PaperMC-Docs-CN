@@ -1,278 +1,277 @@
 ---
-title: System properties
-description: Documentation for the system properties and environment variables Paper may check.
+title: 系统属性
+description: 关于 Paper 可能会检查的系统属性和环境变量的文档
 slug: paper/reference/system-properties
 ---
 
-These system properties and environment variables can be set when you start your server allowing for the configuration of various settings.
+在启动服务器时可以设置这些系统属性和环境变量，从而配置各种设置。
 
-:::danger[Danger Ahead]
+:::danger[前方危险]
 
-Setting flags for the JVM can alter how it operates and the same goes for the Paper server.
-If you are unsure about what a flag does, it is recommended that you **do not use it**.
+为 JVM 设置标志可以改变其运行方式，Paper 服务器也是如此。
+如果你不确定某个标志的作用，建议你**不要使用它**。
 
 :::
 
-## How they work
+## 它们的工作原理
 
-System properties are set when you start your server. For example, if you are using a `.bat` or a `.sh` file to start your server, you can add the system properties to the file. For example:
+系统属性在启动服务器时设置。例如，如果你使用 `.bat` 或 `.sh` 文件启动服务器，可以将系统属性添加到该文件中。例如：
 
 ```bash
 java -Dpaper.log-level=FINE -jar paper.jar
 ```
 
-:::note
+:::note[注意]
 
-Some of Paper's system properties contain a `.` character in their name. When using PowerShell, these will require wrapping in quotes.
-i.e. `"-Dpaper.log-level=FINE"`
-
-:::
-
-Where a `-D` is used to set a system property, and the system property is `paper.log-level` with a value of `FINE`. Otherwise, just add them to the start command.
-
-:::note
-
-Where a system property is stated as `unset`, setting it as `true` will work to enable it.
+Paper 的一些系统属性名称中包含 `.` 字符。在使用 PowerShell 时，这些需要使用引号包裹，
+例如 `"-Dpaper.log-level=FINE"`。
 
 :::
 
-[Environment variables](https://en.wikipedia.org/wiki/Environment_variable) are another way to pass values to Paper.
-They can be set in various ways, depending on your operating system and how you start Paper.
+其中 `-D` 用于设置系统属性，系统属性是 `paper.log-level`，值为 `FINE`。否则，只需将它们添加到启动命令中。
 
-In most cases, you will not need to use these, unless you are running Paper in a (Docker) container or such.
+:::note[注意]
 
-## List of system properties
+如果系统属性被标记为 `未设置`，可以将其设置为 `true` 启用它。
+
+:::
+
+[环境变量](https://en.wikipedia.org/wiki/Environment_variable)是传递值给 Paper 的另一种方式。
+根据您的操作系统以及启动 Paper 的方式，它们可以以多种方式设置。
+
+在大多数情况下，您不需要使用这些，除非您在（Docker）容器中运行 Paper 或类似情况。
+
+## 系统属性列表
 
 #### paper.playerconnection.keepalive
 
-- **default**: `30`
-- **description**: Controls how long the player connection will wait before closing when not receiving any keepalives, in seconds.
+- **默认**: `30`
+- **描述**: 控制玩家连接在未收到任何心跳包时等待关闭的时间，单位为秒。
 
 #### timings.bypassMax
 
-- **default**: `unset`
-- **description**: Allows for bypassing the max amount of data to send to the Aikar's Timings API. Setting this will not permit bypassing the limit unless the API is configured to allow it.
+- **默认**: `未设置`
+- **描述**: 允许绕过发送到 Aikar 的 Timings API 的最大数据量限制。除非 API 配置允许，否则设置此选项不会允许绕过限制。
 
 #### LetMeReload
 
-- **default**: `unset`
-- **description**: This disables the reload confirmation message when using the `/reload` command.
+- **默认**: `未设置`
+- **描述**: 使用 `/reload` 命令时，此选项会禁用重新加载确认消息。
 
 #### paper.disableChannelLimit
 
-- **default**: `unset`
-- **description**: Disables the plugin channel limit for the server. This will disable the limit of 128 plugin channels per player.
+- **默认**: `未设置`
+- **描述**: 禁用服务器的插件通道限制。这将禁用每个玩家最多 128 个插件通道的限制。
 
 #### net.kyori.adventure.text.warnWhenLegacyFormattingDetected
 
-- **default**: `false`
-- **description**: Enables or disables the warning when legacy formatting is detected in a chat component.
+- **默认**: `false`
+- **描述**: 启用或禁用在聊天组件中检测到旧版格式化时的警告。
 
 #### Paper.DisableClassPrioritization
 
-- **default**: `unset`
-- **description**: Disables the class prioritization system - mostly an issue when failing to relocate or shade properly.
+- **默认**: `未设置`
+- **描述**: 禁用类优先级系统——这通常是在未能正确重定位或遮蔽时的一个问题。
 
 #### Paper.disableFlushConsolidate
 
-- **default**: `unset`
-- **description**: Disables the netty flush consolidation system.
+- **默认**: `未设置`
+- **描述**: 禁用 Netty 冲刷整合系统.
 
 #### Paper.debugDynamicMissingKeys
 
-- **default**: `unset`
-- **description**: Enables debug logging for missing keys in NBT objects.
+- **默认**: `未设置`
+- **描述**: 启用对 NBT 对象中缺失键的调试日志记录。
 
 #### disable.watchdog
 
-- **default**: `unset`
-- **description**: Disables the watchdog warning system.
+- **默认**: `未设置`
+- **描述**: 禁用看门狗（watchdog）警告系统。
 
 #### paper.explicit-flush
 
-- **default**: `unset`
-- **description**: Enables explicit flushing of the network channel.
+- **默认**: `未设置`
+- **描述**: 启用网络通道的显式刷新。
 
 #### Paper.enable-sync-chunk-writes
 
-- **default**: `unset`
-- **description**: Syncs writes on each write call. This has a performance impact, particularly on hard drives.
+- **默认**: `未设置`
+- **描述**: 在每次写入调用时同步写入。这会对性能产生影响，尤其是在硬盘驱动器上。
 
 #### paper.debug-sync-loads
 
-- **default**: `unset`
-- **description**: Enables debug logging for sync chunk loads.
+- **默认**: `未设置`
+- **描述**: 启用同步区块加载的调试日志记录。
 
 #### Paper.ignoreWorldDataVersion
 
-- **default**: `unset`
-- **description**: Ignores the world data version when loading a world. This is not recommended and will likely cause issues.
+- **默认**: `未设置`
+- **描述**: 加载世界时忽略世界数据版本。不建议这样做，可能会导致问题。
 
 #### Paper.bypassHostCheck
 
-- **default**: `unset`
-- **description**: Bypasses the host pattern matching attempt for the client when connecting to the server.
+- **默认**: `未设置`
+- **描述**: 在客户端连接到服务器时绕过主机模式匹配尝试。
 
 #### paper.ticklist-warn-on-excessive-delay
 
-- **default**: `unset`
-- **description**: Enables the warning when a tick list is scheduled with an excessive delay.
+- **默认**: `未设置`
+- **描述**: 启用当刻列表被安排了过长的延迟时的警告。
 
 #### debug.rewriteForIde
 
-- **default**: `unset`
-- **description**: Removes the NMS revision from the stack trace to allow for easier debugging in IDEs.
-It also remaps plugin CB calls to remove the version information.
+- **默认**: `未设置`
+- **描述**: 从堆栈跟踪中移除 NMS 修订版本，以便在 IDE 中更容易进行调试。它还重新映射插件的 CB 调用以移除版本信息。
 
 #### convertLegacySigns
 
-- **default**: `unset`
-- **description**: Converts legacy signs to the new format.
+- **默认**: `未设置`
+- **描述**: 将旧版告示牌转换为新格式。
 
 #### paper.maxCustomChannelName
 
-- **default**: `64`
-- **description**: Sets the largest size that a plugin channel name can take.
+- **默认**: `64`
+- **描述**: 设置插件通道名称可以接受的最大长度。
 
 #### Paper.maxSignLength
 
-- **default**: `80`
-- **description**: Sets the maximum line length for signs.
+- **默认**: `80`
+- **描述**: 设置告示牌的最大行长度。
 
 #### Paper.minPrecachedDatafixVersion
 
-- **default**: `Minecraft world version + 1`
-- **description**: If you are expecting to convert a large number of chunks you might consider setting this to only convert from a point onwards.
+- **默认**: `Minecraft 世界版本 +1`
+- **描述**: 如果你预计需要转换大量的区块，你可能需要将此设置为仅从某个点开始转换。
 
 #### Paper.WorkerThreadCount
 
-- **default**: half of available physical (**not logical**) cores or `1` if 3 or fewer cores are available
-- **description**: Sets the number of worker threads to use for chunk loading. See [here](/paper/reference/global-configuration#chunk_system_worker_threads) for more info.
+- **默认**: 可用物理（**非逻辑**）核心数量的一半，或者如果可用核心数量为 3 个或更少，则为 `1`
+- **描述**: 设置用于区块加载的工作线程数量。更多信息请参阅[这里](/paper/reference/global-configuration#chunk_system_worker_threads)。
 
 #### Paper.excessiveTELimit
 
-- **default**: `750`
-- **description**: Splits tile entities into multiple packets if there are more than this many.
+- **默认**: `750`
+- **描述**: 如果方块实体的数量超过此值，将它们拆分为多个数据包。
 
 #### io.papermc.paper.suppress.sout.nags
 
-- **default**: `unset`
-- **description**: Suppresses the nag message about using `System.out`/`System.err` in a plugin.
+- **默认**: `未设置`
+- **描述**: 抑制关于在插件中使用 `System.out`/`System.err` 的提醒消息。
 
 #### paper.strict-thread-checks
 
-- **default**: `unset`
-- **description**: This sets the status of the AsyncCatcher so that it will always log an error if code is not run on the main thread.
+- **默认**: `未设置`
+- **描述**: 此设置使 AsyncCatcher 的状态始终记录错误，如果代码未在主线程上运行。
 
 #### Paper.skipServerPropertiesComments
 
-- **default**: `unset`
-- **description**: Skips the comments in the `server.properties` file.
+- **默认**: `未设置`
+- **描述**: 跳过 `server.properties` 文件中的注释。
 
 #### Paper.debugInvalidSkullProfiles
 
-- **default**: `unset`
-- **description**: Enables debug logging for invalid skull profiles. This logs any invalid skulls in the world with the appropriate location information.
+- **默认**: `未设置`
+- **描述**: 启用对无效头颅配置文件的调试日志记录。这将记录世界中任何无效的头颅及其相应的位置信息。
 
 #### paper.alwaysPrintWarningState
 
-- **default**: `unset`
-- **description**: Always prints the warning state for the particular level.
+- **默认**: `未设置`
+- **描述**: 始终打印特定级别的警告状态。
 
 #### Paper.parseYamlCommentsByDefault
 
-- **default**: `true`
-- **description**: Sets whether to parse comments in YAML files by default.
+- **默认**: `true`
+- **描述**: 设置是否默认解析 YAML 文件中的注释。
 
 #### paperclip.patchonly:
 
-- **default**: `false`
-- **description**: If the server is started via the Paperclip patch utility (the default distribution on the downloads page) then this sets whether it should only patch the Vanilla server and download libraries without starting the server.
+- **默认**: `false`
+- **描述**: 如果服务器是通过 Paperclip 补丁工具启动的（下载页面上的默认分发版本），则此设置决定是否仅对原版服务器进行补丁处理并下载库，而不启动服务器。
 
 #### Paper.IgnoreJavaVersion
 
-- **default**: `false`
-- **description**: Allows you to bypass the Java version check. See [here](/paper/faq#unsupported-java-detected-what-do-i-do) for more info.
+- **默认**: `false`
+- **描述**: 允许你绕过 Java 版本检查。更多信息请参阅[这里](/paper/faq#检测到不支持的-java-版本我该怎么办)。
 
 #### paper.useLegacyPluginLoading
 
-- **default**: `false`
-- **description**: Allows cyclic plugin loading. See [here](/paper/reference/paper-plugins#cyclic-plugin-loading) for more info.
+- **默认**: `false`
+- **描述**: 允许循环加载插件。更多信息请参阅[这里](/paper/reference/paper-plugins#循环插件加载)。
 
 #### Paper.DisableCommandConverter
 
-- **default**: `false`
-- **description**: Disables Paper's automatic upgrading of commands, including items with custom data defined in command blocks and other places that may contain commands, to the new component format introduced in version 1.20.5.
+- **默认**: `false`
+- **描述**: 禁用 Paper 自动将命令（包括命令方块中定义的自定义数据的物品以及其他可能包含命令的地方）升级到 1.20.5 版本引入的新组件格式。
 
 #### paper.disableOldApiSupport
 
-- **default**: `false`
-- **description**: Disables plugin compatibility measures that can otherwise result in a considerable delay of class loading (also known as "Commodore" plugin rewriting). This generally requires all of your plugins to be compiled against a recent API version.
+- **默认**: `false`
+- **描述**: 禁用可能导致类加载显著延迟的插件兼容性措施（也称为 “Commodore” 插件重写）。这通常要求你的所有插件都针对最新 API 版本进行编译。
 
 #### paper.disablePluginRemapping
 
-- **default**: `false`
-- **description**: Disables plugin remapping introduced in 1.20.5. For more information see the [userdev](/paper/dev/userdev#1205-and-beyond) documentation and the official [announcement](https://discord.com/channels/289587909051416579/976631292747735080/1232740079097876570).
+- **默认**: `false`
+- **描述**: 禁用1.20.5引入的插件重映射。更多信息请查看[userdev](/paper/dev/userdev#1205-and-beyond)文档和官方[公告](https://discord.com/channels/289587909051416579/976631292747735080/1232740079097876570)。
 
 #### paper.preferSparkPlugin
 
-- **default**: `false`
-- **description**: Whether the bundled spark profiler should be disabled in favor of a standalone plugin. If the spark plugin is not found, the bundled version will be loaded regardless of the setting, unless it is [explicitly disabled](/paper/reference/global-configuration#spark_enabled).
+- **默认**: `false`
+- **描述**: 是否禁用集成的 spark 性能分析器，以使用独立插件。如果未找到 spark 插件，无论设置如何，都将加载集成版本，除非它被[明确禁用](/paper/reference/global-configuration#spark_enabled)。
 
 #### paper.disableWorldSymlinkValidation
 
-- **default**: `false`
-- **description**: Disables the folder walk and symlink validation when loading a world. Significantly improves world loading speed on massive worlds (>1TB). This does not disable symlink verification of datapacks.
+- **默认**: `false`
+- **描述**: 禁用加载世界时的文件夹遍历和符号链接验证。在超大世界（>1TB）中显著提高世界加载速度。这不会禁用数据包的符号链接验证。
 
 #### paper.disableGameRuleLimits
 
-- **default**: `false`
-- **description**: Disables limits on certain game rule values, e.g. `minecartMaxSpeed` and `spawnChunkRadius`.
+- **默认**: `false`
+- **描述**: 禁用对某些游戏规则值的限制，例如 `minecartMaxSpeed` 和 `spawnChunkRadius`。
 
 #### minecraft.api.session.host
 
-- **default**: `https://sessionserver.mojang.com`
-- **description**: Allows specifying of a custom session server URL e.g. for caching. [`minecraft.api.services.host`](#minecraftapiserviceshost) needs to be set too for this to apply.
+- **默认**: `https://sessionserver.mojang.com`
+- **描述**: 允许指定自定义会话服务器 URL，例如用于缓存。要使此设置生效，还需要设置 [`minecraft.api.services.host`](#minecraftapiserviceshost)。
 
 #### minecraft.api.services.host
 
-- **default**: `https://api.minecraftservices.com`
-- **description**: Allows specifying of a custom services API URL e.g. for caching. [`minecraft.api.session.host`](#minecraftapisessionhost) needs to be set too for this to apply.
+- **默认**: `https://api.minecraftservices.com`
+- **描述**: 允许指定自定义服务 API URL，例如用于缓存。要使此设置生效，还需要设置 [`minecraft.api.session.host`](#minecraftapisessionhost)。
 
 #### com.mojang.eula.agree
 
-- **default**: `false`
-- **description**: Setting this to true indicates that you have agreed with [Mojang's EULA](https://aka.ms/MinecraftEULA), skipping `eula.txt` checks.
+- **默认**: `false`
+- **描述**: 将此设置为 true 表示你已同意 [Mojang 的 EULA](https://aka.ms/MinecraftEULA)，跳过 `eula.txt` 检查。
 
 #### org.bukkit.plugin.java.LibraryLoader.centralURL
 
-- **default**: `https://maven-central.storage-download.googleapis.com/maven2`
-- **description**: Sets the default central repository URL, from which plugins' dependencies declared using the [`libraries`](/paper/dev/plugin-yml#libraries) plugin.yml field are resolved. This is overridden by the [`PAPER_DEFAULT_CENTRAL_REPOSITORY`](#paper_default_central_repository) environment variable, if it is set.
+- **默认**: `https://maven-central.storage-download.googleapis.com/maven2`
+- **描述**: 设置默认中央仓库的URL，插件的依赖项通过`plugin.yml`文件中的 [`libraries`](/paper/dev/plugin-yml#libraries) 字段声明，将从该URL解析。如果设置了 [`PAPER_DEFAULT_CENTRAL_REPOSITORY`](#paper_default_central_repository) 环境变量，则会覆盖此设置。
 
-:::caution
+:::caution[警告]
 
-If you wish to configure this with Maven Central, use a mirror, as using Maven Central directly as a CDN is against the Maven Central Terms of Service, and you may hit rate limits.
+如果您希望使用 Maven Central 配置此功能，请使用镜像，因为直接将 Maven Central 用作 CDN 是违反 Maven Central 服务条款的，您可能会遇到速率限制。
 
-By default, this uses Google's NA mirror of Maven Central. You may also use region-specific mirrors listed [here](https://storage-download.googleapis.com/maven-central/index.html).
+默认情况下，它使用了 Maven Central 的 Google 北美镜像。您也可以使用[此处](https://storage-download.googleapis.com/maven-central/index.html)列出的区域特定镜像。
 
 :::
 
-## List of environment variables
+## 环境变量列表
 
 #### PAPER_VELOCITY_SECRET
 
-- **default**: `unset`
-- **description**: Overrides the [`proxies.velocity.secret`](/paper/reference/global-configuration#proxies_velocity_secret) global configuration option.
+- **默认**: `未设置`
+- **描述**: 覆盖全局配置选项 [`proxies.velocity.secret`](/paper/reference/global-configuration#proxies_velocity_secret)。
 
 #### PAPER_DEFAULT_CENTRAL_REPOSITORY
 
-- **default**: `https://maven-central.storage-download.googleapis.com/maven2`
-- **description**: Sets the default central repository URL, from which plugins' dependencies declared using the [`libraries`](/paper/dev/plugin-yml#libraries) plugin.yml field are resolved. This overrides the [`org.bukkit.plugin.java.LibraryLoader.centralURL`](#orgbukkitpluginjavalibraryloadercentralurl) system property, if it is set.
+- **默认**: `https://maven-central.storage-download.googleapis.com/maven2`
+- **描述**: 设置默认中央仓库的URL，插件通过`plugin.yml`文件中的 [`libraries`](/paper/dev/plugin-yml#libraries) 字段声明的依赖项将从该URL解析。如果设置了 [`org.bukkit.plugin.java.LibraryLoader.centralURL`](#orgbukkitpluginjavalibraryloadercentralurl) 系统属性，则此环境变量将覆盖该系统属性。
 
-:::caution
+:::caution[警告]
 
-If you wish to configure this with Maven Central, use a mirror, as using Maven Central directly as a CDN is against the Maven Central Terms of Service, and you may hit rate limits.
+如果您希望使用 Maven Central 配置此功能，请使用镜像，因为直接将 Maven Central 用作 CDN 是违反 Maven Central 服务条款的，您可能会遇到速率限制。
 
-By default, this uses Google's NA mirror of Maven Central. You may also use region-specific mirrors listed [here](https://storage-download.googleapis.com/maven-central/index.html).
+默认情况下，它使用了 Maven Central 的 Google 北美镜像。您也可以使用[此处](https://storage-download.googleapis.com/maven-central/index.html)列出的区域特定镜像。
 
 :::

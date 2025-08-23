@@ -1,42 +1,42 @@
 ---
-title: Requirements
-description: A guide to setting requirements for commands.
+title: 要求
+description: 一份关于设置命令要求的指南。
 slug: paper/dev/command-api/basics/requirements
 version: 1.21.6
 ---
 
-Sometimes you want to limit a player's ability to use and/or view certain commands or subcommands. Exactly for this purpose,
-the `ArgumentBuilder<S>` class has a `requires(Predicate<S>)` method to define a requirement in order to use that specific branch of a command tree.
-As always, the generic parameter `S` is just a `CommandSourceStack`, providing us with the executing entity, the command sender, and the location of the command.
+有时你希望限制玩家使用和/或查看某些命令或子命令的能力。
+为此，`ArgumentBuilder<S>` 类有一个 `requires(Predicate<S>)` 方法，用于定义使用特定命令树分支的要求。
+和往常一样，泛型参数 `S` 只是一个 `CommandSourceStack`，它为我们提供了执行实体、命令发送者和命令的位置。
 
-## Defining permissions
-One of the most common usecases for requirements are permissions. Usually, these are checked on the **command sender**, as that is the actual entity/console/object
-which ran the command, even if it is run as someone else (the executor). A simple command with a permission might look like this:
+## 定义权限
+权限是要求的最常见用例之一。
+通常，这些权限是在**命令发送者**上进行检查的，因为这是实际运行命令的实体/控制台/对象，即使它是以其他人的身份运行的（执行者）。一个带有权限的简单命令可能如下所示：
 
 ```java
 Commands.literal("testcmd")
     .requires(sender -> sender.getSender().hasPermission("permission.test"))
     .executes(ctx -> {
-        ctx.getSource().getSender().sendRichMessage("<gold>You have permission to run this command!");
+        ctx.getSource().getSender().sendRichMessage("<gold>你有权限运行这个命令！");
         return Command.SINGLE_SUCCESS;
     });
 ```
 
-This command requires the `permission.test` permission to be had by a sender.
-But you cannot only define permissions, you can also require a sender to be a server operator, like this:
+这个命令需要命令发送者拥有 `permission.test` 权限。
+但你不仅可以定义权限，你还可以要求命令发送者是服务器管理员，如下所示：
 
 ```java
 Commands.literal("testcmd")
     .requires(sender -> sender.getSender().isOp())
     .executes(ctx -> {
-        ctx.getSource().getSender().sendRichMessage("<gold>You are a server operator!");
+        ctx.getSource().getSender().sendRichMessage("<gold>你是一名服务器管理员！");
         return Command.SINGLE_SUCCESS;
     });
 ```
 
-## Defining more advanced predicates
-You don't have to limit yourself to checking just for permissions - since it is a predicate, any boolean can be returned. For example, you can check for whether
-a player has a diamond sword in their inventory:
+## 定义更高级的 predicates
+你不必只局限于检查权限——因为这是一个 predicates，任何布尔值都可以返回。
+例如，你可以检查玩家的背包中是否有钻石剑：
 
 ```java
 Commands.literal("givesword")
@@ -50,48 +50,48 @@ Commands.literal("givesword")
     });
 ```
 
-At first glance, this works just fine. But it does have a very big flaw - since the player's client is not aware of the requirement, it still shows the command
-as executable, even if the requirement resolves as false. But if the client tries to run the command, the server reports that this command doesn't exist (meaning
-the requirement was not met):
+乍一看，这似乎没有问题。
+但它有一个很大的缺陷——由于玩家的客户端并不知道这个要求，即使要求未通过，它仍然显示该命令可以执行。
+但如果客户端尝试运行该命令，服务器会报告该命令不存在（意味着要求未通过）：
 
 ![](./assets/client-server-mismatch.png)
 
-How can we solve this? The `Player` interface has a method called [`#updateCommands()`](jd:paper:org.bukkit.entity.Player#updateCommands()) just for this usecase. It resends the currently registered commands back to the
-client in an attempt to reload commands. For now, we can create a new command with which the player can update its own commands in order to resync its command state:
+我们该如何解决这个问题？`Player` 接口有一个名为 [`#updateCommands()`](jd:paper:org.bukkit.entity.Player#updateCommands()) 的方法，专门用于这种用例。
+它会重新将当前已注册的命令发送回客户端，以尝试重新加载命令。目前，我们可以创建一个新的命令，让玩家可以更新自己的命令，以重新同步其命令状态：
 
 ```java
 Commands.literal("reloadcommands")
     .executes(ctx -> {
         if (ctx.getSource().getExecutor() instanceof Player player) {
             player.updateCommands();
-            player.sendRichMessage("<gold>Successfully updated your commands!");
+            player.sendRichMessage("<gold>成功更新了你的命令！");
         }
 
         return Command.SINGLE_SUCCESS;
     });
 ```
 
-### Automating command reloads
-Forcing a player to reload their own commands is not a viable option for user experience. For this reason, you can **automate** this behavior. It is safe to call
-the update commands method as often as required, but it should generally be avoided as it can cost a great deal of bandwidth. If possible, you should instead place
-these in very specific spots. Furthermore, this method is completely thread safe, meaning you are free to call it from an asynchronous context.
+### 自动重新加载命令
+强迫玩家重新加载自己的命令并不是一种可行的用户体验方案。因此，你可以**自动化**这种行为。
+根据需要频繁调用更新命令的方法是安全的，但通常应尽量避免，因为这可能会耗费大量的带宽。
+如果可能，你应该将这些方法放在非常特定的位置。此外，这种方法是完全线程安全的，这意味着你可以自由地从异步上下文中调用它。
 
-## Restricted commands
-From 1.21.6 onwards, commands can now be restricted. This feature is used by Vanilla in order to make a player confirm whether they
-really want to run a command from a run-command click event. That includes ones on text components or dialog buttons.
-All Vanilla commands, which require operator status by default, are restricted:
+## 受限制的命令
+从 1.21.6 开始，命令现在可以被限制。
+这个功能被原版用来让玩家确认他们是否真的想从点击事件中运行一个命令。
+这包括文本组件或对话框按钮上的命令。所有默认需要管理员权限的原版命令都被限制了：
 
 ![](./assets/vanilla-restriction.png)
 
-### Restricting your commands
-You can apply the same behavior to your commands by wrapping the predicate inside your `.requires` with `Commands.restricted(...)`.
-A simple implementation might look like this:
+### 限制你的命令
+你可以通过在 `.requires` 中将 requires 包装在 `Commands.restricted(...)` 中，将相同的行为应用到你的命令中。
+一个简单的实现可能如下所示：
 
 ```java
 Commands.literal("test-req")
     .requires(Commands.restricted(source -> true))
     .executes(ctx -> {
-        ctx.getSource().getSender().sendRichMessage("You passed!");
+        ctx.getSource().getSender().sendRichMessage("你通过了！");
         return Command.SINGLE_SUCCESS;
     });
 ```
@@ -100,8 +100,8 @@ Commands.literal("test-req")
 
 <br />
 
-Inside the `.restricted` method you can put any logic which you would put into your `.requires` method.
-It is nothing more but a simple wrapper around the usual `.requires` predicate:
+在 `.restricted` 方法中，你可以放入任何原本放在 `.requires` 方法里的逻辑。
+它实际上只是对常规 `.requires` 谓词的一个简单包装：
 
 ```java
 Commands.literal("mycommand")
@@ -109,6 +109,6 @@ Commands.literal("mycommand")
                                             && source.getExecutor() instanceof Player player
                                             && player.getGameMode() == GameMode.ADVENTURE))
     .executes(ctx -> {
-        // Command logic
+        // 命令逻辑
     });
 ```

@@ -1,26 +1,26 @@
 ---
-title: Executors
-description: A guide to execution logic for Brigadier commands.
+title: 执行器
+description: Brigadier 命令的执行逻辑指南。
 slug: paper/dev/command-api/basics/executors
 ---
 
-:::tip
+:::tip[提示]
 
-This page requires knowledge about [Command Trees](/paper/dev/command-api/basics/command-tree) and [Arguments and Literals](/paper/dev/command-api/basics/arguments-and-literals). If you haven't read
-through those articles, it is highly recommend to check those out beforehand!
+阅读本页面需要了解[命令树](/paper/dev/command-api/basics/command-tree)和[参数与文字](/paper/dev/command-api/basics/arguments-and-literals)。
+如果你还没有阅读这些文章，强烈建议你先查看它们！
 
 :::
 
-This page is dedicated to the `executes(...)` method from the `ArgumentBuilder` class.
+本页面专门介绍 `ArgumentBuilder` 类中的 `executes(...)` 方法。
 
-## Examining the executes method
-The `executes` method is defined as following:
+## 检查 `executes` 方法
+`executes` 方法定义如下：
 
 ```java title="ArgumentBuilder.java"
 public T executes(Command<S> command);
 ```
 
-The `Command<S>` interface is declared as a `FunctionalInterface`. That means that instead of putting in a class that implements it, we can just pass in a lambda statement.
+`Command<S>` 接口被声明为 `FunctionalInterface`。这意味着我们可以不传入一个实现了它的类，而是直接传入一个 lambda 表达式。
 
 ```java title="Command.java"
 @FunctionalInterface
@@ -31,84 +31,84 @@ public interface Command<S> {
 }
 ```
 
-Our lambda has one parameter and returns an integer. That is essentially that `run` method defined in that interface. The one parameter, `CommandContext<S>` is the one where
-we get all the information about the sender who executed that command and all the command arguments. It has quite a few methods, but the main ones of use for us are
-`S getSource()` and `V getArgument(String, Class<V>)`. We have taken a brief look at the `getArgument(...)` in the [Arguments and Literals](/paper/dev/command-api/basics/arguments-and-literals) chapter, but
-in a nutshell, this is the method that we can retrieve arguments from. There will be more specific examples later on.
+我们的 lambda 有一个参数并返回一个整数。这基本上就是该接口中定义的`run`方法。
+那个参数`CommandContext<S>`是我们获取执行该命令的发送者以及所有命令参数的所有信息的地方。
+它有很多方法，但对我们来说主要用到的是`S getSource()`和`V getArgument(String, Class<V>)`。
+我们在[参数与文字](/paper/dev/command-api/basics/arguments-and-literals)章节中简要地了解了`getArgument(...)`，但简而言之，这是我们可以检索参数的方法。后面会有更具体的示例。
 
-You should mainly notice the generic parameter S by the `getSource()` method. That is the type of the source of the command. For the executes method, this type is always a
-`CommandSourceStack`. That class itself has three methods: `Location getLocation()`, `CommandSender getSender()`, and `@Nullable Entity getExecutor()`.
-The most used method from that is `getSender()`, as that is the command sender who has actually run the command. For the target of a command, you should use `getExecutor()`,
-which is relevant, if the command was ran via `/execute as <entity> run <our_command>`. It is not necessarily required, but is seen as good practice.
+你应该主要注意 `getSource()` 方法旁边的泛型参数 `S`。这是命令源的类型。对于 `executes` 方法，这个类型始终是 `CommandSourceStack`。
+该类本身有三个方法：`Location getLocation()`、`CommandSender getSender()` 和 `@Nullable Entity getExecutor()`。
+其中最常用的方法是 `getSender()`，因为这是实际运行命令的命令发送者。
+对于命令的目标，你应该使用 `getExecutor()`，这在命令是通过 `/execute as <entity> run <our_command>` 运行时是相关的。虽然这不是必须的，但被认为是良好的实践。
 
-## Example: Flyspeed command
-In the [Arguments and Literals](/paper/dev/command-api/basics/arguments-and-literals) chapter, we have briefly declared the structure for a `/flyspeed` command with the use of a ranged float argument.
-But that command does not actually set the flyspeed of the executing player. In order to do that, we'd have to append an executor onto it, like this:
+## 示例：飞行速度命令
+在[参数与文字](/paper/dev/command-api/basics/arguments-and-literals)章节中，我们简要地声明了一个 `/flyspeed` 命令的结构，使用了一个范围内的浮点数参数。
+但那个命令实际上并没有设置执行玩家的飞行速度。为了做到这一点，我们需要给它添加一个执行器，如下所示：
 
 ```java title="FlightSpeedCommand.java" {5-6}
 Commands.literal("flyspeed")
     .then(Commands.argument("speed", FloatArgumentType.floatArg(0, 1.0f))
         .executes(ctx -> {
-            float speed = FloatArgumentType.getFloat(ctx, "speed"); // Retrieve the speed argument
-            CommandSender sender = ctx.getSource().getSender(); // Retrieve the command sender
-            Entity executor = ctx.getSource().getExecutor(); // Retrieve the command executor, which may or may not be the same as the sender
+            float speed = FloatArgumentType.getFloat(ctx, "speed"); // 检索速度参数
+            CommandSender sender = ctx.getSource().getSender(); // 检索命令发送者
+            Entity executor = ctx.getSource().getExecutor(); // 检索命令执行者，它可能与发送者相同，也可能不同
 
-            // Check whether the executor is a player, as you can only set a player's flight speed
+            // 检查执行者是否是玩家，因为只有玩家的飞行速度可以被设置
             if (!(executor instanceof Player player)) {
-                // If a non-player tried to set their own flight speed
-                sender.sendPlainMessage("Only players can fly!");
+                // 如果非玩家尝试设置自己的飞行速度
+                sender.sendPlainMessage("只有玩家可以飞行！");
                 return Command.SINGLE_SUCCESS;
             }
 
-            // Set the player's speed
+            // 设置玩家的速度
             player.setFlySpeed(speed);
 
             if (sender == executor) {
-                // If the player executed the command themselves
-                player.sendPlainMessage("Successfully set your flight speed to " + speed);
+                // 如果玩家自己执行了命令
+                player.sendPlainMessage("成功将你的飞行速度设置为 " + speed);
                 return Command.SINGLE_SUCCESS;
             }
 
-            // If the speed was set by a different sender (Like using /execute)
-            sender.sendRichMessage("Successfully set <playername>'s flight speed to " + speed, Placeholder.component("playername", player.name()));
-            player.sendPlainMessage("Your flight speed has been set to " + speed);
+            // 如果速度是由不同的发送者设置的（例如使用 `/execute`）
+            sender.sendRichMessage("成功将 `<playername>` 的飞行速度设置为 " + speed, Placeholder.component("playername", player.name()));
+            player.sendPlainMessage("你的飞行速度已设置为 " + speed);
             return Command.SINGLE_SUCCESS;
         })
     );
 ```
 
-### Explanation
-There is a lot to unpack, so let's break it down, top to bottom:
+### 解释
+这里有很多内容需要解释，所以让我们从上到下逐步分析：
 
-The first lines define a `/flyspeed` command root, with a float argument named "speed", which only allows values between 0 and 1.
-We then add an executes clause to our argument branch and retrieves the speed argument by running `FloatArgumentType.getFloat`.
+前几行定义了一个名为 `/flyspeed` 的命令根，它有一个名为 “speed” 的浮点数参数，只允许 0 到 1 之间的值。
+然后我们在参数分支中添加了一个 `executes` 子句，并通过运行 `FloatArgumentType.getFloat` 检索速度参数。
 
-Note the highlighted lines. We first retrieve the `CommandSourceStack` from our `CommandContext<CommandSourceStack>` and then finally retrieve its sender and executor.
-A `CommandSender` is an interface, which declares the `sendMessage(...)`, `getServer()`, and `getName()` methods. It is implemented by all entities, including players,
-and the ConsoleCommandSender, which is used if a console executes a command.
+注意高亮的行。我们首先从 `CommandContext<CommandSourceStack>` 中检索 `CommandSourceStack`，然后最终检索到它的发送者和执行者。
+`CommandSender` 是一个接口，声明了 `sendMessage(...)`、`getServer()` 和 `getName()` 方法。
+它由所有实体实现，包括玩家和 `ConsoleCommandSender`，后者用于控制台执行命令时。
 
-Next up we check whether our executor object is also instance of a `Player` interface. If executor were null, this would be false, which is why we require no null check.
-If the expression evaluates as true, we get a new `player` variable, which represents an actual player on the server that the command was executed by.
+接下来我们检查我们的执行者对象是否也是 `Player` 接口的实例。如果执行者为 `null`，这个表达式将返回 `false`，这就是为什么我们不需要进行空值检查。
+如果表达式计算结果为 `true`，我们将得到一个新的 `player` 变量，它代表服务器上实际执行命令的玩家。
 
-Next up, we set the player's flight speed using the value retrieved from the player-provided float argument and send them a message to confirm the operation.
-It is always recommended to send a confirmation message whether the command was successful, because otherwise a player might get confused to why a command is "not working".
-If the executor was not a player, we can send a form of error message. In our case, we assume the sender to be a console, as an entity usually does not try to send such
-a command.
+接下来，我们使用从玩家提供的浮点数参数中检索到的值设置玩家的飞行速度，并向他们发送一条消息以确认操作。
+始终建议发送确认消息，以确认命令是否成功，因为否则玩家可能会对命令“不起作用”感到困惑。
+如果执行者不是玩家，我们可以发送一种错误消息。
+在我们的例子中，我们假设发送者是控制台，因为实体通常不会尝试发送这样的命令。
 
-Finally, we just return from the lambda statement providing a return value. As our command succeeded, we can return `Command.SINGLE_SUCCESS`, whose value is `1`.
-Don't forget to close all your braces!
+最后，我们从 lambda 表达式中返回并提供一个返回值。
+由于我们的命令成功了，我们可以返回 `Command.SINGLE_SUCCESS`，其值为 `1`。别忘了关闭所有大括号！
 
-Running the command now works correctly:
+现在运行命令可以正确工作：
 ![](./assets/flyspeed-player.png)
 ![](./assets/flyspeed-console.png)
 
-We can even run it as another player, using `/execute as`:
+我们甚至可以使用 `/execute as` 以另一个玩家的身份运行它：
 ![](./assets/flyspeed-proxied.png)
 
-### Logic separation
-Sometimes, if the command is too big or due to personal preference, you might not want to have your logic code in your executes method, as it might be unreadable
-due of the amount of indentations. In such an event we can, instead of defining our logic in the lambda statement, use a method reference instead. For that we
-can just pass a method reference to the executes method. This might look like this:
+### 逻辑分离
+有时，如果命令太大或者由于个人偏好，你可能不想把逻辑代码放在 `executes` 方法中，因为过多的缩进可能会使代码难以阅读。
+在这种情况下，我们可以不把逻辑定义在 lambda 表达式中，而是使用方法引用。
+为此，我们可以直接将方法引用传递给 `executes` 方法。它可能如下所示：
 
 ```java title="FlightSpeedCommand.java"
 public class FlightSpeedCommand {
@@ -121,32 +121,32 @@ public class FlightSpeedCommand {
     }
 
     private static int runFlySpeedLogic(CommandContext<CommandSourceStack> ctx) {
-        float speed = FloatArgumentType.getFloat(ctx, "speed"); // Retrieve the speed argument
-        CommandSender sender = ctx.getSource().getSender(); // Retrieve the command sender
-        Entity executor = ctx.getSource().getExecutor(); // Retrieve the command executor, which may or may not be the same as the sender
+        float speed = FloatArgumentType.getFloat(ctx, "speed"); // 检索速度参数
+        CommandSender sender = ctx.getSource().getSender(); // 检索命令发送者
+        Entity executor = ctx.getSource().getExecutor(); // 检索命令执行者，它可能与发送者相同，也可能不同
 
-        // Check whether the executor is a player, as you can only set a player's flight speed
+        // 检查执行者是否是玩家，因为只有玩家的飞行速度可以被设置
         if (!(executor instanceof Player player)) {
-            // If a non-player tried to set their own flight speed
-            sender.sendPlainMessage("Only players can fly!");
+            // 如果非玩家尝试设置自己的飞行速度
+            sender.sendPlainMessage("只有玩家可以飞行！");
             return Command.SINGLE_SUCCESS;
         }
 
-        // Set the player's speed
+        // 设置玩家的速度
         player.setFlySpeed(speed);
 
         if (sender == executor) {
-            // If the player executed the command themselves
-            player.sendPlainMessage("Successfully set your flight speed to " + speed);
+            // 如果玩家自己执行了命令
+            player.sendPlainMessage("成功将你的飞行速度设置为 " + speed);
             return Command.SINGLE_SUCCESS;
         }
 
-        // If the speed was set by a different sender (Like using /execute)
-        sender.sendRichMessage("Successfully set <playername>'s flight speed to " + speed, Placeholder.component("playername", player.name()));
-        player.sendPlainMessage("Your flight speed has been set to " + speed);
+        // 如果速度是由不同的发送者设置的（例如使用 `/execute`）
+        sender.sendRichMessage("成功将`<playername>`的飞行速度设置为 " + speed, Placeholder.component("playername", player.name()));
+        player.sendPlainMessage("你的飞行速度已设置为 " + speed);
         return Command.SINGLE_SUCCESS;
     }
 }
 ```
 
-As you can see, we have made our command tree way easily readable whilst preserving the same functionality.
+正如你所见，我们使命令树的可读性大大提高，同时保留了相同的功能。

@@ -1,94 +1,94 @@
 ---
-title: Roadmap
-description: Outlines the future intents and plans of the Paper project.
+title: 路线图
+description: 概述了 Paper 项目的未来意图和计划。
 slug: paper/dev/roadmap
 ---
 
-Paper offers a rich API with a wide range of features that can help you unlock the full potential of your server.
-However, in order to make room for new features and improvements, some of the older APIs will be phased out. This page
-is intended to document any future API changes that are planned or possible deprecations that may be coming up.
+Paper 提供了一个功能丰富的 API，能够帮助你充分发挥服务器的潜力。
+然而，为了给新功能和改进腾出空间，一些较旧的 API 将会逐步淘汰。
+本页面旨在记录计划中的未来 API 更改以及可能出现的弃用情况。
 
-## Future plans
+## 未来计划
 
-### Interface `ItemStack`s
+### 接口 `ItemStack`
 
-When you create `ItemStack`s using the constructor, you create an API representation of an [`ItemStack`](jd:paper:org.bukkit.inventory.ItemStack).
-This is an object that delegates to a NMS-backed object, you should instead use [`ItemStack#of`](jd:paper:org.bukkit.inventory.ItemStack#of(org.bukkit.Material)) to get the NMS-backed object directly.
+当你使用构造函数创建 `ItemStack` 时，你创建了一个 `ItemStack` 的 API 表示。
+这是一个委托给 NMS 支持的对象的对象，你应该使用 `ItemStack#of` 来直接获取 NMS 支持的对象。
 
-In the future, `ItemStack` will be converted to an interface and the constructor will be removed.
+在未来，`ItemStack` 将被转换为一个接口，并且构造函数将被移除。
 
-#### Precautions
+#### 注意事项
 
-- Avoid directly extending the `ItemStack` class.
-  - Custom implementations of this class are not supported and **will** break.
+- 避免直接扩展 `ItemStack` 类。
+  - 不支持此类的自定义实现，并且**将会**导致损坏。
 
-### `ServerPlayer` reuse
-*Note: Only applies to NMS usage, will not apply to API.*
+### `ServerPlayer` 重用
+*注意：仅适用于 NMS 的使用，不适用于 API。*
 
-Avoid directly storing player (`ServerPlayer`) entity instances. Currently, the player instance is reused when switching
-worlds, however, in the future, this behavior will be reverted to match Vanilla behavior. API entities (wrappers) will
-continue to function and will have their underlying instance replaced automatically.
+避免直接存储玩家（`ServerPlayer`）实体实例。
+目前，玩家实例在切换世界时会被重用，然而，在未来，这种行为将被恢复为符合原版的行为。
+API 实体（包装器）将继续工作，并且它们底层的实例将被自动替换。
 
-This is done to help reduce possible inconsistencies between world switching between Vanilla and Paper.
+这是为了帮助减少在原版和 Paper 之间切换世界时可能出现的不一致性。
 
-## Deprecation policy
+## 弃用政策
 
-:::caution
+:::caution[警告]
 
-It is highly recommended that you avoid using any APIs that are marked as deprecated.
+强烈建议你避免使用任何被标记为已弃用的 API。
 
 :::
 
-If you continue to use deprecated APIs, your server may become unstable and may not function as expected.
-You may also experience performance issues and other problems. To ensure the best possible experience and longevity
-of your plugins, it is important to stay up-to-date with the latest API changes and avoid using any APIs
-that are marked for deprecation.
+如果你继续使用已弃用的 API，你的服务器可能会变得不稳定，并且可能无法按预期工作。
+你可能会遇到性能问题和其他问题。
+为了确保你的插件获得尽可能好的体验和持久性，
+重要的是要跟上最新的 API 变更，并避免使用任何被标记为即将弃用的 API。
 
-API marked with [`@Deprecated`](jd:java:java.lang.Deprecated) should not be used in your code base,
-as alternative API may be able to be used instead. While certain API may continue to function despite being deprecated,
-it **cannot** be promised that this API won't be marked as deprecated for removal in the future.
+被标记为 [`@Deprecated`](jd:java:java.lang.Deprecated) 的 API 不应在你的代码库中使用，
+因为可能有替代的 API 可以使用。
+虽然某些 API 即使被弃用也可能继续工作，但**不能**保证这些 API 在未来不会被标记为即将移除。
 ```java
 @Deprecated
-public void exampleMethod(); // Example deprecated method
+public void exampleMethod(); // 示例弃用方法
 ```
 
-### Deprecated for removal
+### 已弃用，将被移除
 
-In addition to being marked as `@Deprecated`, API may be marked as `forRemoval` with a given
-[`@ApiStatus.ScheduledForRemoval`](https://javadoc.io/doc/org.jetbrains/annotations/latest/org/jetbrains/annotations/ApiStatus.ScheduledForRemoval.html) version.
-API scheduled for removal should only occur within major release versions of Minecraft.
-It is highly recommended you migrate away from API scheduled for removal.
+除了被标记为 `@Deprecated` 外，API 还可能被标记为 `forRemoval`，
+并附带一个给定的 [`@ApiStatus.ScheduledForRemoval`](https://javadoc.io/doc/org.jetbrains/annotations/latest/org/jetbrains/annotations/ApiStatus.ScheduledForRemoval.html) 版本。
+计划移除的 API 应该只会在 Minecraft 的主要版本更新中出现。
+强烈建议你远离计划移除的 API。
 
-It should be noted, that API scheduled for removal will be given adequate time to allow plugin developers to migrate
-away from said API.
+应该注意的是，
+计划移除的 API 将会有足够的时间让插件开发者从这些 API 中迁移出去。
 ```java
 @ApiStatus.ScheduledForRemoval(inVersion = "1.20")
 @Deprecated(forRemoval = true)
-public void exampleMethod(); // Example method marked for removal in 1.20
+public void exampleMethod(); // 在1.20中被标记为移除的示例方法
 ```
 
-## Deprecation reasons
+## 弃用原因
 
-There are many possible reasons why an API might be deprecated.
-Some of the common reasons why API can be deprecated is:
+API 被弃用的原因可能有很多。
+API 被弃用的一些常见原因包括：
 
-### Old API
+### 旧的 API
 
-As the game evolves, the API may represent concepts that no longer exist in the core game.
+随着游戏的发展，API 可能代表了在核心游戏中不再存在的概念。
 
-Old API is most likely not functional and/or may behave unexpectedly in newer versions of the game,
-therefore it may be scheduled for removal.
+旧的 API 在游戏的新版本中很可能无法正常工作，
+或者可能会出现意外的行为，因此它可能会被计划移除。
 
-### Duplicate API
+### 重复的 API
 
-Since Paper used to downstream Spigot, it can occasionally include APIs added by Spigot that clash with what Paper already has.
-Typically, Paper will deprecate Spigot’s API in favor of their own API.
+由于 Paper 曾经是 Spigot 的下游分支，它有时会包含与 Paper 已有的 API 冲突的 Spigot 添加的 API。
+通常，Paper 会弃用 Spigot 的 API，而倾向于使用自己的 API。
 
-However, in cases where upstream offers a more powerful API, Paper’s may be deprecated instead.
+然而，在上游提供更强大的 API 的情况下，Paper 的 API 可能会被弃用。
 
-### Obsolete API
-Paper strives to improve on APIs that may already be included. There may be some cases where we have built new
-APIs to offer as a replacement to another.
+### 过时的 API
+Paper 致力于改进已经包含的 API。
+在某些情况下，我们可能会构建新的 API 来替代另一个。
 
-Obsolete API is expected for function for the far future and may not be scheduled for removal
-for a fair amount of time.
+过时的 API 预计在未来很长一段时间内仍然可以使用，
+并且可能不会很快被计划移除。

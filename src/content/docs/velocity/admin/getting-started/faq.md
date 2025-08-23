@@ -1,117 +1,116 @@
 ---
-title: Frequently asked questions
-description: Frequently asked Velocity administration questions.
+title: 常见问题
+description: 常见的 Velocity 管理问题
 slug: velocity/faq
 ---
 
-Over the years, we've been asked many of the same questions by users. This FAQ attempts to answer as
-many of these questions from the user perspective.
+多年来，我们收到了许多用户提出的相同问题。
+此常见问题解答（FAQ）试图从用户的角度回答这些问题。
 
-## What version of Java does Velocity require?
+## Velocity 需要哪个版本的 Java？
 
-Velocity 3.3.x and above requires at least Java 17, however it works best with 21 or above.
+Velocity 3.3.x 及以上版本至少需要 Java 17，但使用 21 或更高版本效果最佳。
 
-## Where can I find Velocity plugins?
+## 我在哪里可以找到 Velocity 插件？
 
-A good source for finding plugins compatible with Velocity would be our plugin repository
-[Hangar](https://hangar.papermc.io/?page=0&platform=VELOCITY).
+寻找与 Velocity 兼容的插件的一个好去处是我们的插件仓库 [Hangar](https://hangar.papermc.io/?page=0&platform=VELOCITY)。
+[modrinth](https://modrinth.com/plugins?g=categories:velocity)
 
-## Does Velocity support plugins developed for BungeeCord or Waterfall?
+## Velocity 是否支持为 BungeeCord 或 Waterfall 开发的插件？
 
-No. Many of the things Velocity can do could not be done if we decided to support BungeeCord
-plugins.
+不支持。
+如果决定支持 BungeeCord 插件，Velocity 将无法实现许多功能
 
-However, certain plugins may have Velocity ports available or alternatives are available. In
-addition, plugins that support BungeeCord but only require that they are installed on the server
-(nothing on the proxy) typically use the BungeeCord plugin messaging channel, which is supported
-natively by the latest versions of Velocity.
+然而，某些插件可能有适用于 Velocity 的版本，或者有替代方案可用。
+此外，支持 BungeeCord 但仅需安装在服务器上（无需在代理上安装任何内容）的插件通常使用 BungeeCord 插件消息通道，
+而最新版本的 Velocity 原生支持该通道。
 
-## Help, I can't connect to my server!
+## 帮助，我无法连接到我的服务器！
 
-There are a few common causes for why you can't connect to the server.
+无法连接到服务器的原因通常有以下几种。
 
-### Basic troubleshooting
+### 基本故障排除
 
-As a first step, you should verify:
+首先，您应该验证以下内容：
 
-- that your servers are started and are responsive to console input
-- that the proxy is started
-- that the server and proxy are bound to the appropriate port and IP
+- 服务器已启动，并且可以响应控制台输入
+- 代理已启动
+- 服务器和代理已绑定到适当的端口和 IP
 
-### Improper player information forwarding errors
+### 不正确的玩家信息转发错误
 
 ```
 Can't connect to server lobby: If you wish to use IP forwarding, please enable it in your Bungeecord config as well!
+// 无法连接到服务器大厅：如果您想使用 IP 转发，请在您的 Bungeecord 配置中启用它！
 ```
 
 ```
 Can't connect to server lobby: Your server did not send a forwarding request to the proxy. Is it set up correctly?
+// 无法连接到服务器大厅：您的服务器未向代理发送转发请求。是否正确设置了服务器？
 ```
 
-These errors are result of improper configuration. See
-[Player Information Forwarding](/velocity/player-information-forwarding) to learn how to properly set up player information
-forwarding.
+这些错误是由于配置不当导致的。
+请参阅[玩家信息转发](/velocity/player-information-forwarding)，了解如何正确设置玩家信息转发。
 
 ```
 Can't connect to server lobby: This server requires you to connect with Velocity.
+// 无法连接到服务器大厅：此服务器要求您使用 Velocity 连接。
 ```
 
-This error is a result of enabling Velocity modern forwarding on your backend server, but not
-enabling it in Velocity. To fix this error, ensure that you have set up the correct player
-information forwarding method on the proxy. See [Player Information Forwarding](/velocity/player-information-forwarding) for
-more information.
+此错误是由于在后端服务器上启用了 Velocity 现代转发，
+但未在 Velocity 中启用。
+要解决此错误，请确保您已在代理上设置了正确的玩家信息转发方法。
+更多信息请参阅 [玩家信息转发](/velocity/player-information-forwarding)。
 
-### Invalid payload `REGISTER`
+### 无效的 `REGISTER` 数据包
 
 ```
 [server connection] player1 -> hub has connected
 [connected player] player1 (/localhost:58943): kicked from server hub: Invalid payload REGISTER!
 ```
 
-This error typically occurs on Spigot-based servers when someone connects with a modded client. You
-can fix this issue if you use Paper (or a fork of Paper) 1.12.2 or above by adding the startup flag
-[`-Dpaper.disableChannelLimit=true`](/paper/reference/system-properties#paperdisablechannellimit)
-to the server's startup flags and restarting the server.
+当使用修改版客户端连接时，基于 Spigot 的服务器通常会出现此错误。
+如果您使用的是 Paper（或 Paper 的分支）1.12.2 或更高版本，
+可以通过在服务器启动标志中添加启动标志 [`-Dpaper.disableChannelLimit=true`](/paper/reference/system-properties#paperdisablechannellimit) 并重启服务器来解决此问题。
 
-### Argument type identifier unknown
+### 参数类型标识符未知
 
 ```
 Argument type identifier <namespace>:<name> unknown.
+// 参数类型标识符 `<namespace>:<name>` 未知。
 ```
 
-If you receive this message, there are two possibilities. If you run a modded server and are using
-Fabric 1.16+ and above, update to at least Velocity 1.1.2 and install
-[CrossStitch](https://www.curseforge.com/minecraft/mc-mods/crossstitch). (If you are running any
-other kind of modded server and have it working with Velocity, let us know!)
+如果您收到此消息，有两种可能性。
+如果您运行的是修改版服务器并且使用的是 Fabric 1.16 及以上版本，
+请更新到至少 Velocity 1.1.2 并安装 [CrossStitch](https://www.curseforge.com/minecraft/mc-mods/crossstitch)。
+（如果您运行的是其他类型的修改版服务器并且能够使其与 Velocity 一起工作，请告诉我们！）
 
-If you receive this message but run a Vanilla server,
-[please report a bug to the Velocity issue tracker](https://github.com/PaperMC/Velocity/issues/new).
+如果您收到此消息但运行的是原版服务器，
+请向 [Velocity 问题跟踪器](https://github.com/PaperMC/Velocity/issues/new) 报告错误。
 
-### Read time out while switching to a Forge server
+### 在切换到 Forge 服务器时读取超时
 
-Particularly for some very large mod packs, there is an elevated risk of the connection between the
-player and the proxy dropping. There is not much we can do on the proxy end to alleviate this. We
-suggest either reducing the number of mods your server uses, or raise the `read-timeout` setting in
-`velocity.toml` and add the `-Dfml.readTimeout` startup flag to your Forge server and setting it to
-the value (in seconds) you chose for the proxy. For instance, if you determine that 120 seconds is
-the best read timeout to use, use `-Dfml.readTimeout=120` and set `read-timeout = 120000` in
-`velocity.toml`.
+特别是对于一些非常大的模组包，玩家与代理之间的连接存在更高的断开风险。
+我们在代理端无法做太多事情来缓解这一问题。
+我们建议您要么减少服务器使用的模组数量，要么在 `velocity.toml` 中提高 `read-timeout` 设置，
+并在您的 Forge 服务器启动标志中添加 `-Dfml.readTimeout`，将其设置为您为代理选择的秒数。
+例如，如果您确定 120 秒是最佳的读取超时时间，
+请使用 `-Dfml.readTimeout=120`，并在 `velocity.toml` 中将 `read-timeout = 120000`。
 
-### My forced hosts are not working!
+### 我的强制主机不起作用！
 
-First, double-check that you properly set up DNS records pointing to your proxy for the forced hosts
-you have selected. Forced hosts are _not_ compatible with SRV records, so if you are relying on SRV
-records to direct the player to the proxy, you will need to find a way to get the proxy running on
-the default Minecraft port, 25565.
+首先，请仔细检查您是否正确设置了指向代理的 DNS 记录，用于您选择的强制主机。
+强制主机与 SRV 记录**不兼容**，因此如果您依赖 SRV 记录将玩家引导至代理，
+您需要找到一种方法，让代理运行在 Minecraft 的默认端口 25565 上。
 
-### Plugins unable to modify messages or commands
+### 插件无法修改消息或命令
 
 ```
 A plugin tried to cancel a signed chat message. This is no longer possible in 1.19.1 and newer. Disconnecting player <player>
+// 一个插件尝试取消已签名的聊天消息。在 1.19.1 及更高版本中，这已不再可能。正在断开玩家 <player> 的连接。
 ```
 
-Starting with Minecraft 1.19.1, Mojang implemented a new chat system that encrypts each message with
-the signed key that each player has. Velocity does not yet have full support for cancelling or modifying
-this type of messages and commands, so you can install the [SignedVelocity](https://hangar.papermc.io/4drian3d/SignedVelocity) plugin,
-which will allow the message or command to be transmitted to your server, which, upon receiving it on the server,
-will apply the result computed in Velocity.
+从 Minecraft 1.19.1 开始，Mojang 实现了一种新的聊天系统，
+该系统使用每个玩家拥有的签名密钥对每条消息进行加密。
+Velocity 尚未完全支持取消或修改此类消息和命令，因此您可以安装 [SignedVelocity](https://hangar.papermc.io/4drian3d/SignedVelocity) 插件，
+该插件将允许消息或命令传输到您的服务器，服务器在接收到它后，将应用在 Velocity 中计算的结果。

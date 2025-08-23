@@ -1,99 +1,98 @@
 general-topics:
-  <topic name>:
+  <主题名称>:
     header:
-      message: A custom help "topic" to show when the user types "`/help <topic>`".
+      message: 当用户输入“`/help <topic>`”时显示的自定义帮助“主题”。
     shortText:
       description: |
-        The first line of the help entry, used as a summary in index pages.
+        帮助条目的第一行，用作索引页面中的摘要。
 
-        This is formatted with legacy "&" style formatting.
+        这是用旧版“&”样式格式化的。
     fullText:
       description: |
-        The remaining lines of this help entry.
+        这个帮助条目的剩余行。
 
-        This is formatted with legacy "&" style formatting.
+        这是用旧版 “&” 样式格式化的。
     permission:
       description: |
-        The permission required to view this help entry.
+        查看此帮助条目所需的权限。
 
-        If this is empty/not set, the entry does not require a permission.
+        如果此值为空或未设置，则该条目不需要权限。
 
 index-topics:
-  <topic name>:
+  <主题名称>:
     header:
       message: |
-        A composite help topic index.
+        一个复合帮助主题索引。
 
-        If the topic name is the special value "Default",
-        it will override the automatically generated index used for /help with no arguments.
+        如果主题名称是特殊值 “Default”，
+        它将覆盖用于`/help`（无参数）的自动生成的索引。
     shortText:
       description: |
-        The short text used in other index topics.
+        在其他索引主题中使用的简短文本。
 
-        This is not displayed when showing this topic itself.
+        在显示此主题本身时不显示。
 
-        This is formatted with legacy "&" style formatting.
+        这是用旧版 “&” 样式格式化的。
     preamble:
       description: |
-        Information to show before the index.
+        在索引之前显示的信息。
 
-        This is formatted with legacy "&" style formatting.
+        这是用旧版 “&” 样式格式化的。
     permission:
       description: |
-        A custom permission required to view this help entry.
+        查看此帮助条目所需的自定义权限。
 
-        If this is empty/not set, the entry does not require a permission.
+        如果此值为空或未设置，则该条目不需要权限。
     commands:
       description: |
-        What to show in the index.
+        在索引中显示的内容。
 
-        This is a list of commands, or other help topics.
+        这是一个命令列表，或者其他帮助主题。
 
-        They will be displayed in the order they are listed here
-        in "topic name: short text" format.
+        它们将以“主题名称：简短文本”的格式按此处列出的顺序显示。
 
-        Each entry is a maximum of 1 minimum-width chat line (55 chars).
+        每个条目最多为 1 行最小宽度的聊天行（55个字符）。
       default: "[]"
 
 amended-topics:
-  <topic name>:
+  <主题名称>:
     shortText:
       description: |
-        A replacement for the short text of the topic.
+        用于替换该主题的简短文本。
 
-        If this is empty/not set, the original short text is used.
+        如果此值为空或未设置，则使用原始的简短文本。
 
-        If this contains the literal string `<text>`, it will be replaced with the original short text.
+        如果此值包含字面字符串 `<text>`，它将被替换为原始的简短文本。
 
-        This is formatted with legacy "&" style formatting.
+        这是用旧版“&”样式格式化的。
     fullText:
       description: |
-        A replacement for the full text of the topic.
+        用于替换该主题的完整文本。
 
-        If this is empty/not set, the original full text is used.
+        如果此值为空或未设置，则使用原始的完整文本。
 
-        If this contains the literal string `<text>`, it will be replaced with the original full text.
+        如果此值包含字面字符串 `<text>`，它将被替换为原始的完整文本。
 
-        This is formatted with legacy "&" style formatting.
+        这是用旧版“&”样式格式化的。
     permission:
       description: |
-        Overrides the permission required to view this help entry.
+        覆盖查看此帮助条目所需的权限。
 
-        If this is empty/not set, the original permission is NOT used, instead no permission is required.
+        如果此值为空或未设置，则不使用原始权限，而是不需要任何权限。
 
 ignore-plugins:
   description: |
-    A list of plugins to ignore when generating help topics for registered commands.
+    一个列表，列出在为注册命令生成帮助主题时要忽略的插件。
 
-    If "All" is included, all plugins are ignored.
+    如果包含 “All”，则忽略所有插件。
 
-    If the special plugin name "Bukkit" is included, all commands registered by Bukkit are ignored.
+    如果包含特殊的插件名称 “Bukkit”，则忽略由 Bukkit 注册的所有命令。
   default: "[]"
 
 command-topics-in-master-index:
   description: |
-    Whether to allow command topics (topics starting with a `/`) to be shown in the main index.
+    是否允许命令主题（以`/`开头的主题）显示在主索引中。
 
-    This is the index shown when the user types "`/help`" or "`/help <page>`".
-    Command alias topics are always hidden.
+    这是当用户输入“`/help`”或“`/help <page>`”时显示的索引。
+    命令别名主题始终被隐藏。
   default: "true"

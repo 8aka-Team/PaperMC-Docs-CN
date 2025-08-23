@@ -1,71 +1,71 @@
 ---
-title: Getting started
-description: How to get started with downloading and setting up a Paper server.
+title: 开始使用
+description: 如何开始下载和设置 Paper 服务端
 slug: paper/getting-started
 ---
 
-## Requirements
+## 要求
 
-:::tip
+:::tip[提示]
 
-Paper requires at least **Java 21** to run, which [is easy to download and install](/misc/java-install).
+Paper 至少需要 **Java 21** 才能运行，[下载和安装非常简单](/misc/java-install)。
 
 :::
 
-| Paper Version  | Recommended Java Version |
-|----------------|--------------------------|
-| 1.8 to 1.11    | Java 8                   |
-| 1.12 to 1.16.4 | Java 11                  |
-| 1.16.5         | Java 16                  |
-| 1.17.1-1.18.1+ | Java 21                  |
+| Paper 版本       | 推荐的 Java 版本 |
+|----------------|-------------|
+| 1.8 到 1.11     | Java 8      |
+| 1.12 到 1.16.4  | Java 11     |
+| 1.16.5         | Java 16     |
+| 1.17.1-1.18.1+ | Java 21     |
 
-## Downloading Paper
+## 下载 Paper
 
-Paper provides runnable server JARs directly from our
-[website's downloads page](https://papermc.io/downloads).
+Paper 从我们[网站的下载页面](https://papermc.io/downloads)
+直接提供可运行的服务器 JAR 文件。
 
-Click on the build number to download a file.
+点击构建编号即可下载文件。
 
-## Running the server
+## 运行服务器
 
-To run the server you will need to either create a startup script
-or run a command in your terminal.
+要运行服务器，您需要创建一个启动脚本，
+或者在终端中运行一个命令。
 
-You can generate a startup script using our [Startup Script Generator](/misc/tools/start-script-gen).
-You can also obtain the optimized terminal command to run the server there.
+您可以使用我们的[启动脚本生成器](/misc/tools/start-script-gen)生成启动脚本。
+您也可以在那里获取运行服务器的优化终端命令。
 
-If you're just looking for a short command:
+如果您只是需要一个简短的命令：
 ```bash
 java -Xms4G -Xmx4G -jar paper.jar --nogui
 ```
-Ensure you navigated your terminal to the directory of your server
-and that you have replaced `paper.jar` with the name of the JAR you have downloaded.
+请确保您已将终端导航到服务器的目录，
+并将 `paper.jar` 替换为您下载的 JAR 文件的名称。
 
-The amount of RAM can be set by changing the numbers in the `Xmx` and `Xms` arguments.
-`--nogui` disables Vanilla's GUI, so you don't get double interfaces when using the command line.
+您可以通过更改 `Xmx` 和 `Xms` 参数中的数字来设置 RAM 的数量。
+`--nogui` 会禁用原版的图形界面，这样在使用命令行时就不会出现双重界面。
 
-To configure your server, see the [Global Configuration](/paper/reference/global-configuration) and
-[Per World Configuration](/paper/reference/world-configuration) pages.
+要配置您的服务器，请查看[全局配置](/paper/reference/global-configuration)
+和[世界配置](/paper/reference/world-configuration)页面。
 
-## Updating the server
+## 更新服务器
 
-Updating Paper is simple! See our [Update Tutorial](/paper/updating) for more information.
+更新 Paper 很简单！更多信息请查看我们的[更新教程](/paper/updating)。
 
-## Migrating to Paper
+## 迁移到 Paper
 
-### From Vanilla
+### 从原版迁移
 
-Migrating from Vanilla is easy, but there are some differences, namely in world saves. Paper (and
-CraftBukkit and Spigot) separate out each dimension of a world (nether, the end, etc.) into separate
-world folders.
+从原版迁移非常简单，但有一些区别，
+特别是在世界保存方面。
+Paper（以及 CraftBukkit 和 Spigot）会将每个世界的各个维度（下界、末地等）分别保存到独立的世界文件夹中。
 
-Paper will handle this conversion for you automatically. No additional consideration is required.
+Paper 会自动处理这种转换，无需额外考虑。
 
-### From CraftBukkit or Spigot
+### 从 CraftBukkit 或 Spigot 迁移
 
-Paper is a drop in replacement for both CraftBukkit and Spigot, you don't need to make any changes.
+Paper 是 CraftBukkit 和 Spigot 的直接替代品，您无需进行任何更改。
 
-## Next steps
+## 下一步
 
-Take a look at our [Next Steps](/paper/next-steps) guide to get your server up and running with the best performance and
-features.
+查看我们的[下一步](/paper/next-steps)指南，
+以确保您的服务器以最佳性能和功能运行。

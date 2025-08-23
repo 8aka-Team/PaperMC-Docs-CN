@@ -1,14 +1,14 @@
 ---
-title: Comparison
-description: A comparison between Brigadier and Bukkit commands.
+title: 比较
+description: Brigadier 命令和 Bukkit 命令的比较。
 slug: paper/dev/command-api/misc/comparison-bukkit-brigadier
 ---
 
-## Registering commands
-### The old Bukkit way
+## 注册命令
+### 旧的 Bukkit 方式
 
-In order to register Bukkit commands, you would define a class that extends `BukkitCommand`, and implements the `execute(...)` and `tabComplete(...)`
-methods. This might look like this:
+为了注册 Bukkit 命令，你需要定义一个继承自 `BukkitCommand` 的类，并实现 `execute(...)` 和 `tabComplete(...)` 方法。
+它可能如下所示：
 ```java title="BukkitPartyCommand.java"
 package your.package.name;
 
@@ -29,18 +29,18 @@ public class BukkitPartyCommand extends BukkitCommand {
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         if (args.length == 0) {
-            sender.sendPlainMessage("Please provide a player!");
+            sender.sendPlainMessage("请提供一名玩家！");
             return false;
         }
 
         final Player targetPlayer = Bukkit.getPlayer(args[0]);
         if (targetPlayer == null) {
-            sender.sendPlainMessage("Please provide a valid player!");
+            sender.sendPlainMessage("请提供一个有效的玩家！");
             return false;
         }
 
         targetPlayer.sendPlainMessage(sender.getName() + " started partying with you!");
-        sender.sendPlainMessage("You are now partying with " + targetPlayer.getName() + "!");
+        sender.sendPlainMessage("您现在正在与 " + targetPlayer.getName() + "!");
         return true;
     }
 
@@ -55,24 +55,24 @@ public class BukkitPartyCommand extends BukkitCommand {
 }
 ```
 
-After that, you can define your command like this:
+之后，你可以这样定义你的命令：
 
 ```java title="PluginClass.java"
 this.getServer().getCommandMap().register(
     this.getName().toLowerCase(),
-    new BukkitPartyCommand("bukkitparty", "Have a party", "/bukkitparty <player>", List.of())
+    new BukkitPartyCommand("bukkitparty", "举办派对", "/bukkitparty <player>", List.of())
 );
 ```
 
-As you can see, you have to do a lot of manual checking in order to register a single, very simple command. But how does
-the Brigadier API do it?
+正如您所看到的，为了注册一个非常简单的命令，
+您必须进行大量的手动检查。但 Brigadier API 是怎么做到的？
 
-### The new Paper way
-First, we need to retrieve a `LiteralCommandNode<CommandSourceStack>`. That's a special Brigadier class that holds some sort of [command tree](/paper/dev/command-api/basics/command-tree).
-In our case, it is the root of our command. We can do that by running `Commands.literal(final String literal)`, which returns a
-`LiteralArgumentBuilder<CommandSourceStack>`, where we can define some arguments and executors. Once we are done, we can call
-`LiteralArgumentBuilder#build()` to retrieve our build `LiteralCommandNode`, which we can then register. That sounds complicated at first,
-but once you see it in action, it looks less terrifying:
+### Paper 新的方式
+首先，我们需要获取一个 `LiteralCommandNode<CommandSourceStack>`。这是 Brigadier 的一个特殊类，用于保存某种 [命令树](/paper/dev/command-api/basics/command-tree)。
+在我们的例子中，它是我们的命令的根节点。我们可以通过运行 `Commands.literal(final String literal)` 来实现，
+它返回一个 `LiteralArgumentBuilder<CommandSourceStack>`，我们可以在其中定义一些参数和执行器。
+完成后，我们可以通过调用 `LiteralArgumentBuilder#build()` 来获取构建好的 `LiteralCommandNode`，然后将其注册。
+这听起来一开始很复杂，但一旦你在实践中看到它，它看起来就没那么可怕了：
 
 ```java title="PaperPartyCommand.java"
 public static LiteralCommandNode<CommandSourceStack> createCommand(final String commandName) {
@@ -84,7 +84,7 @@ public static LiteralCommandNode<CommandSourceStack> createCommand(final String 
                 final CommandSender sender = ctx.getSource().getSender();
 
                 targetPlayer.sendPlainMessage(sender.getName() + " started partying with you!");
-                sender.sendPlainMessage("You are now partying with " + targetPlayer.getName() + "!");
+                sender.sendPlainMessage("你现在正在参加派对 " + targetPlayer.getName() + "!");
 
                 return Command.SINGLE_SUCCESS;
             }))
@@ -92,19 +92,19 @@ public static LiteralCommandNode<CommandSourceStack> createCommand(final String 
 }
 ```
 
-Each `.then(...)` defines a new branch in our tree, which can either be a literal (`Commands.literal(String)`) or an argument
-(`Commands.argument(String, ArgumentType<T>)`). Each branch may or may not define an `.executes(Command)` executor. This is
-where all the logic happens.
+每个 `.then(...)` 定义了我们树中的一个新分支，
+它可以是一个字面量 (`Commands.literal(String)`) 或一个参数 (`Commands.argument(String, ArgumentType<T>)`)。
+每个分支可以定义也可以不定义一个 `.executes(Command)` 执行器。这就是所有逻辑发生的地方。
 
-We will take a closer look at that in different pages, but for now, how do we register it? Paper uses a `LifecycleEventManager` system.
-In a nutshell, that is a way to register commands (or tags) that get loaded each time the server reloads its resources, like using /reload.
-Registering our command looks like this:
+我们将在不同的页面中更详细地探讨这一点，但目前，
+我们该如何注册它呢？Paper 使用了一个 `LifecycleEventManager` 系统。
+简而言之，这是一个在服务器每次重新加载资源时都会加载的命令（或标签）的注册方式，就像使用 `/reload` 一样。注册我们的命令看起来是这样的：
 ```java title="PluginClass.java"
 this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-    commands.registrar().register(PaperPartyCommand.createCommand("paperparty"), "Have a nice party");
+    commands.registrar().register(PaperPartyCommand.createCommand("paperparty"), "祝你派对愉快");
 });
 ```
 
-And we are done! As you can see here, both commands do the same thing:
+我们已经完成了！正如你在这里看到的，这两个命令做的事情是一样的：
 
 <span style="display: flex;">![](./assets/bukkitparty-command.png) ![](./assets/paperparty-command.png)</span>

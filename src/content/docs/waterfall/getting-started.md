@@ -1,62 +1,58 @@
 ---
-title: Getting started
-description: How to get started with running Waterfall.
+title: 开始使用
+description: 如何开始运行 Waterfall
 slug: waterfall/getting-started
 banner:
   destructive: true
-  content: We recommend you transition to <a href="https://papermc.io/software/velocity">Velocity</a>. For more information, see the <a href="https://forums.papermc.io/threads/1088/">announcement</a>.
+  content: 我们建议您转向<a href="https://papermc.io/software/velocity">Velocity</a>。更多信息请参见 <a href="https://forums.papermc.io/threads/1088/">Waterfall 终止公告</a>。
 ---
 
-## What is Waterfall?
+## 什么是 Waterfall？
 
-Waterfall is a fork of BungeeCord, a proxy used primarily to teleport players between multiple
-Minecraft servers.
+Waterfall 是 BungeeCord 的一个分支版本，主要用于在多个 Minecraft 服务端之间传送玩家。
 
-Waterfall focuses on three main areas:
+Waterfall 主要关注以下三个领域：
 
-- Stability: Waterfall aims to be stable. We will achieve this through making the code base testable
-  and discouraging practices that lead to proxy lag.
-- Features: Waterfall aims to include more features than canonical BungeeCord.
-- Scalability: Waterfall should be able to handle a large number of concurrent players, given a
-  reasonably modern CPU, memory, and good network connection.
+- **稳定**：Waterfall 致力于保持稳定。我们将通过使代码库可测试以及避免导致代理延迟的做法来实现这一目标。
+- **功能**：Waterfall 致力于提供比原版 BungeeCord 更多的功能。
+- **扩展**：Waterfall 应该能够在合理配置的现代 CPU、内存和良好的网络连接下，处理大量并发玩家。
 
-## Requirements
+## 要求
 
-Waterfall requires **Java 8** or newer to run. The Paper team recommends you run on Java 11 or
-higher. Generally, LTS versions of Java are targeted, though you may have luck on newer versions.
+Waterfall 需要 **Java 8** 或更高版本才能运行。Paper 团队建议您使用 Java 11 或更高版本。
+一般建议使用 Java 的长期支持（LTS）版本，尽管您也可以尝试使用更新的版本。
 
-## Migrating from BungeeCord
+## 从 BungeeCord 迁移
 
-Waterfall is a drop in replacements for BungeeCord, you don't need to make any changes to your
-configuration.
+Waterfall 是 BungeeCord 的直接替代品，您无需对配置进行任何更改。
 
-## Getting a proxy JAR
+## 获取代理 JAR 文件
 
-Paper provides runnable proxy JARs directly from our [downloads page](https://papermc.io/downloads/waterfall).
+Paper 直接从我们的 [下载页面](https://papermc.io/downloads/waterfall) 下载提供可运行的代理 JAR 文件。
 
-Click on the build number to download a file.
+点击构建编号即可下载文件。
 
-## Running the proxy
+## 运行代理
 
-To run the proxy, simply start it up like any other Java application.
+要运行代理，只需像运行其他 Java 应用程序一样启动它。
 
-Open your terminal, navigate to the saved location, and then run
+打开终端，导航到保存的位置，然后运行
 
 ```bash
 java -Xms512M -Xmx512M -jar waterfall-###.jar
 ```
 
-Aikar's recommended flags for Waterfall are as follows:
+Aikar 为 Waterfall 推荐的启动参数如下：
 
 ```bash
 java -Xms512M -Xmx512M -XX:+UseG1GC -XX:G1HeapRegionSize=4M -XX:+UnlockExperimentalVMOptions -XX:+ParallelRefProcEnabled -XX:+AlwaysPreTouch -jar waterfall-###.jar
 ```
 
-The amount of memory can be set by changing the numbers in the `-Xms` and `-Xmx` flags.
+可以通过更改 `-Xms` 和 `-Xmx` 参数中的数字来设置内存大小。
 
-To configure your proxy, see the [configuration](/waterfall/configuration) page.
+要配置您的代理，请参阅 [配置](/waterfall/configuration) 页面。
 
 ## Updating the proxy
 
-To update the proxy, first stop it safely by executing the `end` command. Then replace the old proxy
-JAR with a new one, and start the proxy. That's it.
+要更新代理，请首先通过执行 `end` 命令安全停止它。
+然后用新的 JAR 文件替换旧的代理 JAR 文件，并启动代理。

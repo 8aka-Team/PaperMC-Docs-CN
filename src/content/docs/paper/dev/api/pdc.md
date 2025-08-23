@@ -1,11 +1,11 @@
 ---
-title: Persistent data container (PDC)
-description: A guide to the PDC API for storing data.
+title: 持久数据容器（PDC）
+description: 关于 PDC API 用于存储数据的指南。
 slug: paper/dev/pdc
 ---
 
-The Persistent Data Container (PDC) is a way to store custom data on a whole range of objects; such as items, entities, and block entities.
-The full list of classes that support the PDC are:
+持久数据容器（PDC）是一种在各种对象上存储自定义数据的方式，例如物品、实体和方块实体。
+支持 PDC 的完整类列表包括：
 
 - [`Chunk`](#chunk)
 - [`World`](#world)
@@ -18,110 +18,110 @@ The full list of classes that support the PDC are:
 - [`OfflinePlayer`](#offlineplayer)
 - [`ItemStack`](#itemstack)
 
-## What is it used for?
-In the past, developers resorted to a variety of methods to store custom data on objects:
+## 它用于什么？
+在过去，开发者使用了多种方法在对象上存储自定义数据：
 
-- NBT tags: Requires reflection to access internals and was generally unreliable in the long term.
-- Lore and display names: Prone to collisions as well as slow to access.
+- NBT 标签：需要通过反射访问内部结构，并且长期来看不太可靠。
+- 物品描述和显示名称：容易出现冲突，并且访问速度较慢。
 
-The benefit of the PDC is that it allows for a more reliable and performant way to store arbitrary data on objects.
-It also doesn't rely on accessing server internals, so it's less likely to break on future versions. It also removes the need to
-manually track the data lifecycle, as, for example with an entity, the PDC will be saved when the entity unloads.
+持久化数据容器（PDC）的好处在于，它允许以一种更可靠且性能更高的方式在对象上存储任意数据。
+它不依赖于访问服务器的内部结构，因此在未来版本中不太可能出问题。
+此外，它还消除了手动跟踪数据生命周期的需要，例如，当一个实体卸载时，PDC会自动保存。
 
-## Adding data
-To store data in the PDC, there are a few things you need first. The first is a [`NamespacedKey`](jd:paper:org.bukkit.NamespacedKey),
-which is used to identify the data. The second is a [`PersistentDataContainer`](jd:paper:org.bukkit.persistence.PersistentDataContainer),
-which is the object you want to store the data on. The third is the data itself.
+## 添加数据
+要将数据存储到 PDC 中，首先需要准备几样东西。
+第一是 [`NamespacedKey`](jd:paper:org.bukkit.NamespacedKey)，它用于标识数据。
+第二是 [`PersistentDataContainer`](jd:paper:org.bukkit.persistence.PersistentDataContainer)，它是你想要存储数据的对象。第三是数据本身。
 
 ```java
-// Create a NamespacedKey
+// 创建一个 NamespacedKey
 NamespacedKey key = new NamespacedKey(pluginInstance, "example-key");
 
 ItemStack item = ItemStack.of(Material.DIAMOND);
-// ItemMeta implements PersistentDataHolder, so we can get the PDC from it
+// `ItemMeta` 实现了 `PersistentDataHolder` 接口，因此我们可以从中获取 PDC。
 item.editMeta(meta -> {
-    meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "I love Tacos!");
+    meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, "我爱玉米饼！");
 });
 ```
 
-:::note
+:::note[注意]
 
-It is considered good practice to reuse `NamespacedKey` objects. They can be constructed with either:
-- A [`Plugin`](jd:paper:org.bukkit.plugin.Plugin) instance and a [`String`](jd:java:java.lang.String) identifier
-- A [`String`](jd:java:java.lang.String) namespace and a [`String`](jd:java:java.lang.String) identifier
+重用 `NamespacedKey` 对象是一种良好的实践。它们可以通过以下方式构建：
+- 使用一个 [`Plugin`](jd:paper:org.bukkit.plugin.Plugin) 实例和一个 [`String`](jd:java:java.lang.String) 标识符
+- 使用一个 [`String`](jd:java:java.lang.String) 命名空间和一个 [`String`](jd:java:java.lang.String) 标识符
 
-The first option is often preferred as it will automatically use the plugin's namespace; however, the second option can be used if you
-want to use a different namespace or access the data from another plugin.
+第一种方法通常更受青睐，因为它会自动使用插件的命名空间；
+然而，如果你想要使用不同的命名空间，或者从另一个插件中访问数据，第二种方法也可以使用。
 
 :::
 
-## Getting data
-To get data from the PDC, you need to know the `NamespacedKey` and the `PersistentDataType` of the data.
+## 获取数据
+要从 PDC 中获取数据，你需要知道数据的 `NamespacedKey` 和 `PersistentDataType`。
 
 ```java
-// Create a NamespacedKey
+// 创建一个 `NamespacedKey`
 NamespacedKey key = new NamespacedKey(pluginInstance, "example-key");
 
-ItemStack item = ...; // Retrieve the item from before
-// Get the data from the PDC
+ItemStack item = ...; // 从之前获取该物品
+// 从 PDC 中获取数据
 PersistentDataContainer container = item.getItemMeta().getPersistentDataContainer();
 if (container.has(key, PersistentDataType.STRING)) {
     String value = container.get(key, PersistentDataType.STRING);
-    // Do something with the value
+    // 对获取到的值进行操作
     player.sendMessage(Component.text(value));
 }
 ```
 
-## Data types
+## 数据类型
 
-The PDC supports a wide range of data types, such as:
-- `Byte`, `Byte Array`
+PDC 支持多种数据类型，例如：
+- `Byte`, `字节数组`
 - `Double`
 - `Float`
-- `Integer`, `Integer Array`
-- `Long`, `Long Array`
+- `Integer`, `整型数组`
+- `Long`, `长整型数组`
 - `Short`
 - `String`
 - `Boolean`
-- `Tag Containers` - a way to nest PDCs within each other. To create a new `PersistentDataContainer`, you can use:
+- `Tag Containers` - 一种将 PDC 嵌套在彼此之中的方法。要创建一个新的 `PersistentDataContainer`，可以使用：
   ```java
-  // Get the existing container
+  // 获取现有的容器
   PersistentDataContainer container = ...;
-  // Create a new container
+  // 创建一个新的容器
   PersistentDataContainer newContainer = container.getAdapterContext().newPersistentDataContainer();
   ```
-- `Lists` - a way to represent lists of data that can be stored via another persistent data type. You may create them via:
+- `Lists` - 一种可以存储其他持久化数据类型列表的方式。可以通过以下方式创建它们：
   ```java
-  // Storing a list of strings in a container by verbosely creating
-  // a list data type wrapping the string data type.
+  // 通过详细地创建一个字符串数据类型的列表数据类型，
+  // 将字符串列表存储在容器中
   container.set(
       key,
       PersistentDataType.LIST.listTypeFrom(PersistentDataType.STRING),
       List.of("a", "list", "of", "strings")
   );
 
-  // Storing a list of strings in a container by using the api
-  // provided pre-definitions of commonly used list types.
+  // 使用 API 提供的常用列表类型的预定义，
+  // 将字符串列表存储在容器中
   container.set(key, PersistentDataType.LIST.strings(), List.of("a", "list", "of", "strings"));
 
-  // Retrieving a list of strings from the container.
+  // 从容器中检索字符串列表。
   List<String> strings = container.get(key, PersistentDataType.LIST.strings());
   ```
 
-:::note[Boolean `PersistentDataType`]
+:::note[布尔类型的 `PersistentDataType`]
 
-The [`Boolean`](jd:paper:org.bukkit.persistence.PersistentDataType#BOOLEAN) PDC type exists for convenience
-- you cannot make more complex types distill to a `Boolean`.
+`Boolean` 类型的 PDC 存在是为了方便使用
+- 你无法将更复杂的数据类型简化为布尔值。
 
 :::
 
-### Custom data types
+### 自定义数据类型
 
-You can store a wide range of data in the PDC with the native adapters; however, if you need a more complex data type, you can
-implement your own [`PersistentDataType`](jd:paper:org.bukkit.persistence.PersistentDataType) and use that instead.
-The `PersistentDataType`'s job is to "deconstruct" a complex data type into something that is natively supported (see above) and then vice-versa.
+你可以使用原生适配器在 PDC 中存储多种数据类型；
+然而，如果你需要更复杂的数据类型，你可以实现自己的 [`PersistentDataType`](jd:paper:org.bukkit.persistence.PersistentDataType) 并使用它。
+[`PersistentDataType`](jd:paper:org.bukkit.persistence.PersistentDataType) 的作用是将复杂的数据类型“分解”为原生支持的类型（参见上文），反之亦然。
 
-Here is an example of how to do that for a UUID:
+以下是如何为 UUID 实现自定义 `PersistentDataType` 的示例：
 
 ```java title="UUIDDataType.java"
 public class UUIDDataType implements PersistentDataType<byte[], UUID> {
@@ -153,30 +153,30 @@ public class UUIDDataType implements PersistentDataType<byte[], UUID> {
 }
 ```
 
-:::note
+:::note[注意]
 
-In order to use your own `PersistentDataType`, you must pass an instance of it to the
-[`get`](jd:paper:io.papermc.paper.persistence.PersistentDataContainerView#get(org.bukkit.NamespacedKey,org.bukkit.persistence.PersistentDataType))/
-[`set`](jd:paper:org.bukkit.persistence.PersistentDataContainer#set(org.bukkit.NamespacedKey,org.bukkit.persistence.PersistentDataType,C))/
-[`has`](jd:paper:io.papermc.paper.persistence.PersistentDataContainerView#has(org.bukkit.NamespacedKey,org.bukkit.persistence.PersistentDataType)) methods.
+为了使用自定义的 `PersistentDataType`，你需要将其实例传递给
+[`get`](jd:paper:io.papermc.paper.persistence.PersistentDataContainerView#get(org.bukkit.NamespacedKey,org.bukkit.persistence.PersistentDataType))、
+[`set`](jd:paper:org.bukkit.persistence.PersistentDataContainer#set(org.bukkit.NamespacedKey,org.bukkit.persistence.PersistentDataType,C))
+或 [`has`](jd:paper:io.papermc.paper.persistence.PersistentDataContainerView#has(org.bukkit.NamespacedKey,org.bukkit.persistence.PersistentDataType)) 方法。
 ```java
 container.set(key, new UUIDDataType(), uuid);
 ```
 
 :::
 
-## Storing on different objects
+## 在不同对象上存储数据
 
-:::caution
+:::caution[警告]
 
-Data is **not** copied across holders for you, and needs to be **manually** copied if 'moving' between PersistentDataHolders.
+数据 **不会** 自动在持有者之间复制，如果需要在 `PersistentDataHolder` 之间“移动”数据，则需要 **手动** 复制。
 
-E.g. Placing an ItemStack as a Block (with a TileState) ***does not*** copy over PDC data.
+例如，将一个 `ItemStack` 放置为方块（带有 `TileState`）**不会** 复制 PDC 数据。
 
 :::
 
-Objects that can have a PDC implement the [`PersistentDataHolder`](jd:paper:org.bukkit.persistence.PersistentDataHolder) interface
-and their PDC can be fetched with [`PersistentDataHolder#getPersistentDataContainer()`](jd:paper:org.bukkit.persistence.PersistentDataHolder#getPersistentDataContainer()).
+可以拥有 PDC 的对象实现了 [`PersistentDataHolder`](jd:paper:org.bukkit.persistence.PersistentDataHolder) 接口，
+其 PDC 可以通过 [`PersistentDataHolder#getPersistentDataContainer()`](jd:paper:org.bukkit.persistence.PersistentDataHolder#getPersistentDataContainer()) 获取。
 
 - ##### [`Chunk`](jd:paper:org.bukkit.Chunk)
     - `Chunk#getPersistentDataContainer()`
@@ -185,12 +185,12 @@ and their PDC can be fetched with [`PersistentDataHolder#getPersistentDataContai
 - ##### [`Entity`](jd:paper:org.bukkit.entity.Entity)
     - `Entity#getPersistentDataContainer()`
 - ##### [`TileState`](jd:paper:org.bukkit.block.TileState)
-    - This is slightly more complicated, as you need to cast the block's state to something that extends `TileState`.
-      This does not work for all blocks, only those that have a block entity.
+    - 这稍微复杂一些，因为需要将方块的状态强制转换为继承自 `TileState` 的类型。
+      这并不适用于所有方块，只有那些具有方块实体的方块才支持。
       ```java
       Block block = ...;
       if (block.getState() instanceof Chest chest) {
-          chest.getPersistentDataContainer().set(key, PersistentDataType.STRING, "I love Tacos!");
+          chest.getPersistentDataContainer().set(key, PersistentDataType.STRING, "我爱玉米饼！");
           chest.update();
       }
       ```
@@ -203,20 +203,20 @@ and their PDC can be fetched with [`PersistentDataHolder#getPersistentDataContai
 - ##### [`Raid`](jd:paper:org.bukkit.Raid)
     - `Raid#getPersistentDataContainer()`
 - ##### [`OfflinePlayer`](jd:paper:org.bukkit.OfflinePlayer)
-    - OfflinePlayer only exposes a read-only version of the persistent data container.
-      It can be accessed via `OfflinePlayer#getPersistentDataContainer()`.
+    - `OfflinePlayer` 只提供了一个只读版本的持久化数据容器，
+      可以通过 `OfflinePlayer#getPersistentDataContainer()` 访问。
 - ##### [`ItemStack`](jd:paper:org.bukkit.inventory.ItemStack)
-    - The persistent data container of an `ItemStack` has historically been accessed by
-      the `ItemStack`'s `ItemMeta`. This, however, includes the overhead of constructing the entire
-      `ItemMeta`, which acts as a snapshot of the `ItemStack`'s data at the point of creation.
+    - `ItemStack` 的持久化数据容器历来是通过其 `ItemMeta` 访问的。
+      然而，这包括了构造整个 `ItemMeta` 的开销，`ItemMeta`
+      作为 `ItemStack` 数据的快照，在创建时会捕获其状态。
 
-      To avoid this overhead, ItemStack exposes a read-only view of its persistent data container at
-      `ItemStack#getPersistentDataContainer()`.
-      Edits to the persistent data container can be achieved via `ItemStack#editPersistentDataContainer(Consumer)`.
-      The persistent data container available in the consumer is not valid outside the consumer.
+      为了避免这种开销，`ItemStack`
+      在 `ItemStack#getPersistentDataContainer()` 提供了其持久化数据容器的只读视图。
+      可以通过 `ItemStack#editPersistentDataContainer(Consumer)` 对持久化数据容器进行编辑。
+      在 `Consumer` 中可用的持久化数据容器在 `Consumer` 外部是无效的。
       ```java
       ItemStack itemStack = ...;
       itemStack.editPersistentDataContainer(pdc -> {
-          pdc.set(key, PersistentDataType.STRING, "I love Tacos!");
+          pdc.set(key, PersistentDataType.STRING, "我爱玉米饼！");
       });
       ```

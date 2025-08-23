@@ -1,88 +1,80 @@
 ---
-title: What does Velocity do for me?
-description: An explanation for why you should run Velocity.
+title: 为啥使用
+description: 关于为什么你应该运行 Velocity 的说明
 slug: velocity/why-velocity
 ---
 
-We believe that Velocity is one of the best proxies for _Minecraft_ around, and there's not much
-that can top it. However, we do diverge from more established, mainstream solutions in some
-important ways. That can make Velocity a bit hard to sell. We are frequently asked "why?" so often.
-This page is our answer to that question.
+我们相信 Velocity 是目前最好的 _Minecraft_ 代理之一，没有什么能超越它。
+然而，我们在一些重要方面与更成熟、更主流的解决方案有所不同。
+这可能会让 Velocity 稍微难以被接受。
+我们经常被问到“为什么？”这个问题。这个页面就是我们对这个问题的回答。
 
-## Strong experience
+## 丰富的经验
 
-The founder and primary developer of Velocity (Tux) has been active in developing proxy software for
-_Minecraft: Java Edition_ since 2013. They created the RedisBungee plugin, contributed to BungeeCord
-from 2014 to 2017, and also founded the Waterfall project and led it from 2016 to 2017. In fact, the
-current maintainer of Waterfall helped encourage them to start a brand-new proxy from the ground up!
+Velocity 的创始人兼主要开发者（Tux）自 2013 年以来一直积极参与开发 _Minecraft: Java Edition_ 的代理软件。
+他们创建了 RedisBungee 插件，从 2014 年到 2017 年为 BungeeCord 做出贡献，
+还创立了 Waterfall 项目，并从 2016 年到 2017 年领导该项目。
+事实上，Waterfall 的现任维护者鼓励他们从头开始开发一个全新的代理！
 
-## Leading performance
+## 卓越表现
 
-Velocity powers several highly-populated Minecraft networks, while using fewer resources than the
-competition. The recipe to the sauce is simple.
+Velocity 为多个热门的 Minecraft 网络提供支持，
+同时使用的资源比竞争对手更少。秘诀其实很简单。
 
-### No entity ID rewriting
+### 无实体 ID 重写
 
-When a Minecraft client connects to another Minecraft server, the server will send back an ID that
-uniquely identifies a specific player connection. This ID is used in packets that target the player
-that the server may send. But what happens when they're actually connecting a proxy that has the
-ability to change what server the player is connected to?
+当一个 Minecraft 客户端连接到另一个 Minecraft 服务器时，服务器会返回一个唯一标识特定玩家连接的 ID。
+这个 ID 用于服务器可能发送的针对该玩家的数据包中。
+但如果他们实际连接的是一个可以更改玩家所连接服务器的代理时，会发生什么呢？
 
-Other proxy solutions try to solve this problem by rewriting entity IDs that reference the current
-player, changing it from the entity ID assigned by the server the player is currently connected to,
-to the entity ID that the player got when they connected to the first server they connected to
-through the proxy. This approach is often complicated, leads to bugs, reduces performance, breaks
-mods, and ultimately cannot be a complete solution.
+其他代理解决方案试图通过重写引用当前玩家的实体 ID 来解决这个问题，
+将其从玩家当前连接的服务器分配的实体 ID 更改为玩家通过代理连接到第一个服务器时获得的实体 ID。
+这种方法通常很复杂，会导致错误，降低性能，破坏模组，而且最终无法成为一个完整的解决方案。
 
-However, the Minecraft client actually supports changing its entity ID with a special packet
-sequence. Velocity takes advantage of this and forces the client to change its entity ID. This
-approach improves performance, improves mod compatibility, and reduces issues caused by incomplete
-entity ID rewrites.
+然而，Minecraft 客户端实际上支持通过特殊的包序列更改其实体 ID。
+Velocity 利用这一点，强制客户端更改其实体 ID。
+这种方法提高了性能，提高了模组兼容性，并减少了由于不完整的实体 ID 重写导致的问题。
 
-### Going deep
+### 深入
 
-Velocity goes deeper than optimizing the handling of the Minecraft protocol. Smart handling of the
-protocol produces incredible performance gains but for more performance, we need to go much deeper.
+Velocity 不仅优化了对 Minecraft 协议的处理，还深入到更底层。
+智能处理协议可以带来惊人的性能提升，但为了获得更高的性能，我们需要深入到更底层。
 
-One way in which we drastically improve performance and throughput is by improving the speed of
-compressing packets to be sent to the client. On supported platforms (Linux x86_64 and aarch64),
-Velocity is able to replace the zlib library ( which implements the compression algorithm used by
-the Minecraft protocol) with [libdeflate](https://github.com/ebiggers/libdeflate) which is twice as
-fast as zlib while delivering a similar compression ratio.
+我们通过提高发送给客户端的数据包的压缩速度，显著提升了性能和吞吐量。
+在支持的平台上（Linux x86_64 和 aarch64），
+Velocity 可以用 [libdeflate](https://github.com/ebiggers/libdeflate) 替换 zlib 库，后者实现了 Minecraft 协议中使用的压缩算法。
+libdeflate 的速度是 zlib 的两倍，同时提供了类似的压缩比。
 
-Velocity also employs several tricks to get the JIT (just-in-time) compiler on our side. Those
-tricks require deep understanding of how Java works, but we put in the work to apply those tricks
-which translate to increased performance.
+Velocity 还运用了多种技巧来争取即时编译器（JIT）的支持。
+这些技巧需要对 Java 的工作原理有深入的了解，
+但我们投入了大量工作来应用这些技巧，从而实现了性能的提升。
 
-### Internal stability policies
+### 内部稳定性政策
 
-Finally, Velocity does not attempt to maintain a stable internal API between minor and major
-releases. This allows Velocity to be more flexible and still deliver performance improvements and
-new features with each release. For instance, Velocity 1.1.0 delivered massive performance
-improvements and added many significant new features by breaking parts of the internal API while
-still keeping full compatibility with older plugins. Compare to BungeeCord which is often very
-conservative about API breaks and when it does so, provides little notice of the break, and even
-when doing a break, does not take the opportunity to seriously improve the API being broken (for
-instance, adding RGB support to `ChatColor`).
+最后，Velocity 并不试图在小版本和大版本之间保持稳定的内部 API。
+这使得 Velocity 更具灵活性，并且能够在每次发布时都提供性能改进和新功能。
+例如，Velocity 1.1.0 通过打破部分内部 API，
+实现了巨大的性能改进并增加了许多重要的新功能，同时仍然与旧插件完全兼容。
+相比之下，BungeeCord 在 API 破坏方面通常非常保守，当它确实进行破坏时，
+往往没有提前通知，而且即使进行了破坏，也没有抓住机会对被破坏的 API 进行重大改进（例如，在 `ChatColor` 中添加 RGB 支持）。
 
-### Control is in your hands
+### 控制权掌握在您手中
 
-We take pride in tuning Velocity to be the most performant proxy, but in case the speed provided
-out-of-the-box is not good enough, you can easily tweak several performance-related settings in
-`velocity.toml`.
+我们致力于将 Velocity 打造为性能卓越的代理，
+但如果开箱即用的速度仍不足以满足您的需求，
+您可以在 `velocity.toml` 中轻松调整多个与性能相关的设置。
 
-## Improved security
+## 改进的安全性
 
-Velocity also features more security features, some of which are unique to Velocity. We proactively
-foreclose as many denial-of-service attacks as soon as possible and feature a unique player info
-forwarding system for Minecraft 1.13+ that requires the server and proxy to know a pre-arranged key.
+Velocity 还具备更多的安全功能，其中一些是 Velocity 独有的。
+我们积极防范尽可能多的拒绝服务攻击，并为 Minecraft 1.13+ 提供了一种独特的玩家信息转发系统，
+该系统要求服务器和代理知晓一个预先安排的密钥。
 
-## Standards and mod support
+## 标准和模组支持
 
-Unlike certain platforms which only provide lip service to the modding community (and can be at time
-hostile to them), Velocity embraces the richness of the platform Minecraft provides. As just a small
-example, we have a Fabric mod that
-[helps bridge the gap between Velocity itself and mods that extend the Minecraft protocol](https://www.curseforge.com/minecraft/mc-mods/crossstitch)
-and feature full Forge support for 1.7 through 1.12.2 and 1.20.2 or higher. Velocity also supports emerging
-standard libraries in the community such as Kyori's [Adventure](https://github.com/KyoriPowered/adventure) library.
-We collaborate with the Minecraft modding community.
+与某些仅对模组社区提供口头支持（甚至有时对模组社区表现出敌意）的平台不同，Velocity 拥抱 Minecraft 所提供的丰富性。
+以一个小例子来说，我们有一个 Fabric 模组，
+[有助于弥合 Velocity 本身与扩展 Minecraft 协议的模组之间的差距](https://www.curseforge.com/minecraft/mc-mods/crossstitch)，
+并且支持从 1.7 到 1.12.2 以及 1.20.2 或更高版本的完整 Forge 功能。
+Velocity 还支持社区中出现的标准库，例如 Kyori 的 [Adventure](https://github.com/KyoriPowered/adventure) 库。
+我们与 Minecraft 模组社区展开合作。

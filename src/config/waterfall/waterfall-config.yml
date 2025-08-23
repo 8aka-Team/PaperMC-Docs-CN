@@ -1,41 +1,42 @@
 use_netty_dns_resolver:
   default: "true"
   description: >-
-    Sets whether Netty''s async DNS resolver is used for account authentication.
+    设置是否使用 Netty 的异步 DNS 解析器进行帐户身份验证。
 disable_modern_tab_limiter:
   default: "true"
   description: >-
-    Disables the tab completion limit for 1.13+ clients.
+    设置是否为 1.13+ 以上版本的客户端禁用 Tab 补全限制。
 log_initial_handler_connections:
   default: "true"
   description: >-
-    Sets whether to log InitialHandler connections.
+    设置是否在日子中记录 InitialHandler（初始处理程序） 连接。
 throttling:
   default: "1000"
   description: >-
-    How often tab-complete packets can be sent in milliseconds.
+    设置 Tab 补全数据包时可以发送的频率（以毫秒为单位）。
 game_version:
   default: ""
   description: >-
-    The supported versions displayed to the client. Default is a comma
-    separated list of supported versions. For example 1.8.x, 1.9.x, 1.10.x
+    设置显示给客户端的支持版本。
+
+    - 默认是一个以逗号分隔的支持版本列表，例如 1.8.x, 1.9.x, 1.10.x, 1.21.X等。
 disable_tab_list_rewrite:
   default: "true"
   description: >-
-    This setting disables tablist rewriting, which may resolve issues
-    setting player profiles when Waterfall is in offline mode.
+    设置是否禁用 Tab 列表重写，这可能解决 Waterfall 在离线模式下设置玩家资料时的问题。
 disable_entity_metadata_rewrite:
   default: "false"
   description: >-
-    This setting disables entity metadata rewriting in favor of sending
-    a join packet to the client. It offers a more robust solution for modded environments
-    but can cause plugins to break.
+    设置是否禁用实体元数据重写，而是向客户端发送一个加入数据包。
+
+    - 它为修改环境提供了更稳健的解决方案，但可能会导致插件崩溃。
 plugin_channel_name_limit:
   default: "128"
   description: >-
-    The maximum channel identifier length. May be useful for certain broken mods.
+    设置插件的最大通道标识符长度。对于某些有问题的修改可能有用。
 registered_plugin_channels_limit:
   default: "128"
   description: >-
-    The maximum number of registered plugin channels for a connection.
-    Used by mods and some plugins. May be useful to fix certain broken modpacks.
+    设置一个连接可以注册的插件通道的最大数量。
+
+    - 由修改和某些插件使用。对于某些有问题的修改包可能有用。

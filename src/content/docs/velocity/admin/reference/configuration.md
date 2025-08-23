@@ -1,89 +1,88 @@
 ---
-title: Configuring Velocity
-description: Velocity is designed to be easy to configure and this guide will walk you through how to do so.
+title: 易于配置
+description: Velocity 被设计为易于配置，本指南将指导你如何进行配置
 slug: velocity/configuration
 ---
 
-Velocity is designed to be easy to configure and set up. Every Velocity file is stored in
-`velocity.toml`, located in the directory where you started the proxy. Velocity uses the
-[TOML](https://github.com/toml-lang/toml) file format, as it is easy to understand and avoids
-pitfalls of YAML and other configuration formats common in the community.
+Velocity 旨在易于配置和设置。
+每个 Velocity 文件都存储在启动代理程序的目录中的 `velocity.toml` 文件中。
+Velocity使用 [TOML](https://github.com/toml-lang/toml) 文件格式，因为它易于理解，
+并且避免了 YAML 和其他社区中常见的配置格式的陷阱。
 
-An up-to-date version of the default configuration can be found on
-[GitHub](https://github.com/PaperMC/Velocity/blob/dev/3.0.0/proxy/src/main/resources/default-velocity.toml).
+最新的默认配置文件可以在 [GitHub](https://github.com/PaperMC/Velocity/blob/dev/3.0.0/proxy/src/main/resources/default-velocity.toml) 上找到
 
-## Data types
+## 数据类型
 
-There are a few "special" data types in the Velocity configuration.
+在 Velocity 配置中有一些“特殊”的数据类型。
 
-### Chat
+### 聊天
 
-Chat messages may be provided in [MiniMessage](https://docs.advntr.dev/minimessage/format.html) format.
+聊天消息可以使用 [MiniMessage](https://docs.advntr.dev/minimessage/format.html) 格式提供。
 
-RGB support is available for Minecraft 1.16 and later versions.
+Minecraft 1.16及更高版本支持 RGB 颜色。
 
-### Address
+### 地址
 
-An address is a pairing of an IP address or hostname, and a port, separated by a colon (`:`). For
-instance, `127.0.0.1:25577` and `server01.example.com:25565` are valid addresses.
+地址是由 IP 地址或主机名与端口号组成，两者之间用冒号（`:`）分隔。
+例如，`127.0.0.1:25577` 和 `server01.example.com:25565` 都是有效的地址。
 
-## Root section
+## 基础配置
 
-These settings mostly cover the basic, most essential settings of the proxy.
+这些设置主要涵盖代理的基本且最重要的配置。
 
-| Setting Name                       | Type    | Description                                                                                                                                                                                                                                                        |
-|------------------------------------|---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `config-version`                   | String  | This is the current config version used by Velocity. You should not alter this setting.                                                                                                                                                                            |
-| `bind`                             | Address | This tells the proxy to accept connections on a specific IP. By default, Velocity will listen for connections on all IP addresses on the computer on port 25565.                                                                                                   |
-| `motd`                             | Chat    | This allows you to change the message shown to players when they add your server to their server list. You can use [MiniMessage format](https://docs.advntr.dev/minimessage/format.html).                                                                          |
-| `show-max-players`                 | Integer | This allows you to customize the number of "maximum" players in the player's server list. Note that Velocity doesn't have a maximum number of players it supports.                                                                                                 |
-| `online-mode`                      | Boolean | Should we authenticate players with Mojang? By default, this is on.                                                                                                                                                                                                |
-| `force-key-authentication`         | Boolean | Should the proxy enforce the new public key security standard? By default, this is on.                                                                                                                                                                             |
-| `player-info-forwarding-mode`      | Enum    | See [Configuring player information forwarding](/velocity/player-information-forwarding) for more information.                                                                                                                                                     |
-| `prevent-client-proxy-connections` | Boolean | If client's ISP/AS sent from this proxy is different from the one from Mojang's authentication server, the player is kicked. This disallows some VPN and proxy connections but is a weak form of protection.                                                       |
-| `forwarding-secret-file`           | String  | The name of the file in which the forwarding secret is stored. This secret is used to ensure that player info forwarded by Velocity comes from your proxy and not from someone pretending to run Velocity. See the "Player info forwarding" section for more info. |
-| `announce-forge`                   | Boolean | This setting determines whether Velocity should present itself as a Forge/FML-compatible server. By default, this is disabled.                                                                                                                                     |
-| `kick-existing-players`            | Boolean | Allows restoring the Vanilla behavior of kicking users on the proxy if they try to reconnect (e.g. lost internet connection briefly).                                                                                                                              |
-| `ping-passthrough`                 | String  | Allows forwarding nothing (the default), the `MODS` (for Forge), the `DESCRIPTION`, or everything (`ALL`) from the `try` list (or forced host server connection order).                                                                                            |
-| `enable-player-address-logging`    | Boolean | If disabled (default is true), player IP addresses will be replaced by `<ip address withheld>` in logs.                                                                                                                                                            |
+| 设置名称                               | 类型  | 描述                                                                                                 |
+|------------------------------------|-----|----------------------------------------------------------------------------------------------------|
+| `config-version`                   | 字符串 | 这是 Velocity 当前使用的配置版本。你不应该更改此设置。                                                                   |
+| `bind`                             | 地址  | 这告诉代理在特定 IP 上接受连接。默认情况下，Velocity 将在计算机上的所有IP地址的 25565 端口上监听连接。                                     |
+| `motd`                             | 聊天  | 这允许你更改玩家将服务器添加到服务器列表时显示的消息。你可以使用 [MiniMessage格式](https://docs.advntr.dev/minimessage/format.html)。 |
+| `show-max-players`                 | 整数  | 这允许你自定义玩家服务器列表中的“最大”玩家数量。请注意，Velocity 并没有它支持的最大玩家数量限制。                                             |
+| `online-mode`                      | 布尔值 | 我们是否应该使用 Mojang 验证玩家？默认情况下，这是开启的。                                                                  |
+| `force-key-authentication`         | 布尔值 | 代理是否应该强制执行新的公钥安全标准？默认情况下，这是开启的。                                                                    |
+| `player-info-forwarding-mode`      | 枚举  | 有关更多信息，请参阅[配置玩家信息转发](/velocity/player-information-forwarding)。                                     |
+| `prevent-client-proxy-connections` | 布尔值 | 如果客户端的 ISP/AS 从这个代理发送的与 Mojang 认证服务器发送的不同，玩家将被踢出。这会阻止一些 VPN 和代理连接，但是一种较弱的保护形式。                     |
+| `forwarding-secret-file`           | 字符串 | 存储转发密钥的文件名称。此密钥用于确保 Velocity 转发的玩家信息来自你的代理，而不是来自假装运行 Velocity 的人。有关更多信息，请参阅“玩家信息转发”部分。             |
+| `announce-forge`                   | 布尔值 | 此设置决定 Velocity 是否应将自己呈现为一个兼容 Forge/FML 的服务器。默认情况下，这是禁用的。                                           |
+| `kick-existing-players`            | 布尔值 | 允许恢复 Vanilla 的行为，即如果玩家尝试重新连接（例如，短暂失去互联网连接），则将代理上的用户踢出。                                             |
+| `ping-passthrough`                 | 字符串 | 允许转发“尝试”列表（或强制主机服务器连接顺序）中的内容，包括“无”（默认）、“MODS”（用于Forge）、“DESCRIPTION”或“全部”（`ALL`）。                  |
+| `enable-player-address-logging`    | 布尔值 | 如果禁用（默认为 `true`），玩家 IP 地址将在日志中被替换为 `<IP 地址已隐藏>`。                                                   | |
 
-## `servers` section
+## `servers` 部分
 
-| Setting Name  | Type    | Description                                                                                                                |
-|---------------|---------|----------------------------------------------------------------------------------------------------------------------------|
-| A server name | Address | This makes the proxy aware of a server that it can connect to.                                                             |
-| `try`         | Array   | This specifies what servers Velocity should try to connect to upon player login and when a player is kicked from a server. |
+| 设置名称  | 类型 | 描述                                         |
+|-------|----|--------------------------------------------|
+| 服务器名称 | 地址 | 这使代理知道它可以连接到的服务器。                          |
+| `try` | 数组 | 这指定了 Velocity 在玩家登录和玩家被服务器踢出时应该尝试连接到什么服务器。 |
 
-## `forced-hosts` section
+## `forced-hosts` 部分
 
-| Setting Name | Type     | Description                                                                                                                                       |
-|--------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------|
-| A host name  | Hostname | This configures the proxy to create a forced host for the specified hostname. An array of servers to try for the specified hostname is the value. |
+| 设置名称 | 类型  | 描述                                      |
+|------|-----|-----------------------------------------|
+| 主机名称 | 主机名 | 此配置使代理为指定的主机名创建一个强制主机。指定主机名的服务器尝试列表是其值。 |
 
-## `advanced` section
+## `advanced` 部分
 
-| Setting name                               | Type    | Description                                                                                                                                                                                             |
-|--------------------------------------------|---------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `compression-threshold`                    | Integer | This is the minimum size (in bytes) that a packet must be before the proxy compresses it. Minecraft uses 256 bytes by default.                                                                          |
-| `compression-level`                        | Integer | This setting indicates what `zlib` compression level the proxy should use to compress packets. The default value uses the default zlib level.                                                           |
-| `login-ratelimit`                          | Integer | This setting determines the minimum amount of time (in milliseconds) that must pass before a connection from the same IP address will be accepted by the proxy. A value of `0` disables the rate limit. |
-| `connection-timeout`                       | Integer | This setting determines how long the proxy will wait to connect to a server before timing out.                                                                                                          |
-| `read-timeout`                             | Integer | This setting determines how long the proxy will wait to receive data from the server before timing out.                                                                                                 |
-| `haproxy-protocol`                         | Boolean | This setting determines whether or not Velocity should receive HAProxy PROXY messages. If you don't use HAProxy, leave this setting off.                                                                |
-| `tcp-fast-open`                            | Boolean | This setting allows you to enable TCP Fast Open support in Velocity. Your proxy must run on Linux kernel >=4.14 for this setting to apply.                                                              |
-| `bungee-plugin-message-channel`            | Boolean | This setting allows you to enable or disable support for the BungeeCord plugin messaging channel.                                                                                                       |
-| `show-ping-requests`                       | Boolean | This setting allows you to log ping requests sent by clients to the proxy.                                                                                                                              |
-| `announce-proxy-commands`                  | Boolean | This setting allows you to enable or disable explicitly sending proxy commands to the client (for Minecraft 1.13+ tab completion).                                                                      |
-| `failover-on-unexpected-server-disconnect` | Boolean | This setting allows you to determine if the proxy should failover or disconnect the user in the event of an unclean disconnect.                                                                         |
-| `log-command-executions`                   | Boolean | Determines whether or not the proxy should log all commands run by the user.                                                                                                                            |
-| `log-player-connections`                   | Boolean | Enables logging of player connections when connecting to the proxy, switching servers and disconnecting from the proxy.                                                                                 |
-| `accepts-transfers`                        | Boolean | Determines whether or not the proxy accepts incoming transfers from other servers. If disabled, the proxy will disconnect transferred clients.                                                          |
+| 设置名称                                       | 类型  | 描述                                                                         |
+|--------------------------------------------|-----|----------------------------------------------------------------------------|
+| `compression-threshold`                    | 整数  | 这是代理在压缩数据包之前数据包的最小大小（以字节为单位）。Minecraft 默认使用 256 字节。                        |
+| `compression-level`                        | 整数  | 此设置指示代理应使用什么 `zlib` 压缩级别来压缩数据包。默认值使用默认的 `zlib` 级别。                         |
+| `login-ratelimit`                          | 整数  | 此设置确定从同一 IP 地址的连接在被代理接受之前必须经过的最短时间（以毫秒为单位）。值为 `0` 时将禁用速率限制。                |
+| `connection-timeout`                       | 整数  | 此设置确定代理在尝试连接到服务器时等待的时间。                                                    |
+| `read-timeout`                             | 整数  | 此设置确定代理在从服务器接收数据之前等待的时间。                                                   |
+| `haproxy-protocol`                         | 布尔值 | 此设置确定 Velocity 是否接收 HAProxy PROXY 消息。如果你不使用 HAProxy，请关闭此设置。                |
+| `tcp-fast-open`                            | 布尔值 | 此设置允许你在 Velocity 中启用 TCP Fast Open 支持。你的代理必须运行在 Linux 内核 >=4.14 上，此设置才会生效。 |
+| `bungee-plugin-message-channel`            | 布尔值 | 此设置允许你启用或禁用对 BungeeCord 插件消息通道的支持。                                         |
+| `show-ping-requests`                       | 布尔值 | 此设置允许你记录客户端发送到代理的 ping 请求。                                                 |
+| `announce-proxy-commands`                  | 布尔值 | 此设置允许你启用或禁用显式地向客户端发送代理命令（用于 Minecraft 1.13+ 的 Tab 补全）。                     |
+| `failover-on-unexpected-server-disconnect` | 布尔值 | 此设置允许你决定在服务器意外断开连接时，代理是应该切换到其他服务器还是直接断开用户连接。                               |
+| `log-command-executions`                   | 布尔值 | 确定代理是否记录用户运行的所有命令。                                                         |
+| `log-player-connections`                   | 布尔值 | 启用记录玩家连接到代理、在服务器之间切换以及从代理断开连接的日志。                                          |
+| `accepts-transfers`                        | 布尔值 | 确定代理是否接受来自其他服务器的传入转移。如果禁用，代理将断开转移过来的客户端连接。                                 |
 
-## `query` section
+## `query` 部分
 
-| Setting name   | Type    | Description                                                                                                  |
-|----------------|---------|--------------------------------------------------------------------------------------------------------------|
-| `enabled`      | Boolean | Whether or not Velocity should reply to Minecraft query protocol requests. You can usually leave this false. |
-| `port`         | Number  | Specifies which port that Velocity should listen on for GameSpy 4 (Minecraft query protocol) requests.       |
-| `map`          | String  | Specifies the map name to be shown to clients.                                                               |
-| `show-plugins` | Boolean | Whether or not Velocity plugins are included in the query responses.                                         |
+| 设置名称           | 类型  | 描述                                                |
+|----------------|-----|---------------------------------------------------|
+| `enabled`      | 布尔值 | 是否让 Velocity 回复 Minecraft 查询协议请求。通常可以保持为 `false`。 |
+| `port`         | 数字  | 指定 Velocity 监听 GameSpy 4（Minecraft 查询协议）请求的端口。    |
+| `map`          | 字符串 | 指定显示给客户端的地图名称。                                    |
+| `show-plugins` | 布尔值 | 是否在查询响应中包含 Velocity 插件。                           |

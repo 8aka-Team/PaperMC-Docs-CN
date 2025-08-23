@@ -1,6 +1,6 @@
 ---
 title: Predicates
-description: Documentation for arguments that allow value validation.
+description: 允许值验证的参数的文档。
 slug: paper/dev/command-api/arguments/predicate
 ---
 
@@ -10,13 +10,13 @@ import ItemPredicateMp4 from "./assets/vanilla-arguments/itempredicate.mp4";
 
 import Video from "/src/components/Video.astro";
 
-A predicate allows for checking for valid values. These arguments are dedicated to checking whether some sort of value is valid according to user input.
+Predicates 允许检查有效值。这些参数专门用于根据用户输入验证某些值是否有效。
 
 
-## Double range argument
-This argument can be used as a predicate for numbers, which require precise input.
+## 双精度范围参数
+这个参数可以作为需要精确输入的数字的 Predicates。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> doubleRangeArgument() {
     return Commands.literal("doublerange")
@@ -37,14 +37,14 @@ public static LiteralCommandNode<CommandSourceStack> doubleRangeArgument() {
 }
 ```
 
-### In-game preview
+### 游戏内预览
 <Video src={DoubleRangeMp4} />
 
 
-## Integer range argument
-This argument works very similarly to the double range argument, with the only difference being that this argument only accepts integers.
+## 整数范围参数
+这个参数与双精度范围参数非常相似，唯一的区别是它只接受整数。
 
-### Example usage
+### 示例用法
 ```java title="MinecraftArguments.java"
 public static LiteralCommandNode<CommandSourceStack> integerRangeArgument() {
     return Commands.literal("integerrange")
@@ -59,13 +59,13 @@ private static int runIntegerRangeCommand(final CommandContext<CommandSourceStac
     final int integerToTest = IntegerArgumentType.getInteger(ctx, "tested_integer");
 
     if (integerRangeProvider.range().contains(integerToTest)) {
-        ctx.getSource().getSender().sendRichMessage("<aqua><input></aqua> <green>is</green> inside the specified range!",
+        ctx.getSource().getSender().sendRichMessage("<aqua><input></aqua> <green>在</green> 范围内！",
             Placeholder.unparsed("input", Integer.toString(integerToTest))
         );
         return Command.SINGLE_SUCCESS;
     }
 
-    ctx.getSource().getSender().sendRichMessage("<aqua><input></aqua> <red>is not</red> inside the specified range!",
+    ctx.getSource().getSender().sendRichMessage("<aqua><input></aqua> <red>不在</red> 范围内！",
         Placeholder.unparsed("input", Integer.toString(integerToTest))
     );
 
@@ -73,14 +73,14 @@ private static int runIntegerRangeCommand(final CommandContext<CommandSourceStac
 }
 ```
 
-### In-game preview
+### 游戏内预览
 <Video src={IntegerRangeMp4} />
 
 
-## Item predicate argument
-This argument allows for checking whether an item fits some predicate. It is useful for filtering out certain items based on some criteria.
+## 物品 Predicates 参数
+这个参数允许检查某个物品是否符合某种 Predicates。它可用于根据某些标准筛选出某些物品。
 
-### Example usage
+### 示例用法
 ```java
 public static LiteralCommandNode<CommandSourceStack> itemPredicateArgument() {
     return Commands.literal("itempredicate")
@@ -89,7 +89,7 @@ public static LiteralCommandNode<CommandSourceStack> itemPredicateArgument() {
                 final ItemStackPredicate predicate = ctx.getArgument("predicate", ItemStackPredicate.class);
                 final ItemStack defaultWoodenSword = ItemType.WOODEN_SWORD.createItemStack();
 
-                ctx.getSource().getSender().sendRichMessage("Does predicate include a default wooden sword? <result>",
+                ctx.getSource().getSender().sendRichMessage("Predicates 是否包括默认的木剑？ <result>",
                     Placeholder.parsed("result", predicate.test(defaultWoodenSword) ? "<green>true</green>" : "<red>false</red>")
                 );
                 return Command.SINGLE_SUCCESS;
@@ -98,5 +98,5 @@ public static LiteralCommandNode<CommandSourceStack> itemPredicateArgument() {
 }
 ```
 
-### In-game preview
+### 游戏内预览
 <Video src={ItemPredicateMp4} />

@@ -5,221 +5,207 @@ anticheat:
         also-obfuscate:
           default: "[]"
           description: >-
-            Controls additional data components which should be hidden for all items from other players. It's
-            generally not recommended to configure this unless you know what you are doing, as you may change
-            how items look to other players.
+            设置应向其他玩家隐藏的所有物品的附加数据组件。
+
+            - 除非您知道自己在做什么，否则通常不建议配置此选项，因为您可能会改变物品在玩家眼中的外观。
         dont-obfuscate:
           default: "[minecraft:lodestone_tracker]"
           description: >-
-            Controls which data components should not be hidden for all items from other players. This is because they may slightly change
-            the item's appearance, so hiding it isn't warranted.
-            In this example, lodestone trackers may reveal critical locations, but hiding the location causes the
-            compass to shake around for other players. It's up to your digression whether you think this tradeoff is important.
+            设置不应向其他玩家隐藏的所有物品的数据组件。
+
+            - 这是因为它们可能会略微改变物品的外观，因此隐藏它们是没有必要的。在这个例子中，磁石追踪器可能会暴露关键位置，但隐藏位置会导致指南针在其他玩家面前晃动。是否认为这种权衡很重要，取决于您的判断。
         sanitize-count:
           default: "true"
           description: >-
-            Controls whether the item's count should be hidden from other players.
+            是否对其他玩家隐藏物品的数量。
       enable-item-obfuscation:
         default: "false"
         description: >-
-          Controls whether unnecessary item information (such as enchantments, lore, etc.) that can give cheat clients an advantage should be sent to other
-          players' clients. This may break resource packs that rely on information such as enchantments,
-          lore or item names when observing other players.
-          The hidden data components can be extended or reduced via `also-obfuscate` and `dont-obfuscate` respectively.
+          是否将可能为作弊客户端提供优势的不必要的物品信息（如附魔、物品说明等）发送给其他玩家的客户端。
+
+          - 这可能会破坏依赖于附魔、物品说明或物品名称等信息来观察其他玩家的资源包。可以通过 `also-obfuscate` 扩展或通过 `dont-obfuscate` 减少隐藏的数据组件。
       model-overrides:
         minecraft:elytra:
           also-obfuscate:
             default: "[]"
             description: >-
-              Controls the components that should also be obfuscated for items with the item model of `minecraft:elytra`.
-              This may be useful if you want to hide certain components not important to other players.
+              设置具有 `minecraft:elytra` 物品模型的物品还应混淆的组件。
+
+              - 如果你希望隐藏对其他玩家不重要的某些组件，这可能会很有用。
           dont-obfuscate:
             default: "[minecraft:damage]"
             description: >-
-              Controls the components that should not be obfuscated for items with the item model of `minecraft:elytra`.
-              This defaults to `minecraft:damage` as elytras with 1 durability have a special texture.
+              设置具有 `minecraft:elytra` 物品模型的物品不应混淆的组件。
+
+              - 默认为 `minecraft:damage`，因为耐久度为 1 的鞘翅有特殊的纹理。
           sanitize-count:
             default: true
             description: >-
-              Controls whether the item count of items with the model `minecraft:elytra` should be hidden from other players.
+              是否对其他玩家隐藏具有 `minecraft:elytra` 模型的物品的数量。
 block-updates:
   disable-noteblock-updates:
     default: "false"
     description: >-
-      Whether to disable any form of block updates for note blocks on the
-      server. Disabling block updates leads to note blocks no longer updating
-      their block state, allowing for technically invalid note blocks to remain
-      in the world, which might be useful for mapmakers.
+      是否禁用音符盒的所有方块更新形式。
+
+      - 禁用方块更新将导致音符盒不再更新其方块状态，允许在世界中保留技术上无效的音符盒，这可能对地图制作者有用。
   disable-tripwire-updates:
     default: "false"
     description: >-
-      Whether to disable any form of block updates for tripwires on the server.
-      Disabling block updates leads to tripwires no longer updating their block
-      state, allowing for technically invalid tripwires to remain in the world,
-      which might be useful for mapmakers.
+      是否禁用绊线钩的所有方块更新形式。
+
+      - 禁用方块更新将导致绊线钩不再更新其方块状态，允许在世界中保留技术上无效的绊线钩，这可能对地图制作者有用。
   disable-chorus-plant-updates:
     default: "false"
     description: >-
-      Whether to disable any form of block updates for chorus plants on the
-      server. Disabling block updates leads to chorus plants no longer updating their block
-      state, allowing for technically invalid chorus plant configurations to remain in the world,
-      which might be useful for mapmakers.
+      是否禁用紫颂植株的所有方块更新形式。
+
+      - 禁用方块更新将导致紫颂植株不再更新其方块状态，允许在世界中保留技术上无效的紫颂植株配置，这可能对地图制作者有用。
   disable-mushroom-block-updates:
     default: "false"
     description: >-
-      Whether to disable any form of block updates for mushroom blocks on the
-      server. Disabling block updates leads to mushroom blocks no longer updating their block
-      state, allowing for technically invalid mushroom block configurations to remain in the world,
-      which might be useful for mapmakers.
+      是否禁用蘑菇方块的所有方块更新形式。
+
+      - 禁用方块更新将导致蘑菇方块不再更新其方块状态，允许在世界中保留技术上无效的蘑菇方块配置，这可能对地图制作者有用。
 chunk-loading-advanced:
   auto-config-send-distance:
     default: "true"
     description: >-
-      Set to true if the server will match the chunk send radius that clients
-      have configured in their view distance settings if the client is less-than
-      the server's send distance.
+      是否匹配客户端在其视距设置中配置的区块发送半径（前提是客户端的设置小于服务器的发送距离），则设置为 `true`。
   player-max-concurrent-chunk-generates:
     default: "0"
     description: >-
-      Specifies the maximum amount of concurrent chunk generations that an
-      individual player can have. Set to 0 to let the server configure it
-      automatically per player, or set it to -1 to disable the limit.
+      设置单个玩家可以拥有的最大并发区块生成数量。
+
+      - 设置为 `0` 以让服务器为每个玩家自动配置，或设置为 `-1` 以禁用限制。
   player-max-concurrent-chunk-loads:
     default: "0"
     description: >-
-      Specifies the maximum amount of concurrent chunk loads that an individual
-      player can have. Set to 0 to let the server configure it automatically per
-      player, or set it to -1 to disable the limit.
+      设置单个玩家可以拥有的最大并发区块加载数量。
+
+      - 设置为 `0` 以让服务器为每个玩家自动配置，或设置为 `-1` 以禁用限制。
 chunk-loading-basic:
   player-max-chunk-generate-rate:
     default: "-1.0"
     description: >-
-      The maximum rate at which chunks will generate for any individual player.
-      Set to -1 to disable this limit.
+      设置单个玩家的区块生成的最大速率。
+
+      - 设置为 `-1` 以禁用此限制。
   player-max-chunk-load-rate:
     default: "100"
     description: >-
-      The maximum rate at which chunks will load for any individual player. Note
-      that this setting also affects chunk generations, since a chunk load is
-      always first issued to test if a chunk is already generated. Set to -1 to
-      disable this limit.
+      设置单个玩家的区块加载的最大速率。
+
+      - 请注意，此设置也会影响区块生成，因为区块加载总是首先发出以测试区块是否已经生成。设置为 `-1` 以禁用此限制。
   player-max-chunk-send-rate:
     default: "75"
     description: >-
-      The maximum rate in chunks per second that the server will send to any
-      individual player. Set to -1 to disable this limit.
+      设置向每个玩家发送区块的最大速率，单位为每秒区块数。
+
+      - 设置为 `-1` 以禁用此限制。
 chunk-system:
   gen-parallelism:
     default: default
     description: >-
-      Sets whether the server should use parallel chunk generation. The default
-      value will be used as true. Possible options are true, on and enable to
-      make the server use the system and false, off or disabled to disable.
+      设置服务器是否使用并行区块生成。
+
+      - 可以配置的选项是 `true`、`on` 和 `enable`，以使服务器使用并行区块生成，设置为 `false`、`off` 或 `disabled` 时以禁用并行区块生成。
   io-threads:
     default: "-1"
     description: >-
-      Sets the number of threads to be used for read and write operations with
-      chunks. If any value below zero is set, only one thread will be used.
+      设置用于区块读写操作的线程数量。
+
+      - 如果设置为任何小于零的值，将仅使用一个线程，对于一些大厅、小游戏等对 IO 读写要求不高的，可以设置为 1 或 2 来节省资源。
   worker-threads:
     default: "-1"
     description: >-
-      Sets the number of threads to be used for parallel chunk generation.
-      If a value below zero is set, the server will automatically determine the
-      optimal number of threads based on the available physical CPU cores
-      (**not logical cores**). For systems with 3 or fewer physical cores,
-      only 1 thread will be used. In all other cases, the number of threads
-      is capped at half of the physical cores.
+      设置用于并行区块生成的线程数量。
+
+      - 如果设置为任何小于零的值，服务器将根据可用的物理 CPU 核心数量（**而不是逻辑核心**）自动确定最佳线程数量。
+
+      - 对于拥有 3 个或更少物理核心的系统，仅使用 1 个线程。在所有其他情况下，线程数量被限制为物理核心数量的一半，对于一些大厅、小游戏等没有区块生成需求的，可以设置为 1 或 2 来节省资源。
 collisions:
   enable-player-collisions:
     default: "true"
     description: >-
-      Sets whether the server should allow players to collide with one another.
-      This option can be broken by plugins interacting with the scoreboard. If
-      you are having trouble with this option, try without plugins installed
+      是否允许玩家相互碰撞。
+
+      - 此选项可能会被与记分板交互的插件破坏。如果在使用此选项时遇到问题，请尝试在未安装插件的情况下使用。
   send-full-pos-for-hard-colliding-entities:
     default: "true"
     description: >-
-      Collisions with boats and minecarts are often subject to client/server
-      disagreement, which may cause glitchy behavior for players. This setting
-      attempts to mitigate this desync by sending precise locations for entities
-      involved in collisions. Having this enabled will use more bandwidth;
-      however, in the majority of cases, this is a worthy tradeoff
+      是否允许船只和矿车的碰撞通常会受到客户端/服务器不一致的影响，这可能会导致玩家出现异常行为。
+
+      - 此设置尝试通过发送涉及碰撞的实体的精确位置来缓解这种不同步。启用此功能将使用更多带宽；然而，在大多数情况下，这是一个值得的权衡。
 commands:
   suggest-player-names-when-null-tab-completions:
     vanilla: "false"
     default: "true"
     description: >-
-      Instructs the server to return a list of players when tab-completing when
-      there are no other completions available
+      是否在没有其他补全选项时，通过 Tab 补全返回玩家列表。
   time-command-affects-all-worlds:
     vanilla: "true"
     default: "false"
     description: >-
-      Whether the /time command should act on all worlds or just the sender's
-      current world
+      是否允许 `/time` 命令对所有世界生效，还是仅对发送者的当前世界生效。
   ride-command-allow-player-as-vehicle:
     default: "false"
-    description: Allow mounting entities to a player in the Vanilla `/ride` command.
+    description: 是否允许在原版的 `/ride` 命令中将实体装载到玩家身上。
 console:
   enable-brigadier-completions:
     default: "true"
     description: >-
-      Enables Mojang's Brigadier (advanced) command completions in the server
-      console
+      是否在控制台中启用 Mojang 的 Brigadier（高级）命令补全。
   enable-brigadier-highlighting:
     default: "true"
-    description: Enables Mojang's Brigadier highlighting in the server console
+    description: 是否在控制台中启用 Mojang 的 Brigadier 突出显示。
   has-all-permissions:
     default: "false"
-    description: Whether the console command sender has all permissions
+    description: 是否启用在控制台命令发送者拥有所有权限。
 item-validation:
   display-name:
     vanilla: "2147483647"
     default: "8192"
-    description: The maximum length of an item's display name in characters
+    description: 设置物品显示名称的最大长度，以字符为单位。
   lore-line:
     vanilla: "2147483647"
     default: "8192"
-    description: The maximum length of a lore line in characters
+    description: 设置物品说明文本行的最大长度，以字符为单位。
   resolve-selectors-in-books:
     vanilla: "true"
     default: "false"
     description: >-
-      Whether to resolve selectors in books. With this enabled, players given
-      creative mode will be able to crash the server in yet another way
+      是否解析书中的选择器。
+
+      - 启用此功能后，拥有创造模式权限的玩家将能够以另一种方式使服务器崩溃。
   book:
     author:
       vanilla: "2147483647"
       default: "8192"
-      description: The maximum length of a book's author in characters
+      description: 设置书的作者名称的最大长度，以字符为单位。
     page:
       vanilla: "2147483647"
       default: "16384"
-      description: The maximum length of a book's page in characters
+      description: 设置书的页面的最大长度，以字符为单位。
     title:
       vanilla: "2147483647"
       default: "8192"
-      description: The maximum length of a book's title in characters
+      description: 设置书的标题的最大长度，以字符为单位。
   book-size:
     page-max:
       vanilla: disabled
       default: "2560"
       description: >-
-        The max number of bytes a single page in a book can contribute to the
-        allowed byte total for a book, or "disabled" to disable non-vanilla restrictions on
-        the book size.
+        设置一本书的单页可以贡献给书籍允许的总字节数的最大字节数，或者设置为 “disabled” 以禁用对书籍大小的非原版限制。
     total-multiplier:
       default: "0.98"
       description: >-
-        Each page has this multiple of bytes from the last page as its
-        contribution to the allowed byte total for a book (with the first page
-        being having a multiplier of 1.0)
+        设置每一页都有上一页字节数的这个百分比作为对书籍允许的总字节数的贡献（第一页的百分比为 1.0）。
 logging:
   deobfuscate-stacktraces:
     default: "true"
     description: >-
-      Whether to remap Spigot mapped stacktraces to Mojang mappings in logging.
-      Has no impact on Mojang mapped servers
+      是否在日志中将 Spigot 的堆栈跟踪映射重新映射为 Mojang 的映射。对 Mojang 映射的服务器没有影响。
 messages:
   no-permission:
     default: >-
@@ -227,344 +213,342 @@ messages:
       Please contact the server administrators if you believe that this is in
       error.
     description: >-
-      Default message sent to players when they have insufficient permissions
-      for an action, formatted with
-      [MiniMessage](https://docs.advntr.dev/minimessage/). Plugins may override
-      this for their commands
+      设置当玩家权限不足无法执行某个操作时，默认发送给玩家的消息，格式化为 [MiniMessage](https://docs.advntr.dev/minimessage/)。
+
+      - 插件可以覆盖此消息以用于其命令。
+
+      - 中文翻译：<red>很抱歉，您没有权限执行此命令。如果您认为这是错误的，请联系服务器管理员。
   use-display-name-in-quit-message:
     default: "false"
     description: >-
-      Whether the server should use the player's display name (set by plugins)
-      or actual name in quit messages
+      是否在退出消息中使用玩家的显示名称（由插件设置）或实际名称。
   kick:
     authentication-servers-down:
       default: "<lang:multiplayer.disconnect.authservers_down>"
       description: >-
-        Message sent to players when Mojang's authentication servers are
-        unreachable. Formatted using
-        [MiniMessage](https://docs.advntr.dev/minimessage/).
+        设置当 Mojang 的认证服务器无法访问时发送给玩家的消息，格式化为 [MiniMessage](https://docs.advntr.dev/minimessage/)。
+
+        - <lang:multiplayer.disconnect.authservers_down> 为调用客户端语言文本。
     connection-throttle:
       default: Connection throttled! Please wait before reconnecting.
       description: >-
-        Message sent to players when they are throttled for connecting too
-        frequently. Formatted using
-        [MiniMessage](https://docs.advntr.dev/minimessage/).
+        设置当玩家因连接过于频繁而被限制时发送给玩家的消息，格式化为 [MiniMessage](https://docs.advntr.dev/minimessage/)。
+
+        - 中文翻译：因连接过于频繁而被限制！请等待后再重新连接。
     flying-player:
       default: "<lang:multiplayer.disconnect.flying>"
       description: >-
-        Message sent to players who are detected flying. Formatted using
-        [MiniMessage](https://docs.advntr.dev/minimessage/).
+        设置发送给被检测到飞行的玩家的消息，格式化为 [MiniMessage](https://docs.advntr.dev/minimessage/)。
+
+        - <lang:multiplayer.disconnect.flying> 为调用客户端语言文本。
     flying-vehicle:
       default: "<lang:multiplayer.disconnect.flying>"
       description: >-
-        Message sent to players who are detected riding a flying vehicle.
-        Formatted using [MiniMessage](https://docs.advntr.dev/minimessage/).
+        设置发送给被检测到乘坐飞行载具的玩家的消息，格式化为 [MiniMessage](https://docs.advntr.dev/minimessage/)。
+
+        - <lang:multiplayer.disconnect.flying> 为调用客户端语言文本。
 misc:
   fix-entity-position-desync:
     vanilla: "false"
     default: "true"
     description: >-
-      Causes the server to lose the same precision that the client does for
-      entities preventing desync. Fixes
-      [MC-4](https://bugs.mojang.com/browse/MC-4)
+      是否修复实体位置不同步。
+
+      - 这个功能修复了 [MC-4](https://bugs.mojang.com/browse/MC-4)。
   load-permissions-yml-before-plugins:
     default: "true"
     description: >-
-      Loads bukkit's permission.yml file before plugins, allowing them to check
-      information set there immediately on enable
+      是否在插件启用之前加载 Bukkit 的 `permission.yml` 文件，使它们能够在启用时立即检查其中设置的信息。
   max-joins-per-tick:
     vanilla: "2147483647"
     default: "5"
     description: >-
-      Sets the maximum amount of players that may join the server in a single
-      tick. If more players join, they will be postponed until later ticks to
-      join but not kicked. This is not related to connection throttling found in
-      bukkit.yml
+      设置在单个刻中可以加入服务器的最大玩家数量。
+
+      - 如果有更多玩家加入，他们将被推迟到后续刻中加入，但不会被踢出。这与 `bukkit.yml` 中的连接限制无关。
   region-file-cache-size:
     default: "256"
-    description: The maximum size of the region file cache
+    description: 设置区域文件缓存的最大大小
   use-alternative-luck-formula:
     default: "false"
     description: >-
-      Use an [alternative luck formula](https://gist.github.com/aikar/40281f6c73ec9b6fef7588e6461e1ba9)
-      allowing luck to be applied to items that have no quality defined. Makes
-      major changes to fishing formulas
+      使用一个[替代的运气公式](https://gist.github.com/aikar/40281f6c73ec9b6fef7588e6461e1ba9)。
+
+      - 允许将运气应用于没有定义质量的物品。这会对钓鱼公式进行重大更改。
   use-dimension-type-for-custom-spawners:
     default: "false"
     description: >-
-      Whether phantoms, wandering traders, etc. should be able to spawn in
-      custom overworlds. Defaults to false in order to match Vanilla behavior
+      是否允许幻翼、流浪商人等在自定义主世界中生成。
+
+      - 默认为 `false`，以匹配原版行为。
   strict-advancement-dimension-check:
     default: "false"
     description: >-
-      Disables the attempts to translate worlds that use the same generation as
-      the Overworld, The Nether, or The End to general dimensions rather than
-      the specific dimension key of the world.
+      是否禁用将使用与主世界、下界或末地相同生成方式的世界翻译为通用维度，而不是该世界的特定维度键。
   chat-threads:
     chat-executor-core-size:
       default: "-1"
-      description: The minimum number of threads to keep in the chat thread pool
+      description: 设置聊天线程池中保持的最小线程数
     chat-executor-max-size:
       default: "-1"
       description: >-
-        The maximum number of threads to allow in the chat thread pool. The
-        default value is -1, which means no maximum
+        设置聊天线程池中允许的最大线程数。
+
+        - 默认值为 `-1`，表示没有最大限制，不需要聊天的服务器（如：监狱）可以设置为 1。
   client-interaction-leniency-distance:
     default: default
     description: >-
-      Defines the leniency distance added on the server to the interaction range of a
-      player when validating interact packets.
+      设置在验证交互数据包时，服务器为玩家的交互范围添加的宽容距离。
   compression-level:
     default: default
     description: >-
-      A higher compression level means less data transmitted at the cost of more
-      CPU time. The default value is -1, which means that the server will use
-      the default value of the defined compressor. Note that Paper is currently
-      using the Velocity compressor, which uses a default compression level of 6
-      as a middle ground between performance and data transmission.
+      设置网络数据包的压缩级别。
+
+      - 更高的压缩级别意味着更少的数据传输，但会消耗更多的 CPU 时间。默认值为 `-1`，表示服务器将使用定义的压缩器的默认值。
+
+      - 请注意，Paper 当前使用的是 Velocity 压缩器，其默认压缩级别为 6，这是在性能和数据传输之间的一个折中方案。
   xp-orb-groups-per-area:
     default: default
     description: >-
-      The amount of equal value experience orb groups that can exist in a given area.
-      By default, the server uses 40.
-      Experience orbs that do not share the same value will not be merged by Vanilla's
-      merging algorithm.
+      设置在特定区域内可以存在的相同价值的经验球组的数量。
+
+      - 默认情况下，服务器使用 40。原版的合并算法不会合并不共享相同价值的经验球。
 packet-limiter:
   all-packets:
     action:
       default: KICK
       description: >-
-        The action to take once the limit has been violated. Possible values are
-        DROP which will ignore packets over the limit, and KICK which will kick
-        players for exceeding the limit
+        设置超过限制时应采取的措施。
+
+        - 可选的值为 `DROP`（将忽略超过限制的数据包）和 `KICK`（将因超过限制而踢出玩家）。
     interval:
       vanilla: "-1"
       default: "7.0"
-      description: The interval, in seconds, for which max-packet-rate should apply
+      description: 设置 `max-packet-rate` 应用的时间间隔，单位为秒。
     max-packet-rate:
       default: "500.0"
-      description: The number of packets allowed per player within the interval
+      description: 设置在时间间隔内每个玩家允许的数据包数量。
   kick-message:
     default: "<red><lang:disconnect.exceeded_packet_rate>"
     description: >-
-      The message players are kicked with for sending too many packets.
-      Formatted using [MiniMessage](https://docs.advntr.dev/minimessage/).
+      设置当玩家发送过多数据包而被踢出时发送的消息，格式化为 [MiniMessage](https://docs.advntr.dev/minimessage/)。
   overrides:
     header:
       message: >-
-        Override the **action**, **interval**, and **max-packet-rate** configuration for any individual serverbound packet. You can
-        find the identifiers for packets on the [wiki](https://minecraft.wiki/w/Java_Edition_protocol/Packets).
+        设置覆盖任何单个客户端发往服务器的包的 **action**、**interval** 和 **max-packet-rate** 配置。
+
+        - 您可以在 [wiki](https://minecraft.wiki/w/Java_Edition_protocol/Packets) 上找到包的标识符。
     minecraft:place_recipe:
       action:
         default: KICK
         description: >-
-          The action to take once the limit has been violated. Possible values are
-          DROP which will ignore packets over the limit, and KICK which will kick
-          players for exceeding the limit
+          设置当超出限制时应采取的措施。
+
+          - 可能的值包括 **DROP**，它将忽略超出限制的包，以及 **KICK**，它将因超出限制而踢出玩家。
       interval:
         vanilla: "0.000001"
         default: "7.0"
-        description: The interval, in seconds, for which max-packet-rate should apply
+        description: 设置 **max-packet-rate** 应用的时间间隔，以秒为单位。
       max-packet-rate:
         vanilla: "999999.0"
         default: "500.0"
-        description: The number of packets allowed per player within the interval
+        description: 设置每个玩家在指定时间间隔内允许发送的包的数量。
 player-auto-save:
   max-per-tick:
     default: "-1"
     description: >-
-      How many players should be saved at most in a single tick. A value of -1
-      will set a recommended value based on player-auto-save.rate of either 10
-      or 20
+      设置在单次 Tick 中最多应保存多少玩家。
+
+      - 设置为 `-1` 将根据 `player-auto-save.rate` 的值（10 或 20）设置一个推荐值。
   rate:
     default: "-1"
     description: >-
-      How often player data should be saved in ticks. A value of -1 will use
-      ticks-per.autosave in bukkit.yml
+      设置玩家数据应多久保存一次，单位为 Tick。
+
+      - 设置为 `-1` 将使用 `bukkit.yml` 中的 `ticks-per.autosave`。
 proxies:
   proxy-protocol:
     default: "false"
     description: >-
-      Whether the server should process [PROXY Protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt)
-      messages. This is completely unrelated to Velocity or BungeeCord. Only
-      enable this if you are using HAProxy or similar
+      是否应处理 [PROXY Protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt) 消息。
+
+      - 这与 Velocity 或 BungeeCord 完全无关。仅在使用 HAProxy 或类似工具时启用此功能。
   bungee-cord:
     online-mode:
       default: "true"
       description: >-
-        Instructs the server how to handle player UUIDs and data when behind
-        BungeeCord. Always set to match your proxy's online-mode setting
+        是否在位于 BungeeCord 后端时如何处理玩家 UUID 和数据。
+
+        - 应该始终将其设置为与代理的在线模式设置相匹配。
   velocity:
     enabled:
       default: "false"
-      description: Whether the server should accept Velocity Modern Forwarding
+      description: 是否应接受 Velocity 现代转发。
     online-mode:
       default: "true"
       description: >-
-        Instructs the server how to handle player UUIDs and data when behind
-        Velocity. Always set to match your proxy's online-mode setting
+        是否在位于 Velocity 后端时如何处理玩家 UUID 和数据。
+
+        - 应该始终将其设置为与代理的在线模式设置相匹配。
     secret:
       default: ""
       description: >-
-        The secret string that is shared by your Velocity proxy and this server.
-        This needs to match your proxy's secret as defined in the
-        forwarding.secret file
+        设置你的 Velocity 代理和此服务器共享的密钥字符串。
+
+        - 这需要与代理在 `forwarding.secret` 文件中定义的密钥匹配。
 scoreboards:
   save-empty-scoreboard-teams:
     default: "true"
     description: >-
-      Some scoreboard plugins leave hundreds of empty scoreboard teams around,
-      dramatically slowing down login times. This sets whether the server should
-      remove those empty teams automatically
+      是否允许一些记分板插件会留下数百个空的记分板队伍，这会显著减慢登录时间。此选项设置服务器是否应自动移除这些空队伍。
   track-plugin-scoreboards:
     default: "false"
     description: >-
-      Whether the server should track plugin scoreboards with only dummy
-      objectives. This is a breaking change; however, it provides a much more
-      sensible default value. Enabling this with plugins using many scoreboards
-      will incur a performance degradation
+      是否应跟踪仅包含虚拟目标的插件记分板。
+
+      - 这是一个破坏性变更；然而，它提供了一个更合理的默认值。启用此功能时，使用记分板功能的插件可能会导致性能下降。
 spam-limiter:
   incoming-packet-threshold:
     vanilla: "2147483647"
     default: "300"
     description: >-
-      Sets the threshold at which the server will consider incoming packets spam
-      and ignore them
+      设置服务器认为传入数据包是垃圾邮件并忽略它们的阈值。
   recipe-spam-increment:
     default: "1"
     description: >-
-      The number that the recipe spam counter increases by when a player presses
-      a recipe
+      设置当玩家按下配方时，配方垃圾邮件计数器增加的数值。
   recipe-spam-limit:
     default: "20"
     description: >-
-      The number that the recipe spam counter can reach until the server kicks
-      the player for spam
+      设置配方垃圾邮件计数器可以达到的数值，直到服务器因垃圾邮件将玩家踢出。
   tab-spam-increment:
     default: "1"
     description: >-
-      The number that the internal tab spam counter increases by when a player
-      presses tab in the chat window
+      设置当玩家在聊天窗口按下Tab键时，内部Tab垃圾邮件计数器增加的数值。
   tab-spam-limit:
     default: "500"
     description: >-
-      The number that the internal tab spam counter can reach until the server
-      kicks the player for spam
+      设置内部Tab垃圾邮件计数器可以达到的数值，直到服务器因垃圾邮件将玩家踢出。
 spark:
   enabled:
     default: "true"
-    description: Whether the bundled spark profiler should be enabled.
+    description: 是否启用 Paper 自带的 Spark 性能分析器。
   enable-immediately:
     default: "false"
     description: >-
-      Whether the bundled spark profiler should be enabled as soon as possible. This can be useful for profiling the server during startup.
-      By default, spark is enabled once the server has finished starting up (when the **Done (X.XXXs)! For help, type "help"** message is sent in the console).
+      是否在尽可能早的时候启用自带的 Spark 性能分析器。
+
+      - 这在启动期间对服务器进行性能分析时非常有用。默认情况下，Spark 在服务器启动完成后启用（当控制台中发送 **Done (X.XXXs)! For help, type "help"** 消息时）。
 timings:
   enabled:
     default: "false"
-    description: Controls the global enable state of Timings
+    description: 是否启用 Paper 自带的 Timings V2 性能分析器。
   hidden-config-entries:
     default: "[database, proxies.velocity.secret]"
-    description: Configuration entries to hide in Timings reports
+    description: 设置在 Timings 报告中隐藏的配置项。
   history-interval:
     default: "300"
-    description: The interval in seconds between individual points in the Timings report
+    description: 设置 Timings 报告中各点之间的时间间隔，单位为秒。
   history-length:
     default: "3600"
     description: >-
-      The total amount of data to keep for a single report. This value is
-      validated server-side. Large reports will be rejected
+      设置为单个报告保留的数据总量。
+
+      - 此值在服务器端进行验证。过大的报告将被拒绝。
   server-name:
     default: Unknown Server
-    description: Instructs Timings on what to put in for the server name
+    description: >
+      设置 Timings 在服务器名称中填写什么内容。
+
+      - 如果后端服务器过多的话，可以有效的帮助区别服务器。
   server-name-privacy:
     default: "false"
-    description: Instructs Timings to hide server name information in reports
+    description: 设置 Timings 在报告中隐藏服务器名称信息。
   url:
     default: "https://timings.aikar.co"
     description: >-
-      Specifies the URL of the [Timings Viewer](https://github.com/aikar/timings)
-      server where Timings reports are sent
+      设置自定义 [Timings](https://github.com/aikar/timings) 报告的服务器
   verbose:
     default: "true"
     description: >-
-      Instructs Timings to provide more specific information in its reports. For
-      example, specific entity types causing lag rather than just "entities"
+      设置 Timings 在其报告中提供更具体的信息。
+
+      - 例如，特定的实体类型会导致延迟，而不仅仅是“实体”
 unsupported-settings:
   inline-docs-warning:
     color: red
     message: >-
-      **Unsupported settings**
+      **不支持的设置**
 
 
-      The following settings are provided by Paper but are not officially
-      supported. Use them at your own risk and they may be removed at any time.
+      以下设置由 Paper 提供，但未得到官方支持。
+      使用它们需自行承担风险，并且它们可能会随时被移除。
   allow-headless-pistons:
     vanilla: "true"
     default: "false"
     description: >-
-      Whether the server should allow the creation of headless pistons. These
-      are often used to break permanent blocks
+      是否允许创建无头活塞。
+
+      - 这些通常用于破坏永久方块，一些破基岩的机器需要用到。
   allow-permanent-block-break-exploits:
     vanilla: "true"
     default: "false"
     description: >-
-      Whether unbreakable blocks can be broken with Vanilla exploits. This
-      includes bedrock, end portal frames, end portal blocks, and more
+      是否可以通过原版漏洞破坏不可破坏的方块。
+
+      - 这包括基岩、末地传送门框架、末地传送门方块等。
   allow-piston-duplication:
     vanilla: "true"
     default: "false"
     description: >-
-      Whether to allow duplication of TNT, carpets, and rails. This does not
-      control sand duplication
+      是否允许复制TNT、地毯和轨道。
+
+      - 这不会控制沙子的复制。
   skip-vanilla-damage-tick-when-shield-blocked:
     default: "false"
     description: >-
-      Whether the server should skip damage ticks when entities are blocking damage
-      via a shield. While Vanilla does process a damage tick, this behavior was a long
-      standing bug in Paper. Enabling this option means that the damage tick will be
-      skipped, which may result in rapid damage on shields due to the missing invulnerability.
+      是否在实体通过盾牌阻挡伤害时跳过伤害 Tick。
+
+      - 虽然原版会处理一个伤害 Tick，但这种行为在 Paper 中是一个长期存在的错误。启用此选项意味着将跳过伤害计时，这可能会导致盾牌上的快速伤害，因为缺少了无敌时间。
   perform-username-validation:
     vanilla: "false"
     default: "true"
     description: >-
-      Whether the server should validate usernames. While this may allow users
-      with special characters in their name to join, it can also cause issues
-      with commands and plugins
+      是否应该验证用户名。
+
+      - 虽然这可能允许用户名中包含特殊字符的用户加入，但也可能会导致命令和插件出现问题。
   compression-format:
     default: ZLIB
     description: >-
-      Allows the server to customize the format of saved region files. This
-      supports ZLIB, GZIP, LZ4 and NONE, where None namely allows for compression to
-      be disabled
+      设置自定义保存区域文件的压缩格式。
+
+      - 这支持 ZLIB、GZIP、LZ4 和 NONE，其中 NONE 表示可以禁用压缩。
+      这会覆盖 server.properties 中的的 [region-file-compression](/paper/reference/server-properties/#region_file_compression)
   allow-unsafe-end-portal-teleportation:
     vanilla: "true"
     default: "false"
     description: >-
-      This setting allows for exploits related to end portal teleportation to be
-      possible, for example sand duplication. This
-      setting is not recommended to be enabled, but is provided for those who
-      wish to use it.
+      是否启用与末地传送门传送相关的漏洞，例如沙子复制。
+
+      - 不推荐启用此设置，但为有需求的人提供此选项。
   skip-tripwire-hook-placement-validation:
     vanilla: "true"
     default: "false"
     description: >-
-      This setting allows for exploits related to tripwire hook duping to be enabled.
+      是否启用与绊线钩复制相关的漏洞。
   update-equipment-on-player-actions:
     vanilla: "false"
     default: "true"
     description: >-
-      This setting controls if equipment should be updated when handling certain player
-      actions. If set to false this will allow players to exploit attributes by e.g.
-      switching equipment before using it.
+      是否允许在处理某些玩家行为时更新装备。
+
+      - 如果设置为 false，这将允许玩家通过例如在使用装备之前切换装备来利用属性。
 watchdog:
   early-warning-delay:
     default: "10000"
     description: >-
-      The number of milliseconds before the watchdog thread starts printing
-      thread dumps after the server starts hanging
+      设置在服务器开始卡住后，看门狗线程开始打印线程转储之前的毫秒数。
   early-warning-every:
     default: "5000"
     description: >-
-      The interval in milliseconds between printed thread dumps while the server
-      is hanging
+      设置在服务器卡住时打印线程转储的间隔，单位为毫秒。

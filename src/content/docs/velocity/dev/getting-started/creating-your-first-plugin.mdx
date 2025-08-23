@@ -1,63 +1,65 @@
 ---
-title: Creating your first plugin
-description: How to create your first plugin with the Velocity API.
+title: 创建插件
+description: 如何使用 Velocity API 创建你的第一个插件
 slug: velocity/dev/creating-your-first-plugin
 ---
 
 import { Tabs, TabItem } from "@astrojs/starlight/components";
 import { LATEST_VELOCITY_RELEASE } from "/src/utils/versions";
 
-It is very simple to create a plugin for Velocity. This section will teach you how to set up your
-IDE, your plugin identifiers, and give you an introduction to the basics of the Velocity API.
+为 Velocity 创建插件非常简单。
+本节将教你如何设置你的 IDE、你的插件标识符，并为你介绍 Velocity API 的基础知识。
 
-## Before you continue...
+## 在这之前...
 
-You will need proficiency in the Java programming language. If you don't know Java yet, we strongly
-recommend you learn some basic Java before you continue.
+你需要熟练掌握 Java 编程语言。如果你还不了解 Java，我们强烈建议你在继续之前先学习一些基本的 Java。
+以下为国内常见的 Java 教程网站：[菜鸟教程](https://www.runoob.com/java/java-tutorial.html)，[w3cschool](https://www.w3cschool.cn/java/)，[How2J](https://how2j.cn/)
+以下为推荐的书籍：《Java 核心技术卷 1 + 卷 2》，《Java 编程思想》，《Java 编程的逻辑》，《Java 并发编程之美》，《深入浅出 Java 多线程》，《深入理解 Java 虚拟机》
 
-## Set up your environment
+## 设置你的环境
 
-You're going to need the [JDK](/misc/java-install) and an IDE. If you don't have an IDE, IntelliJ
-IDEA is recommended.
+你需要 [JDK](/misc/java-install) 和一个 IDE。
+如果你还没有 IDE，我们推荐使用 IntelliJ IDEA。
 
-## Creating the project in your IDE
 
-- Open your IDE
-- Click `Create New Project` or the equivalent
-- Select either `Gradle` or `Maven`
-- Make sure your **Project JDK** is Java 17 or later
-- **Finish** the dialog and open the project.
+## 在你的 IDE 中创建项目
 
-Now we have created our project, we need configure our build system.
+- 打开你的 IDE
+- 点击 `创建新项目` 或类似选项
+- 选择 `Gradle` 或 `Maven`
+- 确保你的 **项目 JDK** 是 Java 17 或更高版本
+- **完成** 对话框并打开项目。
 
-## I know how to do this. Give me what I need!
+现在我们已经创建了项目，我们需要配置我们的构建系统。
 
-### Maven repository
+## 我们需要一些常见的依赖仓库
 
-| Name      | URL                                                |
+### Maven 仓库
+
+| 名称      | 链接                                                |
 |-----------|----------------------------------------------------|
 | `papermc` | `https://repo.papermc.io/repository/maven-public/` |
 
 ### Dependency
 
-| Group ID              | Artifact ID    | Version                   |
+| 全局 ID              | Artifact ID    | 版本                   |
 |-----------------------|----------------|---------------------------|
 | `com.velocitypowered` | `velocity-api` | {LATEST_VELOCITY_RELEASE} |
 
 ### Javadocs
 
-Javadocs are available at [jd.papermc.io](jd:velocity).
+Javadocs 可在 [jd.papermc.io](jd:velocity) 查看。
 
-## Set up your build system
+## 设置你的构建系统
 
-You will need to set up a build system before you continue. While it is possible to write Velocity
-plugins without one, having a build system will make your life a lot less difficult.
+在继续之前，你需要设置一个构建系统。
+虽然在没有构建系统的情况下编写 Velocity 插件是可能的，但拥有一个构建系统会让你的头发得到保留。
 
-How to set up a build system is outside the scope of this page, but you can look at your build
-system's documentation ([Gradle](https://docs.gradle.org/current/userguide/userguide.html) or
-[Maven](https://maven.apache.org/guides/getting-started/index.html)) for assistance.
+如何设置构建系统超出了本页面的范围，
+但你可以查看你的构建系统文档（[Gradle](https://docs.gradle.org/current/userguide/userguide.html)
+或 [Maven](https://maven.apache.org/guides/getting-started/index.html)）以获取帮助。
 
-### Setting up the dependency
+### 设置依赖
 
 <Tabs>
   <TabItem label="Gradle Kotlin DSL">
@@ -113,76 +115,77 @@ system's documentation ([Gradle](https://docs.gradle.org/current/userguide/userg
   </TabItem>
 </Tabs>
 
-## Using the Minecraft Development IntelliJ plugin
+## 使用 Minecraft Development IntelliJ 插件
 
-Alternatively, you can use the [Minecraft Development IntelliJ plugin](https://plugins.jetbrains.com/plugin/8327-minecraft-development)
-to create a new project. To do that you need to install the plugin first.
+或者，你可以使用 [Minecraft Development IntelliJ 插件](https://plugins.jetbrains.com/plugin/8327-minecraft-development) 来创建一个新项目。
+为此，你需要先安装该插件。
 
-:::note
+:::note[注意]
 
-This tutorial only works with IntelliJ IDEA. If you are using another IDE, please follow the manual project setup guide described above.
+本教程仅适用于 IntelliJ IDEA。
+如果你使用的是其他 IDE，请按照上述手动项目设置指南操作。
 
 :::
 
-### Installing the Minecraft Development plugin
+### 安装 Minecraft Development 插件
 
-The first thing you need to do is install the [Minecraft Development](https://plugins.jetbrains.com/plugin/8327-minecraft-development) plugin.
-You can do this by going to `File > Settings > Plugins` and searching for `Minecraft Development` under the `Marketplace` section.
+首先，你需要安装 [Minecraft Development](https://plugins.jetbrains.com/plugin/8327-minecraft-development) 插件。
+、你可以通过进入 `File > Settings > Plugins` 并在 `Marketplace` 部分搜索 `Minecraft Development` 来完成安装。
 
 ![](./assets/installing-plugin.png)
 
-Once you have installed the plugin, you will need to restart IntelliJ.
-To do that you can click the `Restart IDE` button that appears after installing the plugin.
+安装插件后，你需要重启 IntelliJ。
+为此，你可以点击安装插件后出现的 `Restart IDE` 按钮。
 
 ![](./assets/restart-ide.png)
 
-### Creating a new project
+### 创建新项目
 
-Now that you have installed the plugin, you can create a new project by going to `File > New > Project...` and selecting `Minecraft` from the list of options.
+安装插件后，你可以通过进入 `File > New > Project...` 并从选项列表中选择 `Minecraft` 来创建一个新项目。
 
-### Setting up a Velocity project
+### 设置 Velocity 项目
 
 ![](./assets/new-project-velocity.png)
 
-You will be asked to provide some information about your project.
+你需要提供一些关于你的项目的信息。
 
-| Field                | Explanation                                                                                                                                                                                                                                                               |
-|----------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Name**             | The name of your project.                                                                                                                                                                                                                                                 |
-| **Location**         | The location of your project. This is where the project files will be stored.                                                                                                                                                                                             |
-| **Platform Type**    | The platform type you are developing for. This should be `Plugin`.                                                                                                                                                                                                        |
-| **Platform**         | The platform you are developing for. This should be `Velocity`.                                                                                                                                                                                                           |
-| **Velocity Version** | The version of Velocity you are developing for.                                                                                                                                                                                                                           |
-| **Plugin Id**        | The id of your plugin.                                                                                                                                                                                                                                                    |
-| **Plugin Name**      | The name of your plugin.                                                                                                                                                                                                                                                  |
-| **Main Class**       | The main class of your plugin. This class should have the `@Plugin` annotation.                                                                                                                                                                                           |
-| **Optional Setting** | Here you can define things like authors, website, description, etc. These are optional and not required for the plugin to work.                                                                                                                                           |
-| **Build System**     | The build system you want to use. Paper recommends using Gradle but you can use Maven if you prefer.                                                                                                                                                                      |
-| **Group ID**         | The group ID of your project. This is used for Maven and Gradle. This is usually your domain name in reverse. If you don't know what you should put here, you can use something like `io.github.<yourname>` or if you don't have GitHub you can just use `me.<yourname>`. |
-| **Artifact ID**      | The artifact ID of your project. This is used for Maven and Gradle. This is usually the name of your project. This is usually the same as the `Name` field.                                                                                                               |
-| **Version**          | The version of your project. This is used for Maven and Gradle. This is usually `1.0-SNAPSHOT` and does not really matter for now.                                                                                                                                        |
-| **JDK**              | The JDK you want to use. This can be anything from Java 17 and above.                                                                                                                                                                                                     |
+| 字段              | 解释                                                                                                                              |
+|-----------------|---------------------------------------------------------------------------------------------------------------------------------|
+| **名称**          | 你的项目的名称。                                                                                                                        |
+| **位置**          | 你的项目的位置。这是项目文件将被存储的地方。                                                                                                          |
+| **平台类型**        | 你正在开发的平台类型。这应该是 `Plugin`。                                                                                                       |
+| **平台**          | 你正在开发的平台。这应该是 `Velocity`。                                                                                                       |
+| **Velocity 版本** | 你正在开发的 Velocity 版本。                                                                                                             |
+| **插件 ID**       | 你的插件的 ID。                                                                                                                       |
+| **插件名称**        | 你的插件的名称。                                                                                                                        |
+| **主类**          | 你的插件的主类。这个类应该有 `@Plugin` 注解。                                                                                                    |
+| **可选设置**        | 在这里，你可以定义诸如作者、网站、描述等信息。这些是可选的，不是插件运行所必需的。                                                                                       |
+| **构建系统**        | 你想要使用的构建系统。Paper 推荐使用 Gradle，但如果你愿意，也可以使用 Maven。                                                                                |
+| **组 ID**        | 你的项目的组 ID。这用于 Maven 和 Gradle。这通常是你的域名反转。如果你不知道应该填写什么，你可以使用类似 `io.github.<yourname>` 的内容，或者如果你没有 GitHub，你可以直接使用 `me.<yourname>`。 |
+| **构件 ID**       | 你的项目的构件 ID。这用于 Maven 和 Gradle。这通常是你的项目的名称，通常与 `名称` 字段相同。                                                                        |
+| **版本**          | 你的项目的版本。这用于 Maven 和 Gradle。这通常是 `1.0-SNAPSHOT`，目前并不重要。                                                                          |
+| **JDK**         | 你想要使用的 JDK。这可以是 Java 17 及以上版本。                                                                                                  |
 
-Now you can click on the `Create` button and IntelliJ will create the project for you.
-If everything went well, you should see something like this:
+现在你可以点击 `Create` 按钮，IntelliJ 将为你创建项目。
+如果一切顺利，你应该会看到类似这样的内容：
 
 ![](./assets/velocity-plugin-overview.png)
 
-## Conclusion
+## 总结
 
-You should now have a project set up with Velocity as a dependency.
-All you have left to do now is to compile your plugin and run it on a Velocity server.
+你现在应该已经设置了一个包含 Velocity 作为依赖的项目。
+接下来，你只需要编译你的插件并在 Velocity 服务器上运行它。
 
-:::note
+:::note[注意]
 
-If you want to streamline the process of testing a plugin, you can use the [Run-Task](https://github.com/jpenilla/run-task) Gradle plugin.
-It will automatically download a Velocity server and run it for you.
+如果你想简化测试插件的流程，可以使用 [Run-Task](https://github.com/jpenilla/run-task) Gradle 插件。
+它会自动下载一个 Velocity 服务器并为你运行它。
 
 :::
 
-:::note
+:::note[注意]
 
-If you are using IntelliJ, you can use the Gradle GUI `Build` menu to compile your plugin - found on the top right of your IDE.
-The output JAR of your plugin will be in the `build/libs` directory.
+如果你使用的是 IntelliJ，你可以通过 IDE 右上角的 Gradle GUI `Build` 菜单来编译你的插件。
+你输出的 JAR 文件将位于 `build/libs` 目录中。
 
 :::

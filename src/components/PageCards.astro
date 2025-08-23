@@ -41,7 +41,7 @@ const pages: Page[] = (await getCollection(Astro.locals.starlightRoute.entry.col
     pages.map((p) => (
       <LinkCard
         title={(p.group ? "🗃️ " : "") + p.title}
-        description={p.description ?? (p.group ? "(documentation group)" : undefined)}
+        description={p.description ?? (p.group ? "(文档建设所使用到的一些工具)" : undefined)}
         href={p.href}
       />
     ))

@@ -1,87 +1,87 @@
 ---
-title: Updating
-description: Paper has new features and fixes coming every day, this guide explains the updating process.
+title: 更新版本
+description: Paper 每天都在推出新功能和修复，本指南解释了更新过程
 slug: paper/updating
 ---
 
-Updating Paper is an important part of running every server. With new features and fixes coming
-every day, we recommend updating at least once per week to keep your server patched for the latest
-bugs. Installing updates is very simple, but it's important to know how to do it correctly.
+更新 Paper 是运行每个服务器的重要部分。
+随着新功能和修复每天都在推出，我们建议至少每周更新一次，以确保你的服务器能够修复最新的漏洞。
+安装更新非常简单，但正确操作非常重要。
 
-:::caution[Don't replace any JAR in a running server]
+:::caution[不要替换正在运行的服务器中的任何 JAR]
 
-Unless you know exactly what and why you're doing what you're doing, it's never a good idea to
-replace any JAR in a running server, be that plugins, or Paper itself.
-
-:::
-
-## Step 1. Backup
-
-:::tip
-
-If you are using a shared host, your host may provide a built-in way to back up. Consult their
-documentation before continuing.
+除非你完全清楚自己正在做什么以及为什么要这么做，
+否则永远不要在运行中的服务器中替换任何 JAR 文件，无论是插件还是 Paper 本身。
 
 :::
 
-This is the most important step, and yet the most frequently skipped. While it is unlikely that
-updating Paper itself will cause any issues requiring you to restore from a backup, plugin
-malfunctions or other accidents might! Updating is a great time to work in a backup. Having
-functioning backups is essential to every server, big or small. The main things to back up are:
+## 步骤 1：备份
 
-- The world folders
-- Server Configuration Files
-- Plugin Configuration Files & Plugin JARs
+:::tip[提示]
 
-You should aim to have backups from multiple times, and keep them in a safe place. A common approach
-is to keep rolling backups, so you always have a certain number of backups from a set amount of time.
-
-## Step 2. Update plugins
-
-Just like it's important to update Paper, it's equally important to keep plugins up to date. You
-never know what plugin authors may be working on, be it bugfixes or new features.
-
-A little known feature of Paper servers is the `update` folder. Here's how you use it.
-
-1. Create a folder called `update` within the `plugins` folder.
-2. One by one, download plugins you would like to update and put them in the `update` folder.
-3. Restart your server, do not remove or modify any plugins outside the `update` folder.
-
-By doing this, you are able to update all of your plugins at the same time without having the server
-off, or replacing plugin JARs while the server is running. You do not need to restart your server
-before updating Paper itself. This feature allows you to update both Paper and plugins all at the
-same time, without needing any additional downtime.
-
-## Step 3. Update Paper
-
-:::tip
-
-If you are using a shared host, your host may provide a built-in way to update! Consult their
-documentation before continuing.
+如果你使用的是共享主机，你的主机提供商可能提供了一种内置的备份方式。
+在继续之前，请查阅他们的文档。
 
 :::
 
-Updating Paper itself is very simple.
+这是最重要的一步，然而也是最容易被跳过的一步。
+虽然更新Paper本身不太可能引发需要从备份中恢复的问题，但插件故障或其他意外情况可能会！
+更新是一个进行备份的好时机。
+对于大小服务器来说，拥有有效的备份是至关重要的。主要需要备份的内容包括：
 
-1. Download a new JAR from [our downloads page](https://papermc.io/downloads).
-2. Stop your server. It is not recommended and may cause issues to replace your Paper JAR while the server is running.
-3. Rename the downloaded file to match the name specified in the [start command](/paper/getting-started#running-the-server).
-4. Replace your old Paper JAR file with the new renamed one.
-5. Start your server. Watch the startup log to ensure everything goes to plan. If there are any
-   plugin conflicts or issues, you will see them here.
+- 世界文件夹
+- 服务器配置文件
+- 插件配置文件及插件 JAR 文件
 
-To minimize downtime caused by updates, some server owners will, rather than replacing their server
-JAR, upload a new one and set their start script to use the new one on the next restart. Both of
-these are valid update strategies.
+你应该尝试保留多个时间点的备份，并将它们存放在安全的地方。
+一种常见的方法是保留滚动备份，这样你总是拥有一定数量的、来自特定时间段的备份。
 
-:::caution[Automatic Updates]
+## 步骤 2：更新插件
 
-While it may be convenient to install updates automatically (and Paper's [downloads API](/misc/downloads-api) allows you
-to with ease), doing so is not recommended by Paper due to the possibility of plugin conflicts or
-other issues that you may not know about. Always be present during updates, and keep a careful watch
-on your server's log after the fact.
+就像更新 Paper 很重要一样，保持插件的更新也同样重要。
+你永远不知道插件作者可能正在做些什么，无论是修复漏洞还是添加新功能。
 
-If you do choose to automatically install updates, ensure you have a functioning backup strategy in
-place!
+Paper 服务器有一个鲜为人知的功能，那就是 `update` 文件夹。以下是它的使用方法。
+
+1. 在 `plugins` 文件夹内创建一个名为 `update` 的文件夹。
+2. 逐个下载你想要更新的插件，并将它们放入 `update` 文件夹中。
+3. 重启服务器，不要删除或修改 `update` 文件夹之外的任何插件。
+
+通过这种方式，你可以在服务器运行时同时更新所有插件，
+而无需关闭服务器或替换正在运行的服务器中的插件 JAR 文件。
+你无需在更新 Paper 本身之前重启服务器。
+这个功能允许你同时更新 Paper 和插件，而无需任何额外的停机时间。
+
+## 步骤 3：更新 Paper
+
+:::tip[提示]
+
+如果你使用的是共享主机，你的主机提供商可能提供了一种内置的更新方式！
+在继续之前，请查阅他们的文档。
+
+:::
+
+更新 Paper 本身非常简单。
+
+1. 从[下载页面](https://papermc.io/downloads)下载新的 JAR 文件。
+2. 停止你的服务器。在服务器运行时替换 Paper JAR 文件是不推荐的，并且可能会导致问题。
+3. 将下载的文件重命名为与[启动命令](/paper/getting-started#运行服务器)中指定的名称一致。
+4. 用新重命名的 JAR 文件替换旧的 Paper JAR 文件。
+5. 启动你的服务器。观察启动日志，确保一切按计划进行。
+   如果有任何插件冲突或问题，你将在这里看到它们。
+
+为了将更新导致的停机时间降到最低，一些服务器所有者会选择上传一个新的服务器 JAR 文件，
+并设置启动脚本在下次重启时使用新的 JAR，而不是替换现有的服务器 JAR。
+这两种方法都是有效的更新策略。
+
+:::caution[自动更新]
+
+虽然自动安装更新可能很方便（Paper 的[下载 API](/misc/downloads-api) 让你可以轻松做到），
+但 Paper 并不推荐这样做，
+因为可能会出现插件冲突或其他你不知道的问题。
+在更新时始终在场，并在更新后仔细观察服务器的日志。
+
+如果你确实选择自动安装更新，
+请确保你有一个有效的备份策略！
 
 :::
