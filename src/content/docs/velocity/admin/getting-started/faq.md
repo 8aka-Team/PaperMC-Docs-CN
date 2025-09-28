@@ -99,9 +99,21 @@ Argument type identifier <namespace>:<name> unknown.
 
 ### 我的强制主机不起作用！
 
-首先，请仔细检查您是否正确设置了指向代理的 DNS 记录，用于您选择的强制主机。
-强制主机与 SRV 记录**不兼容**，因此如果您依赖 SRV 记录将玩家引导至代理，
-您需要找到一种方法，让代理运行在 Minecraft 的默认端口 25565 上。
+如果你依赖SRV记录将玩家引导到代理服务器，请记住，Velocity使用客户端发送的**主机名**来匹配`forced-hosts`，该主机名在连接之前就已经解析好了——并不一定是玩家输入的地址。
+
+要让`forced-hosts`与非默认端口上的代理服务器（例如`12345`）一起工作，请使用以下设置：
+
+创建DNS记录：
+- **CNAME:** `forced1.example.com → actual.server.address.com`
+- **SRV:** `_minecraft._tcp.survival → forced1.example.com`（优先级：0，权重：0，端口：12345）
+
+在`velocity.toml`中：
+```toml
+[forced-hosts]
+"forced1.example.com" = ["survival"] # survival.example.com
+```
+
+尽管玩家通过`survival.example.com`连接，但SRV记录指向`forced1.example.com`，而这就是客户端发送给Velocity的内容——从而使其能够在`forced-hosts`中正确匹配。
 
 ### 插件无法修改消息或命令
 

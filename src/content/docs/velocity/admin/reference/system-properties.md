@@ -45,6 +45,11 @@ Velocity 的一些系统属性名称中包含 `.` 字符。在使用 PowerShell 
 - **默认**: `true`
 - **描述**: 覆盖配置中的 `force-key-authentication`。如果未设置，则会自动设置为当前配置的值。
 
+#### mojang.sessionserver
+
+- **默认**: `https://sessionserver.mojang.com/session/minecraft/hasJoined`
+- **描述**: 用于身份验证的会话服务器上`hasJoined`端点的完整URL。
+
 #### velocity.natives-tmpdir
 
 - **默认**: `unset`

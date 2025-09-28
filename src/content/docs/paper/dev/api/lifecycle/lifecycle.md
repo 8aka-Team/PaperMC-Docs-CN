@@ -35,8 +35,8 @@ public void bootstrap(BootstrapContext context) {
 
 ## 生命周期事件
 
-在获取正确的 `LifecycleEventManager` 后，通过从
-[LifecycleEvents](jd:paper:io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents) 中选择一个事件类型来创建一个事件处理器：
+在获取正确的 `LifecycleEventManager` 之后，
+通过从 [LifecycleEvents](jd:paper:io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents) 中选择一个事件类型来创建一个事件处理器：
 ```java title="TestPlugin.java"
 @Override
 public void onEnable() {

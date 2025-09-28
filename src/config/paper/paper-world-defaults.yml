@@ -300,6 +300,10 @@ entities:
       default: "true"
       vanilla: "false"
       description: 是否为蜜蜂在释放失败后增加冷却时间，这可能发生在蜂巢被阻塞或处于夜晚时。
+    stuck-entity-poi-retry-delay:
+      default: "200"
+      vanilla: "disabled"
+      description: 设置当实体导航陷入困境时，重新尝试获取兴趣点之前的延迟时间。这将减少寻路对性能的影响。以刻为单位测量。
   entities-target-with-follow-range:
     default: "false"
     description: "是否使用目标实体的跟随范围进行目标定位"
