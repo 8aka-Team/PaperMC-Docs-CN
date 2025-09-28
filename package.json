@@ -12,14 +12,14 @@
     "format:check": "prettier . --check"
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "^6.3.6",
+    "@astrojs/markdown-remark": "^6.3.7",
     "@astrojs/starlight": "^0.36.0",
-    "@astrojs/svelte": "^7.1.1",
+    "@astrojs/svelte": "^7.2.0",
     "@expressive-code/plugin-collapsible-sections": "^0.41.3",
     "@expressive-code/plugin-line-numbers": "^0.41.3",
     "@fontsource/jetbrains-mono": "^5.2.8",
     "@fontsource/poppins": "^5.2.7",
-    "astro": "^5.13.9",
+    "astro": "^5.14.1",
     "astro-d2": "^0.8.0",
     "sharp": "^0.34.4",
     "starlight-contributor-list": "^0.3.0",
